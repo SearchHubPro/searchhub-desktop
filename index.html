@@ -338,7 +338,34 @@
     </div>
   </div>
 
-  <div id="view-ledger" class="view"><div class="content"><div class="loading-spinner">販売管理 UI（これから開発！）</div></div></div>
+  <div id="view-ledger" class="view">
+    <div class="content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <span style="font-size:12px; font-weight:bold; color:#4a5568;" id="ledgerCount">帳簿を読み込み中...</span>
+        <button onclick="loadLedgerData()" style="background:#1a365d; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fas fa-sync-alt"></i> 最新を取得</button>
+      </div>
+      
+      <div class="search-box" style="margin-bottom:16px;">
+        <input type="text" id="ledger-search-kw" placeholder="ASIN・商品名・仕入先で検索..." oninput="ledgerCurrentPage=1; renderLedgerList();" style="flex:2;">
+        <select id="ledger-status-filter" onchange="ledgerCurrentPage=1; renderLedgerList();" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ccc; outline:none; font-size:12px; font-weight:bold; background:white; color:#1a365d;">
+          <option value="ALL">すべて表示</option>
+          <option value="納品待ち">🚚 納品待ち</option>
+          <option value="出品中">📦 出品中(FBA)</option>
+          <option value="販売済">💰 販売完了</option>
+        </select>
+      </div>
+
+      <div id="ledgerResult" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;">
+        <div class="loading-spinner" style="grid-column: 1 / -1;">⌛ Managerシートから帳簿データを同期中...</div>
+      </div>
+      
+      <div id="ledger-pagination" class="pagination" style="display:none;">
+        <button class="page-btn" id="ledger-btn-prev" onclick="ledgerCurrentPage--; renderLedgerList();">◀ 戻る</button>
+        <span class="page-info" id="ledger-page-info">1 / 1</span>
+        <button class="page-btn" id="ledger-btn-next" onclick="ledgerCurrentPage++; renderLedgerList();">次へ ▶</button>
+      </div>
+    </div>
+  </div>
   <div id="view-bulk-register" class="view"><div class="content"><div class="loading-spinner">一括商品登録 UI（これから開発！）</div></div></div>
   <div id="view-info" class="view"><div class="content"><div class="loading-spinner">各種情報 UI（これから開発！）</div></div></div>
   <div id="view-purchase-list" class="view"><div class="content"><div class="loading-spinner">仕入れリスト UI（これから開発！）</div></div></div>
@@ -784,6 +811,9 @@
 
       if (viewId === 'view-price') {
         if (globalInventoryData.length === 0) loadInventoryPrice(); else renderInventoryList();
+      }
+      if (viewId === 'view-ledger') {
+        if (globalLedgerData.length === 0) loadLedgerData(); else renderLedgerList();
       }
       // 👇 追加：どっちの月別画面を開いてもデータをロードする
       if (viewId === 'view-monthly-purchase' || viewId === 'view-monthly-sales') {
@@ -1939,6 +1969,159 @@ document.getElementById("regPurchaseUrl").value = "";
         ptrEl.style.top = '-50px'; 
       }
     }, {passive: true});
+
+      // ==========================================
+    // 🚀 Manager帳簿（販売管理） 機能のJSコード
+    // ==========================================
+    let globalLedgerData = [];
+    let ledgerCurrentPage = 1;
+
+    async function loadLedgerData() {
+      const resDiv = document.getElementById('ledgerResult');
+      const countEl = document.getElementById('ledgerCount');
+      const ssUrl = AppStorage.get("sh_ssurl", "");
+      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+
+      if (!ssUrl || !targetGasUrl) {
+        openConfig();
+        resDiv.innerHTML = '<div class="card" style="text-align:center; padding:20px; color:#e53e3e; font-weight:bold;">⚙️設定からManagerのURLとGAS URLを登録してな！</div>';
+        return;
+      }
+
+      resDiv.innerHTML = '<div class="loading-spinner" style="grid-column: 1 / -1;">⌛ Managerシートから帳簿データを同期中...</div>';
+      countEl.innerText = "同期中...";
+
+      try {
+        const res = await fetch(targetGasUrl, {
+          method: 'POST',
+          body: JSON.stringify({ command: 'getLedgerData', ssUrl: ssUrl })
+        });
+        const json = await res.json();
+        
+        if (!json.success || !json.data || json.data.length === 0) {
+          resDiv.innerHTML = '<div class="card" style="text-align:center; color:#a0aec0; padding:30px 10px; grid-column: 1 / -1;">現在、帳簿にデータがありません。</div>';
+          countEl.innerText = "帳簿: 0件";
+          globalLedgerData = [];
+          document.getElementById('ledger-pagination').style.display = 'none';
+          return;
+        }
+
+        globalLedgerData = json.data;
+        ledgerCurrentPage = 1;
+        renderLedgerList();
+
+      } catch (err) {
+        resDiv.innerHTML = '<div class="card" style="text-align:center; color:#e53e3e; font-weight:bold; grid-column: 1 / -1;">❌ 通信エラーが発生しました</div>';
+        countEl.innerText = "通信失敗";
+      }
+    }
+
+    function renderLedgerList() {
+      const kw = document.getElementById('ledger-search-kw').value.toLowerCase().trim();
+      const statusFilter = document.getElementById('ledger-status-filter').value;
+      const resDiv = document.getElementById('ledgerResult');
+      const countEl = document.getElementById('ledgerCount');
+
+      // 🔍 検索とステータスで絞り込み
+      let filtered = globalLedgerData.filter(item => {
+        // キーワード検索（タイトル、ASIN、仕入先など）
+        const matchKw = !kw || 
+          (item.title && item.title.toLowerCase().includes(kw)) || 
+          (item.asin && item.asin.toLowerCase().includes(kw)) ||
+          (item.supplier && item.supplier.toLowerCase().includes(kw));
+
+        // ステータス検索
+        const matchStatus = (statusFilter === 'ALL') || (item.status && item.status.includes(statusFilter));
+
+        return matchKw && matchStatus;
+      });
+
+      countEl.innerText = `表示中: ${filtered.length}件`;
+
+      // 📄 ページネーション計算
+      const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1;
+      if (ledgerCurrentPage > totalPages) ledgerCurrentPage = totalPages;
+      if (ledgerCurrentPage < 1) ledgerCurrentPage = 1;
+      const start = (ledgerCurrentPage - 1) * ITEMS_PER_PAGE;
+      const pageItems = filtered.slice(start, start + ITEMS_PER_PAGE);
+
+      if (pageItems.length === 0) {
+        resDiv.innerHTML = '<div class="card" style="text-align:center; color:#a0aec0; padding:30px 10px; grid-column: 1 / -1;">条件に合う商品が見つかりません。</div>';
+        document.getElementById('ledger-pagination').style.display = 'none';
+        return;
+      }
+
+      // 🎨 カードの描画
+      let html = "";
+      pageItems.forEach((item, index) => {
+        // ステータスに応じた色とアイコン
+        let statusColor = "#718096"; // デフォルト（グレー）
+        let statusIcon = "fas fa-clock";
+        if (item.status && item.status.includes('出品中')) { statusColor = "#3182ce"; statusIcon = "fas fa-box"; } // 青
+        if (item.status && item.status.includes('販売済')) { statusColor = "#38a169"; statusIcon = "fas fa-check-circle"; } // 緑
+        if (item.status && item.status.includes('納品待ち')) { statusColor = "#d69e2e"; statusIcon = "fas fa-truck"; } // オレンジ
+
+        // 利益の色
+        const profitColor = (item.profit >= 0) ? "#07A27B" : "#e53e3e";
+        
+        // 画像処理
+        let imgHtml = `<div style="width:70px; height:70px; background:#f8fafc; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:10px; color:#999; border:1px solid #eee; flex-shrink:0;">No Img</div>`;
+        if (item.img && item.img !== '-' && item.img !== 'No Img') {
+          imgHtml = `<div style="width:70px; height:70px; background:#fff; border:1px solid #eee; border-radius:8px; padding:4px; flex-shrink:0;"><img src="${item.img}" style="width:100%; height:100%; object-fit:contain;"></div>`;
+        }
+
+        html += `
+        <div class="card" style="display:flex; flex-direction:column; padding:16px; border-top: 4px solid ${statusColor};">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px dashed #e2e8f0; padding-bottom:6px;">
+            <span style="font-size:11px; font-weight:bold; color:#718096;">仕入日: ${item.buyDate || '---'}</span>
+            <span style="background:${statusColor}15; color:${statusColor}; border:1px solid ${statusColor}40; padding:3px 8px; border-radius:12px; font-size:10px; font-weight:bold;">
+              <i class="${statusIcon}"></i> ${item.status || '不明'}
+            </span>
+          </div>
+          
+          <div style="display:flex; gap:12px; margin-bottom:12px;">
+            ${imgHtml}
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:13px; font-weight:bold; color:#1a365d; line-height:1.4; margin-bottom:6px; word-break:break-all;">💎 ${escapeHtml(item.title)}</div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <span style="background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold;">${item.asin}</span>
+                <span style="background:#edf2f7; color:#4a5568; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold;">${escapeHtml(item.supplier || '仕入先不明')}</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:#f8fafc; border-radius:8px; padding:10px; border:1px solid #e2e8f0;">
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:#4a5568; margin-bottom:6px;">
+              <span>仕入額</span><span style="font-weight:bold; color:#2d3748;">¥${Number(item.buyPrice || 0).toLocaleString()}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:#4a5568; margin-bottom:6px;">
+              <span>販売額</span><span style="font-weight:bold; color:#2d3748;">¥${Number(item.sellPrice || 0).toLocaleString()}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; border-top:1px dashed #cbd5e0; padding-top:6px; margin-top:4px;">
+              <span style="font-size:11px; font-weight:bold; color:#4a5568;">${item.status && item.status.includes('販売済') ? '確定利益' : '想定利益'}</span>
+              <span style="font-size:18px; font-weight:900; color:${profitColor};">¥${Number(item.profit || 0).toLocaleString()}</span>
+            </div>
+          </div>
+          
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:12px;">
+            <a href="https://keepa.com/#!product/5-${item.asin}" target="_blank" style="background:#55a676; color:white; text-decoration:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold;"><i class="fas fa-chart-line"></i> Keepa</a>
+            <button onclick="alert('UIからの直接編集機能は次のステップで実装するで！')" style="background:#3182ce; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-edit"></i> 編集</button>
+          </div>
+        </div>
+        `;
+      });
+      resDiv.innerHTML = html;
+
+      // ページネーションの更新
+      document.getElementById('ledger-page-info').innerText = `${ledgerCurrentPage} / ${totalPages} ページ`;
+      document.getElementById('ledger-btn-prev').disabled = (ledgerCurrentPage === 1);
+      document.getElementById('ledger-btn-next').disabled = (ledgerCurrentPage === totalPages);
+      document.getElementById('ledger-pagination').style.display = (totalPages > 1) ? 'flex' : 'none';
+      
+      // 一番上へスクロール（スムーズに）
+      document.getElementById('ledger-search-kw').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
   </script>
 
   <script type="module">
