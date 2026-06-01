@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>SearchHub Mobile</title>
+  <title>SearchHub Pro</title>
   
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
@@ -266,7 +266,7 @@
         <button class="header-btn" onclick="openManager()"><i class="fas fa-folder-open"></i></button>
       </div>
       <div class="header-center">
-        <h1 id="headerTitle">SearchHub Mobile</h1>
+        <h1 id="headerTitle">SearchHub Pro</h1>
         <div class="last-update" id="lastUpdate">待機中...</div>
       </div>
       <div class="header-right">
@@ -731,9 +731,9 @@
       
       // 🚀 ステップ①: 画面切り替え時のタイトルを「SearchHub Mobile」等に変更
       if(viewId === 'view-home') {
-        backBtn.style.display = 'none';
-        titleEl.innerText = 'SearchHub Mobile'; 
-      } else {
+  backBtn.style.display = 'none';
+  titleEl.innerText = 'SearchHub Pro'; 
+} else {
         backBtn.style.display = 'flex';
         if(viewId === 'view-sniper') titleEl.innerText = 'SearchHub Sniper';
         else if(viewId === 'view-watcher') titleEl.innerText = 'SearchHub Watcher';
@@ -805,7 +805,7 @@
       setupSwipe();
       
       // 🚀 ステップ①: 初期のタイトルを「SearchHub Mobile」に
-      document.getElementById('headerTitle').innerText = 'SearchHub Mobile';
+      document.getElementById('headerTitle').innerText = 'SearchHub Pro';
 
       const urlSniper = AppStorage.get("sh_sniper_url", ""); const url10 = AppStorage.get("sh_tensite_url", "");
       
