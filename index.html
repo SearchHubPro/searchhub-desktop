@@ -254,7 +254,7 @@
   <div id="ptr-indicator">⬇️ 引っ張って更新...</div>
 
   <div id="loader">
-    <img class="splash-img" src="https://i.ibb.co/R49z2pwV/Chat-GPT-Image-2026-5-31-20-50-12.png" alt="Splash">
+    <img class="splash-img" src="https://i.ibb.co/vK1Sdtp/Search.png" alt="Splash">
     <div class="splash-text">SYSTEM LOADING...</div>
   </div>
 
@@ -292,14 +292,31 @@
     </div>
 
     <div class="dashboard-grid">
-      <button class="dash-btn" onclick="openView('view-amazon')"><i class="fab fa-amazon" style="color:#ff9900;"></i>リサーチ</button>
-      <button class="dash-btn" onclick="openView('view-researcher'); loadResearcherData();"><i class="fas fa-clipboard-check" style="color:#a855f7;"></i>Researcher精査</button>
-      <button class="dash-btn" onclick="openView('view-price')"><i class="fas fa-yen-sign" style="color:#1a365d;"></i>価格改定</button>
-      <button class="dash-btn" onclick="openView('view-monthly')"><i class="fas fa-chart-bar" style="color:#55a676;"></i>月別データ詳細</button>
-      <button class="dash-btn" onclick="openView('view-watcher')"><i class="fas fa-eye" style="color:#07A27B;"></i>Watcher<span class="dash-dot" id="dash-dot-watcher"></span></button>
-      <button class="dash-btn" onclick="openView('view-sniper')"><i class="fas fa-crosshairs" style="color:#e53e3e;"></i>Sniper<span class="dash-dot" id="dash-dot-sniper"></span></button>
+      <button class="dash-btn" onclick="openView('view-monthly')">
+        <i class="fas fa-chart-bar" style="color:#1a365d;"></i>SearchHub Manager
+        <span style="font-size:10px; color:#718096; font-weight:normal; margin-top:4px;">帳簿管理・月別分析・価格改定</span>
+      </button>
+
+      <button class="dash-btn" onclick="openView('view-researcher'); loadResearcherData();">
+        <i class="fas fa-clipboard-check" style="color:#a855f7;"></i>SearchHub Researcher
+        <span style="font-size:10px; color:#718096; font-weight:normal; margin-top:4px;">Keepa一括解析・利益商品開拓</span>
+      </button>
+
+      <button class="dash-btn" onclick="openView('view-amazon')">
+        <i class="fab fa-amazon" style="color:#ff9900;"></i>Amazon リサーチ
+        <span style="font-size:10px; color:#718096; font-weight:normal; margin-top:4px;">単体深掘り・利益シミュレーション</span>
+      </button>
+
+      <button class="dash-btn" onclick="openView('view-watcher')">
+        <i class="fas fa-eye" style="color:#07A27B;"></i>SearchHub Watcher<span class="dash-dot" id="dash-dot-watcher"></span>
+        <span style="font-size:10px; color:#718096; font-weight:normal; margin-top:4px;">10サイト広域監視・新着ログ確認</span>
+      </button>
+
+      <button class="dash-btn" onclick="openView('view-sniper')">
+        <i class="fas fa-crosshairs" style="color:#e53e3e;"></i>SearchHub Sniper<span class="dash-dot" id="dash-dot-sniper"></span>
+        <span style="font-size:10px; color:#718096; font-weight:normal; margin-top:4px;">利益商品自動狙撃・即時購入ログ</span>
+      </button>
     </div>
-  </div>
 
   <div id="view-amazon" class="view">
     <div class="content">
