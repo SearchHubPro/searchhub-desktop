@@ -348,8 +348,21 @@
   <div id="view-ledger" class="view">
     <div class="content">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <span style="font-size:12px; font-weight:bold; color:#4a5568;" id="ledgerCount">帳簿を読み込み中...</span>
-        <button onclick="loadLedgerData()" style="background:#1a365d; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fas fa-sync-alt"></i> 最新を取得</button>
+        <span style="font-size:12px; font-weight:bold; color:#4a5568;" id="ledgerCount">表示中: ---件</span>
+        
+        <div style="display:flex; gap:8px; align-items:center;">
+          <label id="mini-drop-zone" style="background:#f8fafc; border: 2px dashed #cbd5e0; color:#4a5568; padding:4px 12px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer; display:flex; align-items:center; transition: all 0.2s;" 
+                 ondragover="handleDragOverMini(event)" 
+                 ondragleave="handleDragLeaveMini(event)" 
+                 ondrop="handleDropMini(event)">
+            <i class="fas fa-file-upload" style="margin-right: 6px;"></i> レポートをドロップ
+            <input type="file" style="display:none;" accept=".txt,.csv" onchange="processFile(event.target.files[0])">
+          </label>
+          
+          <button onclick="loadLedgerData()" style="background:#1a365d; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+            <i class="fas fa-sync-alt"></i> 最新を取得
+          </button>
+        </div>
       </div>
       
       <div class="search-box" style="margin-bottom:16px;">
@@ -2267,6 +2280,13 @@ document.getElementById("regPurchaseUrl").value = "";
             progressBar.style.width = '100%';
             messageEl.innerText = '✅ 取り込み完了！マネージャーシートに反映されました。';
             messageEl.style.color = '#38a169';
+            
+            // 👇この1行を追加！自動で最新の帳簿を読み込み直す
+            loadLedgerData(); 
+            
+            // （おまけ）2秒後にステータス表示を消すならこれも追加
+            setTimeout(() => { document.getElementById('upload-status').style.display = 'none'; }, 2000);
+            
           } else {
             messageEl.innerText = '❌ エラー: ' + json.message;
             messageEl.style.color = '#e53e3e';
@@ -2287,6 +2307,30 @@ document.getElementById("regPurchaseUrl").value = "";
       
       // 💡 悪魔的プロの小技：Amazonのレポートは「Shift_JIS」が多いから、あらかじめこれで読み込む！
       reader.readAsText(file, 'Shift_JIS'); 
+    }
+
+    // --- 販売管理画面用の小型ドラッグ＆ドロップ処理 ---
+    function handleDragOverMini(e) {
+      e.preventDefault(); e.stopPropagation();
+      e.currentTarget.style.backgroundColor = '#ebf8ff';
+      e.currentTarget.style.borderColor = '#3182ce';
+    }
+
+    function handleDragLeaveMini(e) {
+      e.preventDefault(); e.stopPropagation();
+      e.currentTarget.style.backgroundColor = '#f8fafc';
+      e.currentTarget.style.borderColor = '#cbd5e0';
+    }
+
+    function handleDropMini(e) {
+      e.preventDefault(); e.stopPropagation();
+      e.currentTarget.style.backgroundColor = '#f8fafc';
+      e.currentTarget.style.borderColor = '#cbd5e0';
+      
+      const files = e.dataTransfer.files;
+      if (files && files.length > 0) {
+        processFile(files[0]); // 既存のファイル処理関数へ渡す
+      }
     }
   </script>
 
@@ -2311,6 +2355,8 @@ document.getElementById("regPurchaseUrl").value = "";
         } else { alert("通知ブロック中。"); btn.innerText = "🔔 通知許可する"; btn.disabled = false; }
       } catch (err) { alert("エラー\n" + err.message); btn.innerText = "🔔 通知許可する"; btn.disabled = false; }
     }
+
+   
   </script>
 </body>
 </html>
