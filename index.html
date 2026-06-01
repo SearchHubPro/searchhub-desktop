@@ -292,19 +292,19 @@
     </div>
 
     <div class="dashboard-grid">
-      <button class="dash-btn" onclick="openView('view-monthly')">
+      <button class="dash-btn" onclick="openView('view-amazon')">
+        <i class="fab fa-amazon" style="color:#ff9900;"></i>Amazon リサーチ
+        <span style="font-size:10px; color:#718096; font-weight:normal; margin-top:4px;">単体深掘り・利益シミュレーション</span>
+      </button>
+
+      <button class="dash-btn" onclick="openView('view-manager-menu')">
         <i class="fas fa-chart-bar" style="color:#1a365d;"></i>SearchHub Manager
         <span style="font-size:10px; color:#718096; font-weight:normal; margin-top:4px;">帳簿管理・月別分析・価格改定</span>
       </button>
 
-      <button class="dash-btn" onclick="openView('view-researcher'); loadResearcherData();">
+      <button class="dash-btn" onclick="openView('view-researcher-menu')">
         <i class="fas fa-clipboard-check" style="color:#a855f7;"></i>SearchHub Researcher
         <span style="font-size:10px; color:#718096; font-weight:normal; margin-top:4px;">Keepa一括解析・利益商品開拓</span>
-      </button>
-
-      <button class="dash-btn" onclick="openView('view-amazon')">
-        <i class="fab fa-amazon" style="color:#ff9900;"></i>Amazon リサーチ
-        <span style="font-size:10px; color:#718096; font-weight:normal; margin-top:4px;">単体深掘り・利益シミュレーション</span>
       </button>
 
       <button class="dash-btn" onclick="openView('view-watcher')">
@@ -318,6 +318,33 @@
       </button>
     </div>
 
+
+  <div id="view-manager-menu" class="view">
+    <div class="content">
+      <div class="dashboard-grid">
+        <button class="dash-btn" onclick="openView('view-ledger')"><i class="fas fa-book" style="color:#2b6cb0;"></i>販売管理</button>
+        <button class="dash-btn" onclick="openView('view-price')"><i class="fas fa-yen-sign" style="color:#1a365d;"></i>価格改定</button>
+        <button class="dash-btn" onclick="openView('view-monthly'); switchMonthlyTab('monthly-purchase', document.getElementById('btn-monthly-purchase'));"><i class="fas fa-box-open" style="color:#2f855a;"></i>月別仕入情報</button>
+        <button class="dash-btn" onclick="openView('view-monthly'); switchMonthlyTab('monthly-sales', document.getElementById('btn-monthly-sales'));"><i class="fas fa-hand-holding-usd" style="color:#c53030;"></i>月別販売情報</button>
+        <button class="dash-btn" onclick="openView('view-bulk-register')"><i class="fas fa-upload" style="color:#d69e2e;"></i>一括商品登録</button>
+        <button class="dash-btn" onclick="openView('view-info')"><i class="fas fa-info-circle" style="color:#4a5568;"></i>各種情報</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-researcher-menu" class="view">
+    <div class="content">
+      <div class="dashboard-grid">
+        <button class="dash-btn" onclick="openView('view-researcher'); loadResearcherData();"><i class="fas fa-search" style="color:#a855f7;"></i>リサーチリスト</button>
+        <button class="dash-btn" onclick="openView('view-purchase-list')"><i class="fas fa-shopping-cart" style="color:#dd6b20;"></i>仕入れリスト</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-ledger" class="view"><div class="content"><div class="loading-spinner">販売管理 UI（これから開発！）</div></div></div>
+  <div id="view-bulk-register" class="view"><div class="content"><div class="loading-spinner">一括商品登録 UI（これから開発！）</div></div></div>
+  <div id="view-info" class="view"><div class="content"><div class="loading-spinner">各種情報 UI（これから開発！）</div></div></div>
+  <div id="view-purchase-list" class="view"><div class="content"><div class="loading-spinner">仕入れリスト UI（これから開発！）</div></div></div>
   <div id="view-amazon" class="view">
     <div class="content">
       <div class="search-box">
@@ -736,12 +763,19 @@
 } else {
         backBtn.style.display = 'flex';
         if(viewId === 'view-sniper') titleEl.innerText = 'SearchHub Sniper';
-        else if(viewId === 'view-watcher') titleEl.innerText = 'SearchHub Watcher';
-        else if(viewId === 'view-amazon') titleEl.innerText = 'Amazon リサーチ';
-        else if(viewId === 'view-price') titleEl.innerText = '価格改定';
-        else if(viewId === 'view-history') titleEl.innerText = '販売履歴リサーチ';
-        else if(viewId === 'view-monthly') titleEl.innerText = '月別データ詳細'; 
-        else if(viewId === 'view-researcher') titleEl.innerText = 'Researcher精査'; // 🌟 Researcher精査タイトル
+      else if(viewId === 'view-watcher') titleEl.innerText = 'SearchHub Watcher';
+      else if(viewId === 'view-amazon') titleEl.innerText = 'Amazon リサーチ';
+      else if(viewId === 'view-price') titleEl.innerText = '価格改定';
+      else if(viewId === 'view-history') titleEl.innerText = '販売履歴リサーチ';
+      else if(viewId === 'view-monthly') titleEl.innerText = '月別データ詳細'; 
+      else if(viewId === 'view-researcher') titleEl.innerText = 'Researcher リサーチリスト'; 
+      // 👇ここから下が追加された新しい画面のタイトル！
+      else if(viewId === 'view-manager-menu') titleEl.innerText = 'Manager メニュー';
+      else if(viewId === 'view-researcher-menu') titleEl.innerText = 'Researcher メニュー';
+      else if(viewId === 'view-ledger') titleEl.innerText = '販売管理';
+      else if(viewId === 'view-bulk-register') titleEl.innerText = '一括商品登録';
+      else if(viewId === 'view-info') titleEl.innerText = '各種情報';
+      else if(viewId === 'view-purchase-list') titleEl.innerText = '仕入れリスト';
       }
 
       if (viewId === 'view-price') {
