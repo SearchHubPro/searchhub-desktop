@@ -47,7 +47,14 @@
     .view { display: none; }
     .view.active { display: block; animation: fadeIn 0.3s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
+    /* ドラッグ＆ドロップ領域のスタイル */
+    .drop-zone { border: 2px dashed #cbd5e0; border-radius: 12px; padding: 40px 20px; text-align: center; background: #f8fafc; transition: all 0.3s ease; }
+    .drop-zone.dragover { border-color: #3182ce; background: #ebf8ff; transform: scale(1.02); }
+    .drop-icon { font-size: 48px; color: #a0aec0; margin-bottom: 12px; transition: color 0.3s; }
+    .drop-zone.dragover .drop-icon { color: #3182ce; }
+    .drop-text { font-size: 15px; font-weight: bold; color: #4a5568; }
+    .file-btn { display: inline-block; background: #3182ce; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
+    .file-btn:hover { background: #2b6cb0; }
     /* --- 新ホーム画面（グラフ＆ダッシュボード） --- */
     .graph-card { background: #ffffff; border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin: 16px; border: 1px solid #d5d9d9; min-height: 290px; }
     .home-top-tabs { display: flex; justify-content: flex-start; gap: 4px; margin-bottom: 12px; border-bottom: 1px solid #d5d9d9; }
@@ -366,7 +373,32 @@
       </div>
     </div>
   </div>
-  <div id="view-bulk-register" class="view"><div class="content"><div class="loading-spinner">一括商品登録 UI（これから開発！）</div></div></div>
+  <div id="view-bulk-register" class="view">
+    <div class="content">
+      <div style="margin-bottom: 16px;">
+        <h2 style="font-size: 16px; color: #1a365d; margin: 0 0 8px 0;"><i class="fas fa-file-upload"></i> レポート一括取り込み</h2>
+        <p style="font-size: 12px; color: #4a5568; margin: 0; line-height: 1.5;">Amazonの「注文レポート」や「ペイメントレポート」などのテキストファイル（.txt / .csv）をここにドラッグ＆ドロップしてな！</p>
+      </div>
+      
+      <div id="drop-zone" class="drop-zone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+        <i class="fas fa-cloud-upload-alt drop-icon"></i>
+        <div class="drop-text">ここにファイルをドロップ</div>
+        <div style="font-size: 11px; color: #718096; margin-top: 8px;">または</div>
+        <label for="file-input" class="file-btn">ファイルを選択</label>
+        <input type="file" id="file-input" style="display:none;" accept=".txt,.csv,.tsv" onchange="handleFileSelect(event)">
+      </div>
+
+      <div id="upload-status" style="margin-top: 16px; display:none;">
+        <div class="card" style="border-left: 4px solid #3182ce;">
+          <div style="font-size: 13px; font-weight: bold; color: #1a365d; margin-bottom: 4px;" id="upload-filename">ファイル名.txt</div>
+          <div style="font-size: 11px; color: #4a5568; font-weight: bold;" id="upload-message">読み込み中...</div>
+          <div style="width: 100%; background: #e2e8f0; border-radius: 4px; height: 8px; margin-top: 8px; overflow: hidden;">
+            <div id="upload-progress-bar" style="width: 0%; height: 100%; background: #3182ce; transition: width 0.3s;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div id="view-info" class="view"><div class="content"><div class="loading-spinner">各種情報 UI（これから開発！）</div></div></div>
   <div id="view-purchase-list" class="view"><div class="content"><div class="loading-spinner">仕入れリスト UI（これから開発！）</div></div></div>
   <div id="view-amazon" class="view">
@@ -2151,7 +2183,111 @@ document.getElementById("regPurchaseUrl").value = "";
       // 一番上へスクロール
       document.getElementById('ledger-search-kw').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+      // ==========================================
+    // 🚀 ドラッグ＆ドロップ ファイル取り込み機能
+    // ==========================================
+    function handleDragOver(e) {
+      e.preventDefault(); e.stopPropagation();
+      document.getElementById('drop-zone').classList.add('dragover');
+    }
 
+    function handleDragLeave(e) {
+      e.preventDefault(); e.stopPropagation();
+      document.getElementById('drop-zone').classList.remove('dragover');
+    }
+
+    function handleDrop(e) {
+      e.preventDefault(); e.stopPropagation();
+      document.getElementById('drop-zone').classList.remove('dragover');
+      
+      const files = e.dataTransfer.files;
+      if (files && files.length > 0) processFile(files[0]);
+    }
+
+    function handleFileSelect(e) {
+      const files = e.target.files;
+      if (files && files.length > 0) processFile(files[0]);
+    }
+
+    function processFile(file) {
+      const statusDiv = document.getElementById('upload-status');
+      const filenameEl = document.getElementById('upload-filename');
+      const messageEl = document.getElementById('upload-message');
+      const progressBar = document.getElementById('upload-progress-bar');
+      
+      statusDiv.style.display = 'block';
+      filenameEl.innerText = file.name;
+      messageEl.innerText = 'ファイルを解析中...';
+      progressBar.style.width = '20%';
+      progressBar.style.background = '#3182ce';
+
+      const reader = new FileReader();
+      
+      reader.onload = async function(e) {
+        progressBar.style.width = '50%';
+        const text = e.target.result;
+        
+        // 簡単なチェック
+        const lines = text.split(/\r\n|\n/);
+        if (lines.length < 2) {
+          messageEl.innerText = '❌ データが空か、形式が間違っています。';
+          messageEl.style.color = '#e53e3e';
+          progressBar.style.background = '#e53e3e';
+          return;
+        }
+
+        messageEl.innerText = `解析完了！ ${lines.length.toLocaleString()}行のデータをGASへ送信中...`;
+        progressBar.style.width = '70%';
+
+        // GASへ送信
+        const ssUrl = AppStorage.get("sh_ssurl", "");
+        let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+        
+        if (!ssUrl || !targetGasUrl) {
+           messageEl.innerText = '❌ ⚙️設定からManagerのURLとGAS URLを登録してください。';
+           messageEl.style.color = '#e53e3e';
+           progressBar.style.background = '#e53e3e';
+           return;
+        }
+
+        try {
+          // 「uploadReport」というコマンドで、ファイルの中身の文字データを丸ごとGASにぶん投げる！
+          const res = await fetch(targetGasUrl, {
+            method: 'POST',
+            body: JSON.stringify({ 
+              command: 'uploadReport', 
+              ssUrl: ssUrl, 
+              fileName: file.name,
+              content: text 
+            })
+          });
+          const json = await res.json();
+          
+          if (json.success) {
+            progressBar.style.width = '100%';
+            messageEl.innerText = '✅ 取り込み完了！マネージャーシートに反映されました。';
+            messageEl.style.color = '#38a169';
+          } else {
+            messageEl.innerText = '❌ エラー: ' + json.message;
+            messageEl.style.color = '#e53e3e';
+            progressBar.style.background = '#e53e3e';
+          }
+        } catch(err) {
+          messageEl.innerText = '❌ 通信エラーが発生しました。';
+          messageEl.style.color = '#e53e3e';
+          progressBar.style.background = '#e53e3e';
+        }
+      };
+      
+      reader.onerror = function() {
+        messageEl.innerText = '❌ ファイルの読み込みに失敗しました。';
+        messageEl.style.color = '#e53e3e';
+        progressBar.style.background = '#e53e3e';
+      };
+      
+      // 💡 悪魔的プロの小技：Amazonのレポートは「Shift_JIS」が多いから、あらかじめこれで読み込む！
+      reader.readAsText(file, 'Shift_JIS'); 
+    }
   </script>
 
   <script type="module">
