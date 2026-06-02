@@ -347,11 +347,12 @@
 
   <div id="view-ledger" class="view">
     <div class="content">
+      
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <span style="font-size:12px; font-weight:bold; color:#4a5568;" id="ledgerCount">表示中: ---件</span>
         
         <div style="display:flex; gap:8px; align-items:center;">
-          <button onclick="openAmazonReports()" style="background:#4a5568; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1); cursor:pointer; display:flex; align-items:center;">
+          <button onclick="window.open('https://sellercentral.amazon.co.jp/order-reports-and-feeds/reports/allOrders#', '_blank'); window.open('https://sellercentral.amazon.co.jp/payments/reports-repository/ref=xx_rrepo_dnav_xx', '_blank');" 
+                  style="background:#4a5568; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1); cursor:pointer; display:flex; align-items:center;">
             <i class="fas fa-external-link-alt" style="margin-right: 4px;"></i> レポート取得
           </button>
 
@@ -362,18 +363,26 @@
             <i class="fas fa-file-upload" style="margin-right: 6px;"></i> レポートをドロップ
             <input type="file" style="display:none;" accept=".txt,.csv" onchange="processFile(event.target.files[0])">
           </label>
-          
+        </div>
+
+        <div style="display:flex; gap:8px; align-items:center;">
           <button onclick="loadLedgerData()" style="background:#1a365d; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
             <i class="fas fa-sync-alt"></i> 最新を取得
           </button>
+          <span style="font-size:12px; font-weight:bold; color:#4a5568;" id="ledgerCount">表示中: ---件</span>
         </div>
-      </div> <div class="search-box" style="margin-bottom:16px;">
-        <input type="text" id="ledger-search-kw" placeholder="ASIN・商品名・仕入先で検索..." oninput="ledgerCurrentPage=1; renderLedgerList();" style="flex:2;">
+        
+      </div> 
+
+      <div class="search-box" style="margin-bottom:16px;">
+        <input type="text" id="ledger-search-kw" placeholder="SKU・ASIN・商品名・仕入先で検索..." oninput="ledgerCurrentPage=1; renderLedgerList();" style="flex:2;">
         <select id="ledger-status-filter" onchange="ledgerCurrentPage=1; renderLedgerList();" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ccc; outline:none; font-size:12px; font-weight:bold; background:white; color:#1a365d;">
           <option value="ALL">すべて表示</option>
           <option value="納品待ち">🚚 納品待ち</option>
           <option value="出品中">📦 出品中(FBA)</option>
           <option value="販売済">💰 販売完了</option>
+          <option value="返金済み">🔄 返金済み</option>
+          <option value="補填済み">🛡️ 補填済み</option>
         </select>
       </div>
 
@@ -2069,11 +2078,12 @@ document.getElementById("regPurchaseUrl").value = "";
       const resDiv = document.getElementById('ledgerResult');
       const countEl = document.getElementById('ledgerCount');
 
-      // 🔍 検索とステータスで絞り込み
+      // 🔍 検索とステータスで絞り込み（🎯ここにSKUを追加したで！）
       let filtered = globalLedgerData.filter(item => {
         const matchKw = !kw || 
           (item.title && item.title.toLowerCase().includes(kw)) || 
           (item.asin && item.asin.toLowerCase().includes(kw)) ||
+          (item.sku && item.sku.toLowerCase().includes(kw)) ||  // 👈 ココ！！
           (item.supplier && item.supplier.toLowerCase().includes(kw));
         const matchStatus = (statusFilter === 'ALL') || (item.status && item.status.includes(statusFilter));
         return matchKw && matchStatus;
@@ -2090,14 +2100,13 @@ document.getElementById("regPurchaseUrl").value = "";
 
       if (pageItems.length === 0) {
         resDiv.innerHTML = '<div class="card" style="text-align:center; color:#a0aec0; padding:30px 10px; grid-column: 1 / -1;">条件に合う商品が見つかりません。</div>';
-        // テーブル用のCSSを消さないために grid のスタイルは外す
         resDiv.style.display = 'block'; 
         document.getElementById('ledger-pagination').style.display = 'none';
         return;
       }
 
       // 🎨 テーブル用のCSSを動的に適用
-      resDiv.style.display = 'block'; // gridを解除してテーブル用に
+      resDiv.style.display = 'block'; 
       let html = `
         <style>
           .ledger-table-wrapper { width: 100%; overflow-x: auto; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
@@ -2111,6 +2120,8 @@ document.getElementById("regPurchaseUrl").value = "";
           .tag-nouhin { background: #fefcbf; color: #b7791f; border: 1px solid #f6e05e; }
           .tag-shuppin { background: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; }
           .tag-hanbai { background: #f0fff4; color: #2f855a; border: 1px solid #c6f6d5; }
+          .tag-henkin { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
+          .tag-hoten { background: #faf5ff; color: #6b46c1; border: 1px solid #d6bcfa; }
         </style>
         <div class="ledger-table-wrapper">
           <table class="ledger-table">
@@ -2144,16 +2155,15 @@ document.getElementById("regPurchaseUrl").value = "";
       `;
 
       pageItems.forEach((item, index) => {
-        // ステータスバッジの判定
         let statusTag = '<span class="tag-status tag-nouhin">🚚 納品待ち</span>';
         if (item.status === '出品中') statusTag = '<span class="tag-status tag-shuppin">📦 出品中</span>';
         if (item.status === '販売済') statusTag = '<span class="tag-status tag-hanbai">💰 販売済</span>';
+        if (item.status === '返金済み') statusTag = '<span class="tag-status tag-henkin">🔄 返金済み</span>';
+        if (item.status === '補填済み') statusTag = '<span class="tag-status tag-hoten">🛡️ 補填済み</span>';
 
-        // 利益の色
         const profitColor = (item.profit >= 0) ? "#07A27B" : "#e53e3e";
         const profitWeight = (item.profit !== 0) ? "900" : "normal";
 
-        // URLリンクの生成（あればアイコン表示）
         const urlLink = item.url ? `<a href="${item.url}" target="_blank" style="color:#3182ce;"><i class="fas fa-external-link-alt"></i> リンク</a>` : '-';
 
         html += `
@@ -2189,13 +2199,11 @@ document.getElementById("regPurchaseUrl").value = "";
       html += `</tbody></table></div>`;
       resDiv.innerHTML = html;
 
-      // ページネーションの更新
       document.getElementById('ledger-page-info').innerText = `${ledgerCurrentPage} / ${totalPages} ページ`;
       document.getElementById('ledger-btn-prev').disabled = (ledgerCurrentPage === 1);
       document.getElementById('ledger-btn-next').disabled = (ledgerCurrentPage === totalPages);
       document.getElementById('ledger-pagination').style.display = (totalPages > 1) ? 'flex' : 'none';
       
-      // 一番上へスクロール
       document.getElementById('ledger-search-kw').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
       // ==========================================
