@@ -2095,123 +2095,111 @@ document.getElementById("regPurchaseUrl").value = "";
       const start = (ledgerCurrentPage - 1) * ITEMS_PER_PAGE;
       const pageItems = filtered.slice(start, start + ITEMS_PER_PAGE);
 
+      // 🎨 カードをタイル状に並べるグリッド設定に変更！
+      resDiv.style.display = 'grid';
+      resDiv.style.gridTemplateColumns = 'repeat(auto-fill, minmax(340px, 1fr))';
+      resDiv.style.gap = '16px';
+
       if (pageItems.length === 0) {
         resDiv.innerHTML = '<div class="card" style="text-align:center; color:#a0aec0; padding:30px 10px; grid-column: 1 / -1;">条件に合う商品が見つかりません。</div>';
-        resDiv.style.display = 'block'; 
         document.getElementById('ledger-pagination').style.display = 'none';
         return;
       }
 
-      resDiv.style.display = 'block'; 
-      let html = `
-        <style>
-          .ledger-table-wrapper { width: 100%; max-height: 65vh; overflow: auto; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-          .ledger-table { width: 100%; min-width: 1800px; border-collapse: separate; border-spacing: 0; font-size: 11px; white-space: nowrap; }
-          .ledger-table th { background: #f8fafc; color: #4a5568; font-weight: bold; padding: 10px 8px; text-align: left; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; z-index: 10; }
-          .ledger-table td { padding: 10px 8px; border-bottom: 1px solid #edf2f7; color: #1a365d; vertical-align: middle; }
-          
-          /* 👇 操作(1番目)と状態(2番目)だけを固定する設定 👇 */
-          .sticky-col-1 { position: sticky; left: 0; min-width: 80px; background: #fff; z-index: 5; }
-          .sticky-col-2 { position: sticky; left: 80px; min-width: 70px; background: #fff; z-index: 5; border-right: 2px solid #cbd5e0; box-shadow: 2px 0 4px rgba(0,0,0,0.05); }
-          .ledger-table th.sticky-col-1 { background: #f8fafc; z-index: 15; }
-          .ledger-table th.sticky-col-2 { background: #f8fafc; z-index: 15; border-right: 2px solid #cbd5e0; }
-          
-          .ledger-table tbody tr:hover td { background-color: #ebf8ff; transition: background 0.2s; }
-          .ledger-table tbody tr:hover td.sticky-col-1, 
-          .ledger-table tbody tr:hover td.sticky-col-2 { background-color: #ebf8ff; }
+      let html = "";
 
-          .td-title { max-width: 250px; overflow: hidden; text-overflow: ellipsis; }
-          .td-desc { max-width: 150px; overflow: hidden; text-overflow: ellipsis; color: #718096; font-size: 10px; }
-          .tag-status { padding: 3px 6px; border-radius: 4px; font-weight: bold; font-size: 10px; display: inline-block; text-align: center; width: 60px;}
-          .tag-nouhin { background: #fefcbf; color: #b7791f; border: 1px solid #f6e05e; }
-          .tag-shuppin { background: #ebf8ff; color: #2b6cb0; border: 1px solid #bee3f8; }
-          .tag-hanbai { background: #f0fff4; color: #2f855a; border: 1px solid #c6f6d5; }
-          .tag-henkin { background: #fff5f5; color: #c53030; border: 1px solid #feb2b2; }
-          .tag-hoten { background: #faf5ff; color: #6b46c1; border: 1px solid #d6bcfa; }
-        </style>
-        <div class="ledger-table-wrapper">
-          <table class="ledger-table">
-            <thead>
-              <tr>
-                <th class="sticky-col-1" style="text-align:center;">操作</th>
-                <th class="sticky-col-2">状態</th>
-                <th>No.</th>
-                <th>仕入日</th>
-                <th>仕入先</th>
-                <th>仕入先URL</th>
-                <th>商品ID</th>
-                <th>ASIN</th>
-                <th>商品名</th>
-                <th>型番</th>
-                <th>SKU</th>
-                <th>コンデ</th>
-                <th>商品説明</th>
-                <th style="text-align:right;">仕入値</th>
-                <th style="text-align:right;">送料/経費</th>
-                <th style="text-align:right;">販売予定</th>
-                <th>販売日</th>
-                <th>注文番号</th>
-                <th style="text-align:right;">売上額</th>
-                <th style="text-align:right;">配送料</th>
-                <th style="text-align:right;">手数料</th>
-                <th style="text-align:right;">利益</th>
-              </tr>
-            </thead>
-            <tbody>
-      `;
-
-      pageItems.forEach((item, index) => {
-        let statusTag = '<span class="tag-status tag-nouhin">🚚 納品待ち</span>';
-        if (item.status === '出品中') statusTag = '<span class="tag-status tag-shuppin">📦 出品中</span>';
-        if (item.status === '販売済') statusTag = '<span class="tag-status tag-hanbai">💰 販売済</span>';
-        if (item.status === '返金済み') statusTag = '<span class="tag-status tag-henkin">🔄 返金済み</span>';
-        if (item.status === '補填済み') statusTag = '<span class="tag-status tag-hoten">🛡️ 補填済み</span>';
+      pageItems.forEach((item) => {
+        // ステータスバッジのデザイン
+        let statusTag = '<span style="background:#fefcbf; color:#b7791f; border:1px solid #f6e05e; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:bold;">🚚 納品待ち</span>';
+        let borderColor = "#f6e05e"; // カードの左端の線の色
+        
+        if (item.status === '出品中') {
+            statusTag = '<span style="background:#ebf8ff; color:#2b6cb0; border:1px solid #bee3f8; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:bold;">📦 出品中</span>';
+            borderColor = "#3182ce";
+        }
+        if (item.status === '販売済') {
+            statusTag = '<span style="background:#f0fff4; color:#2f855a; border:1px solid #c6f6d5; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:bold;">💰 販売済</span>';
+            borderColor = "#38a169";
+        }
+        if (item.status === '返金済み') {
+            statusTag = '<span style="background:#fff5f5; color:#c53030; border:1px solid #feb2b2; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:bold;">🔄 返金済み</span>';
+            borderColor = "#e53e3e";
+        }
+        if (item.status === '補填済み') {
+            statusTag = '<span style="background:#faf5ff; color:#6b46c1; border:1px solid #d6bcfa; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:bold;">🛡️ 補填済み</span>';
+            borderColor = "#805ad5";
+        }
 
         const profitColor = (item.profit >= 0) ? "#07A27B" : "#e53e3e";
-        const profitWeight = (item.profit !== 0) ? "900" : "normal";
-        const urlLink = item.url ? `<a href="${item.url}" target="_blank" style="color:#3182ce;"><i class="fas fa-external-link-alt"></i></a>` : '-';
+        const urlLink = item.url ? `<a href="${item.url}" target="_blank" style="color:#3182ce; margin-left:4px; text-decoration:none;"><i class="fas fa-external-link-alt"></i></a>` : '';
 
-        // 👇 操作ボタンの組み立て（納品待ちの時だけ「出品」ボタンを追加！）
+        // 🎯 操作ボタン（原色ベタ塗りをやめて、淡い背景のスタイリッシュなデザインに！）
         let actionBtnHtml = `
-          <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
-            <div style="display:flex; gap:4px;">
-              <a href="https://www.amazon.co.jp/dp/${item.asin}" target="_blank" style="background:#f7941d; color:white; text-decoration:none; padding:4px 8px; border-radius:4px; font-size:10px; font-weight:bold;"><i class="fab fa-amazon"></i></a>
-              <button onclick="alert('UIからの直接編集機能は次のステップで実装するで！')" style="background:#3182ce; color:white; border:none; padding:4px 8px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer;"><i class="fas fa-edit"></i></button>
-            </div>
+          <div style="display:flex; gap:6px;">
+            <a href="https://www.amazon.co.jp/dp/${item.asin}" target="_blank" style="color:#dd6b20; background:#fffaf0; border:1px solid #feebc8; padding:4px 10px; border-radius:6px; font-size:13px; text-decoration:none; display:flex; align-items:center;"><i class="fab fa-amazon"></i></a>
+            <button onclick="alert('UIからの直接編集機能は次のステップで実装するで！')" style="color:#3182ce; background:#ebf8ff; border:1px solid #bee3f8; padding:4px 10px; border-radius:6px; font-size:13px; cursor:pointer;"><i class="fas fa-edit"></i></button>
         `;
         if (item.status === '納品待ち') {
-          actionBtnHtml += `<button onclick="alert('裏側のGAS連携が必要になるから、出品中へ変更する機能は次のステップで実装するで！')" style="background:#38a169; color:white; border:none; padding:4px 8px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer; width:100%;">出品</button>`;
+          actionBtnHtml += `<button onclick="alert('裏側のGAS連携が必要になるから、出品中へ変更する機能は次のステップで実装するで！')" style="color:#2f855a; background:#f0fff4; border:1px solid #c6f6d5; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-arrow-up"></i> 出品</button>`;
         }
         actionBtnHtml += `</div>`;
 
         html += `
-              <tr>
-                <td class="sticky-col-1">${actionBtnHtml}</td>
-                <td class="sticky-col-2">${statusTag}</td>
-                <td>${item.no || '-'}</td>
-                <td>${item.buyDate || '-'}</td>
-                <td>${escapeHtml(item.supplier) || '-'}</td>
-                <td style="text-align:center;">${urlLink}</td>
-                <td>${escapeHtml(item.itemId) || '-'}</td>
-                <td>${escapeHtml(item.asin)}</td>
-                <td class="td-title" title="${escapeHtml(item.title)}">${escapeHtml(item.title) || '-'}</td>
-                <td>${escapeHtml(item.model) || '-'}</td>
-                <td>${escapeHtml(item.sku) || '-'}</td>
-                <td>${escapeHtml(item.condition) || '-'}</td>
-                <td class="td-desc" title="${escapeHtml(item.description)}">${escapeHtml(item.description) || '-'}</td>
-                <td style="text-align:right;">¥${Number(item.buyPrice).toLocaleString()}</td>
-                <td style="text-align:right;">¥${Number(item.expense).toLocaleString()}</td>
-                <td style="text-align:right;">¥${Number(item.estPrice).toLocaleString()}</td>
-                <td>${item.sellDate || '-'}</td>
-                <td>${escapeHtml(item.orderNum) || '-'}</td>
-                <td style="text-align:right;">¥${Number(item.sales).toLocaleString()}</td>
-                <td style="text-align:right;">¥${Number(item.shipping).toLocaleString()}</td>
-                <td style="text-align:right; color:#c53030;">¥${Number(item.fee).toLocaleString()}</td>
-                <td style="text-align:right; font-weight:${profitWeight}; color:${profitColor}; font-size:12px;">¥${Number(item.profit).toLocaleString()}</td>
-              </tr>
+        <div class="card" style="padding:16px; border-left:4px solid ${borderColor}; display:flex; flex-direction:column; gap:12px; margin-bottom:0; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
+          
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px dashed #e2e8f0; padding-bottom:10px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              ${statusTag}
+              <span style="font-size:11px; color:#a0aec0; font-weight:bold;">No.${item.no || '-'}</span>
+            </div>
+            ${actionBtnHtml}
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; row-gap:8px; column-gap:12px; font-size:11px; color:#4a5568;">
+            <div style="grid-column: 1 / -1;">
+              <div style="color:#a0aec0; font-size:10px; margin-bottom:2px;">ASIN</div>
+              <div style="font-weight:900; color:#1a365d; font-size:14px; font-family:monospace;">${escapeHtml(item.asin)}</div>
+              <div style="font-size:10px; color:#a0aec0; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHtml(item.title)}">${escapeHtml(item.title) || '-'}</div>
+            </div>
+            
+            <div><span style="color:#a0aec0; margin-right:4px;">型番</span><span style="font-weight:bold;">${escapeHtml(item.model) || '-'}</span></div>
+            <div><span style="color:#a0aec0; margin-right:4px;">SKU</span><span>${escapeHtml(item.sku) || '-'}</span></div>
+            
+            <div><span style="color:#a0aec0; margin-right:4px;">商品ID</span><span>${escapeHtml(item.itemId) || '-'}</span></div>
+            <div><span style="color:#a0aec0; margin-right:4px;">コンデ</span><span style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-weight:bold;">${escapeHtml(item.condition) || '-'}</span></div>
+            
+            <div><span style="color:#a0aec0; margin-right:4px;">仕入先</span><span>${escapeHtml(item.supplier) || '-'}${urlLink}</span></div>
+            <div><span style="color:#a0aec0; margin-right:4px;">仕入日</span><span>${item.buyDate || '-'}</span></div>
+            
+            <div style="grid-column: 1 / -1; display:flex; align-items:center; gap:8px;">
+              <span style="color:#a0aec0;">販売日: ${item.sellDate || '-'}</span>
+              <span style="color:#e2e8f0;">|</span>
+              <span style="color:#a0aec0;">注文番号: <span style="color:#4a5568; font-family:monospace;">${escapeHtml(item.orderNum) || '-'}</span></span>
+            </div>
+          </div>
+
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px;">
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; text-align:right; margin-bottom:10px;">
+              <div><div style="font-size:9px; color:#718096; margin-bottom:2px;">仕入値</div><div style="font-size:12px; font-weight:bold; color:#1a365d;">¥${Number(item.buyPrice).toLocaleString()}</div></div>
+              <div><div style="font-size:9px; color:#718096; margin-bottom:2px;">送料/経費</div><div style="font-size:12px; font-weight:bold; color:#1a365d;">¥${Number(item.expense).toLocaleString()}</div></div>
+              <div><div style="font-size:9px; color:#718096; margin-bottom:2px;">販売予定</div><div style="font-size:12px; font-weight:bold; color:#3182ce;">¥${Number(item.estPrice).toLocaleString()}</div></div>
+            </div>
+            
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; text-align:right; border-top:1px dashed #cbd5e0; padding-top:10px;">
+              <div><div style="font-size:9px; color:#718096; margin-bottom:2px;">売上額</div><div style="font-size:12px; font-weight:bold; color:#1a365d;">¥${Number(item.sales).toLocaleString()}</div></div>
+              <div><div style="font-size:9px; color:#718096; margin-bottom:2px;">配送料</div><div style="font-size:12px; font-weight:bold; color:#1a365d;">¥${Number(item.shipping).toLocaleString()}</div></div>
+              <div><div style="font-size:9px; color:#718096; margin-bottom:2px;">手数料</div><div style="font-size:12px; font-weight:bold; color:#e53e3e;">¥${Number(item.fee).toLocaleString()}</div></div>
+            </div>
+            
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid #cbd5e0; margin-top:12px; padding-top:10px;">
+              <span style="font-size:12px; font-weight:bold; color:#4a5568;">最終利益</span>
+              <span style="font-size:22px; font-weight:900; color:${profitColor}; letter-spacing:0.5px;">¥${Number(item.profit).toLocaleString()}</span>
+            </div>
+          </div>
+        </div>
         `;
       });
-      html += `</tbody></table></div>`;
+      
       resDiv.innerHTML = html;
 
       document.getElementById('ledger-page-info').innerText = `${ledgerCurrentPage} / ${totalPages} ページ`;
