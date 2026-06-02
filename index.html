@@ -614,7 +614,12 @@
       </div>
       
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;">
-        <div><label style="font-size:11px; font-weight:bold;">コンデ</label><input type="text" id="edit_condition" style="width:100%; padding:8px; box-sizing:border-box;"></div>
+        <div>
+          <label style="font-size:11px; font-weight:bold;">コンデ</label>
+          <select id="edit_condition" onchange="applyConditionDescription()" style="width:100%; padding:8px; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; outline:none;">
+            <option value="">読込中...</option>
+          </select>
+        </div>
         <div><label style="font-size:11px; font-weight:bold;">商品ID</label><input type="text" id="edit_itemId" style="width:100%; padding:8px; box-sizing:border-box;"></div>
       </div>
       
@@ -966,6 +971,7 @@
       try { globalViewedLinks = JSON.parse(AppStorage.get("sh_viewed_links", "[]")); } catch(e) { globalViewedLinks = []; }
       updateDiscordBtnUI(AppStorage.get("sh_discord_toggle", "off"));
       setupSwipe();
+fetchConditionList();
       
       // 🚀 ステップ①: 初期のタイトルを「SearchHub Mobile」に
       document.getElementById('headerTitle').innerText = 'SearchHub Pro';
@@ -2483,6 +2489,38 @@ document.getElementById("regPurchaseUrl").value = "";
       }
       btn.innerText = originalText;
       btn.disabled = false;
+    }
+
+// 📦 情報sheetからコンディションと説明を取得してセットする
+    let globalConditionData = [];
+
+    async function fetchConditionList() {
+      const ssUrl = AppStorage.get("sh_ssurl", "");
+      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+      if (!ssUrl || !targetGasUrl) return;
+
+      try {
+        const res = await fetch(targetGasUrl, { method: 'POST', body: JSON.stringify({ command: 'getConditions', ssUrl: ssUrl }) });
+        const json = await res.json();
+        if (json.success && json.data) {
+          globalConditionData = json.data;
+          const select = document.getElementById("edit_condition");
+          select.innerHTML = '<option value="">選択してください</option>';
+          globalConditionData.forEach(c => {
+            select.innerHTML += `<option value="${c.name}">${c.name}</option>`;
+          });
+        }
+      } catch(err) { console.log("コンディション取得エラー"); }
+    }
+
+    // ✏️ コンディションを選んだ時に商品説明を自動入力する
+    function applyConditionDescription() {
+      const selectedName = document.getElementById("edit_condition").value;
+      const descInput = document.getElementById("edit_description");
+      const found = globalConditionData.find(c => c.name === selectedName);
+      if (found && found.desc) {
+        descInput.value = found.desc;
+      }
     }
   </script>
 
