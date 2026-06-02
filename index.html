@@ -2176,13 +2176,17 @@ document.getElementById("regPurchaseUrl").value = "";
         const profitColor = (item.profit >= 0) ? "#07A27B" : "#e53e3e";
         const urlLink = item.url ? `<a href="${item.url}" target="_blank" style="color:#3182ce; margin-left:4px; text-decoration:none;"><i class="fas fa-external-link-alt"></i></a>` : '';
 
+        // 👇 さっきのアラートだったボタンを、本物の関数の呼び出しに書き換える！ 👇
         let actionBtnHtml = `
           <div style="display:flex; gap:6px;">
             <a href="https://www.amazon.co.jp/dp/${item.asin}" target="_blank" style="color:#dd6b20; background:#fffaf0; border:1px solid #feebc8; padding:4px 10px; border-radius:6px; font-size:13px; text-decoration:none; display:flex; align-items:center;"><i class="fab fa-amazon"></i></a>
-            <button onclick="alert('UIからの直接編集機能は次のステップで実装するで！')" style="color:#3182ce; background:#ebf8ff; border:1px solid #bee3f8; padding:4px 10px; border-radius:6px; font-size:13px; cursor:pointer;"><i class="fas fa-edit"></i></button>
+            <button onclick="openLedgerEdit('${item.no}')" style="color:#3182ce; background:#ebf8ff; border:1px solid #bee3f8; padding:4px 10px; border-radius:6px; font-size:13px; cursor:pointer;"><i class="fas fa-edit"></i></button>
         `;
+        // 👇 出品ボタン（納品待ちは『出品』、出品中は『出品取消』になるトグル仕様）👇
         if (item.status === '納品待ち') {
-          actionBtnHtml += `<button onclick="alert('裏側のGAS連携が必要になるから、出品中へ変更する機能は次のステップで実装するで！')" style="color:#2f855a; background:#f0fff4; border:1px solid #c6f6d5; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-arrow-up"></i> 出品</button>`;
+          actionBtnHtml += `<button onclick="toggleListing('${item.no}', '${item.status}', this)" style="color:#2f855a; background:#f0fff4; border:1px solid #c6f6d5; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-arrow-up"></i> 出品</button>`;
+        } else if (item.status === '出品中') {
+          actionBtnHtml += `<button onclick="toggleListing('${item.no}', '${item.status}', this)" style="color:#c53030; background:#fff5f5; border:1px solid #feb2b2; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-arrow-down"></i> 取消</button>`;
         }
         actionBtnHtml += `</div>`;
 
@@ -2386,6 +2390,99 @@ document.getElementById("regPurchaseUrl").value = "";
       if (!win1 || !win2) {
         alert("⚠️ ブラウザのポップアップブロックが作動しました！\n\n画面上部の「URLバー（アドレスバー）」の右端に出ている【✖️マーク】をクリックして、「ポップアップを常に許可する」に設定してからもう一度押してな！");
       }
+    }
+
+    // 📦 出品ボタンのトグル通信処理
+    async function toggleListing(no, currentStatus, btnElement) {
+      const nextState = (currentStatus === '納品待ち') ? true : false; // 納品待ちなTRUE、出品中ならFALSEにする
+      const originalText = btnElement.innerHTML;
+      btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      btnElement.disabled = true;
+      
+      const ssUrl = AppStorage.get("sh_ssurl", "");
+      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+      
+      try {
+        const res = await fetch(targetGasUrl, {
+          method: 'POST',
+          body: JSON.stringify({ command: 'toggleListing', ssUrl: ssUrl, no: no, isListed: nextState })
+        });
+        const json = await res.json();
+        if (json.success) {
+          loadLedgerData(); // 成功したら帳簿をリロードして画面更新
+        } else {
+          alert("❌ 変更失敗: " + json.message);
+          btnElement.innerHTML = originalText; btnElement.disabled = false;
+        }
+      } catch(e) {
+        alert("❌ 通信エラーが発生しました");
+        btnElement.innerHTML = originalText; btnElement.disabled = false;
+      }
+    }
+
+    // ✏️ 編集画面を開く処理
+    function openLedgerEdit(no) {
+      const item = globalLedgerData.find(i => String(i.no) === String(no));
+      if (!item) return;
+      
+      document.getElementById('edit_no').value = item.no;
+      document.getElementById('edit_buyDate').value = item.buyDate || '';
+      document.getElementById('edit_supplier').value = item.supplier || '';
+      document.getElementById('edit_title').value = item.title || '';
+      document.getElementById('edit_model').value = item.model || '';
+      document.getElementById('edit_sku').value = item.sku || '';
+      document.getElementById('edit_condition').value = item.condition || '';
+      document.getElementById('edit_itemId').value = item.itemId || '';
+      document.getElementById('edit_description').value = item.description || '';
+      document.getElementById('edit_buyPrice').value = item.buyPrice || 0;
+      document.getElementById('edit_expense').value = item.expense || 0;
+      document.getElementById('edit_estPrice').value = item.estPrice || 0;
+      
+      document.getElementById('ledgerEditModal').style.display = 'flex';
+    }
+
+    // 💾 編集データをGASに保存する処理
+    async function saveLedgerEdit() {
+      const btn = document.getElementById('saveLedgerBtn');
+      const originalText = btn.innerText;
+      btn.innerText = "⌛ 保存中...";
+      btn.disabled = true;
+      
+      const ssUrl = AppStorage.get("sh_ssurl", "");
+      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+      
+      const payload = {
+        no: document.getElementById('edit_no').value,
+        buyDate: document.getElementById('edit_buyDate').value,
+        supplier: document.getElementById('edit_supplier').value,
+        title: document.getElementById('edit_title').value,
+        model: document.getElementById('edit_model').value,
+        sku: document.getElementById('edit_sku').value,
+        condition: document.getElementById('edit_condition').value,
+        itemId: document.getElementById('edit_itemId').value,
+        description: document.getElementById('edit_description').value,
+        buyPrice: Number(document.getElementById('edit_buyPrice').value),
+        expense: Number(document.getElementById('edit_expense').value),
+        estPrice: Number(document.getElementById('edit_estPrice').value)
+      };
+      
+      try {
+        const res = await fetch(targetGasUrl, {
+          method: 'POST',
+          body: JSON.stringify({ command: 'updateLedgerItem', ssUrl: ssUrl, data: payload })
+        });
+        const json = await res.json();
+        if (json.success) {
+          document.getElementById('ledgerEditModal').style.display = 'none';
+          loadLedgerData(); // 更新できたらリロード
+        } else {
+          alert("❌ 保存失敗: " + json.message);
+        }
+      } catch (e) {
+        alert("❌ 通信エラーが発生しました");
+      }
+      btn.innerText = originalText;
+      btn.disabled = false;
     }
   </script>
 
