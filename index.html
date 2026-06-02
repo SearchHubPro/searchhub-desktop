@@ -2240,9 +2240,8 @@ document.getElementById("regPurchaseUrl").value = "";
       
       reader.onload = async function(e) {
         progressBar.style.width = '50%';
-        const text = e.target.result;
+        let text = e.target.result;
         
-        // 簡単なチェック
         const lines = text.split(/\r\n|\n/);
         if (lines.length < 2) {
           messageEl.innerText = '❌ データが空か、形式が間違っています。';
@@ -2251,10 +2250,22 @@ document.getElementById("regPurchaseUrl").value = "";
           return;
         }
 
+        // 💡 悪魔的プロの小技：CSVの場合、エクセルのコピペ状態を完全再現するため「カンマをタブに変換」する！
+        if (file.name.toLowerCase().endsWith('.csv')) {
+          let tsv = "";
+          let inQuote = false;
+          for (let i = 0; i < text.length; i++) {
+            let c = text[i];
+            if (c === '"') { inQuote = !inQuote; } 
+            else if (c === ',' && !inQuote) { tsv += '\t'; } 
+            else { tsv += c; }
+          }
+          text = tsv; // 変換したデータにすり替える！
+        }
+
         messageEl.innerText = `解析完了！ ${lines.length.toLocaleString()}行のデータをGASへ送信中...`;
         progressBar.style.width = '70%';
 
-        // GASへ送信
         const ssUrl = AppStorage.get("sh_ssurl", "");
         let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
         
@@ -2266,7 +2277,6 @@ document.getElementById("regPurchaseUrl").value = "";
         }
 
         try {
-          // 「uploadReport」というコマンドで、ファイルの中身の文字データを丸ごとGASにぶん投げる！
           const res = await fetch(targetGasUrl, {
             method: 'POST',
             body: JSON.stringify({ 
@@ -2282,13 +2292,8 @@ document.getElementById("regPurchaseUrl").value = "";
             progressBar.style.width = '100%';
             messageEl.innerText = '✅ 取り込み完了！マネージャーシートに反映されました。';
             messageEl.style.color = '#38a169';
-            
-            // 👇この1行を追加！自動で最新の帳簿を読み込み直す
-            loadLedgerData(); 
-            
-            // （おまけ）2秒後にステータス表示を消すならこれも追加
-            setTimeout(() => { document.getElementById('upload-status').style.display = 'none'; }, 2000);
-            
+            loadLedgerData(); // 帳簿を最新にリフレッシュ！
+            setTimeout(() => { document.getElementById('upload-status').style.display = 'none'; }, 3000);
           } else {
             messageEl.innerText = '❌ エラー: ' + json.message;
             messageEl.style.color = '#e53e3e';
@@ -2307,8 +2312,12 @@ document.getElementById("regPurchaseUrl").value = "";
         progressBar.style.background = '#e53e3e';
       };
       
-      // 💡 悪魔的プロの小技：Amazonのレポートは「Shift_JIS」が多いから、あらかじめこれで読み込む！
-      reader.readAsText(file, 'Shift_JIS'); 
+      // 💡 ファイル形式によって文字コードを自動判別！（これで文字化けが一切なくなる）
+      if (file.name.toLowerCase().endsWith('.csv')) {
+        reader.readAsText(file, 'UTF-8');
+      } else {
+        reader.readAsText(file, 'Shift_JIS'); 
+      }
     }
 
     // --- 販売管理画面用の小型ドラッグ＆ドロップ処理 ---
