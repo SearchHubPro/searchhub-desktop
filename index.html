@@ -2225,32 +2225,16 @@ document.getElementById("regPurchaseUrl").value = "";
     }
 
     function processFile(file) {
-      const statusDiv = document.getElementById('upload-status');
-      const filenameEl = document.getElementById('upload-filename');
-      const messageEl = document.getElementById('upload-message');
-      const progressBar = document.getElementById('upload-progress-bar');
-      
-      statusDiv.style.display = 'block';
-      filenameEl.innerText = file.name;
-      messageEl.innerText = 'ファイルを解析中...';
-      progressBar.style.width = '20%';
-      progressBar.style.background = '#3182ce';
+      const dropLabel = document.getElementById('mini-drop-zone');
+      const originalText = dropLabel.innerHTML;
+      dropLabel.innerHTML = '⌛ 処理中...'; // ボタンの文字を変えて待機
 
       const reader = new FileReader();
       
       reader.onload = async function(e) {
-        progressBar.style.width = '50%';
         let text = e.target.result;
         
-        const lines = text.split(/\r\n|\n/);
-        if (lines.length < 2) {
-          messageEl.innerText = '❌ データが空か、形式が間違っています。';
-          messageEl.style.color = '#e53e3e';
-          progressBar.style.background = '#e53e3e';
-          return;
-        }
-
-        // 💡 悪魔的プロの小技：CSVの場合、エクセルのコピペ状態を完全再現するため「カンマをタブに変換」する！
+        // CSVのカンマをタブに変換
         if (file.name.toLowerCase().endsWith('.csv')) {
           let tsv = "";
           let inQuote = false;
@@ -2260,19 +2244,15 @@ document.getElementById("regPurchaseUrl").value = "";
             else if (c === ',' && !inQuote) { tsv += '\t'; } 
             else { tsv += c; }
           }
-          text = tsv; // 変換したデータにすり替える！
+          text = tsv;
         }
-
-        messageEl.innerText = `解析完了！ ${lines.length.toLocaleString()}行のデータをGASへ送信中...`;
-        progressBar.style.width = '70%';
 
         const ssUrl = AppStorage.get("sh_ssurl", "");
         let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
         
         if (!ssUrl || !targetGasUrl) {
-           messageEl.innerText = '❌ ⚙️設定からManagerのURLとGAS URLを登録してください。';
-           messageEl.style.color = '#e53e3e';
-           progressBar.style.background = '#e53e3e';
+           alert('❌ 設定からManagerのURLとGAS URLを登録してな！');
+           dropLabel.innerHTML = originalText;
            return;
         }
 
@@ -2289,30 +2269,24 @@ document.getElementById("regPurchaseUrl").value = "";
           const json = await res.json();
           
           if (json.success) {
-            progressBar.style.width = '100%';
-            messageEl.innerText = '✅ 取り込み完了！マネージャーシートに反映されました。';
-            messageEl.style.color = '#38a169';
-            loadLedgerData(); // 帳簿を最新にリフレッシュ！
-            setTimeout(() => { document.getElementById('upload-status').style.display = 'none'; }, 3000);
+            alert('✅ 取り込み完了！マネージャーシートに反映されました！');
+            loadLedgerData(); // 成功したら帳簿を自動リロード
           } else {
-            messageEl.innerText = '❌ エラー: ' + json.message;
-            messageEl.style.color = '#e53e3e';
-            progressBar.style.background = '#e53e3e';
+            // 🚨 ここでGASの真のエラー原因がアラートで出る！！
+            alert('❌ GAS側でエラーが起きたで！\n\n' + json.message);
           }
         } catch(err) {
-          messageEl.innerText = '❌ 通信エラーが発生しました。';
-          messageEl.style.color = '#e53e3e';
-          progressBar.style.background = '#e53e3e';
+          alert('❌ 通信エラーが発生したわ。\n' + err.message);
         }
+        dropLabel.innerHTML = originalText;
       };
       
       reader.onerror = function() {
-        messageEl.innerText = '❌ ファイルの読み込みに失敗しました。';
-        messageEl.style.color = '#e53e3e';
-        progressBar.style.background = '#e53e3e';
+        alert('❌ ファイルの読み込みに失敗しました。');
+        dropLabel.innerHTML = originalText;
       };
       
-      // 💡 ファイル形式によって文字コードを自動判別！（これで文字化けが一切なくなる）
+      // 文字化け防止
       if (file.name.toLowerCase().endsWith('.csv')) {
         reader.readAsText(file, 'UTF-8');
       } else {
