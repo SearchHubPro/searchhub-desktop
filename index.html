@@ -274,11 +274,10 @@
         <div class="last-update" id="lastUpdate">待機中...</div>
       </div>
       <div class="header-right">
-        <button class="header-btn discord-btn discord-off" id="dcToggleBtn" onclick="toggleDiscord()"><i class="fab fa-discord"></i></button>
-        </div>
-    </div>
-
-  <div id="view-home" class="view active">
+                <button class="header-btn discord-btn discord-off" id="dcToggleBtn" onclick="toggleDiscord()"><i class="fab fa-discord"></i></button>
+                </div>
+            </div>
+          </div> <div id="view-home" class="view active">
     <div class="graph-card">
       <div class="home-top-tabs">
         <button class="home-tab-btn active" onclick="switchHomeTab('turnover', this)">回転率</button>
@@ -2196,35 +2195,7 @@ document.getElementById("regPurchaseUrl").value = "";
       if(table) table.classList.toggle('sales-mode');
     };
 
-    // 💡 編集画面を開く処理（絶対にエラーを逃さない・必ず開く仕様）
-    window.openLedgerEdit = function(no) {
-      try {
-        const item = globalLedgerData.find(i => String(i.no) === String(no));
-        
-        // データが見失われた場合は黙ってスルーせずアラートを出す！
-        if (!item) {
-          alert("⚠️ 編集データが見つかりません (No: " + no + ")\n一度「最新を取得」ボタンを押してみてな！");
-          return;
-        }
-        
-        document.getElementById('edit_no').value = item.no || '';
-        document.getElementById('edit_buyDate').value = item.buyDate || '';
-        document.getElementById('edit_supplier').value = item.supplier || '';
-        document.getElementById('edit_title').value = item.title || '';
-        document.getElementById('edit_model').value = item.model || '';
-        document.getElementById('edit_sku').value = item.sku || '';
-        document.getElementById('edit_condition').value = item.condition || '';
-        document.getElementById('edit_itemId').value = item.itemId || '';
-        document.getElementById('edit_description').value = item.description || '';
-        document.getElementById('edit_buyPrice').value = item.buyPrice || 0;
-        document.getElementById('edit_expense').value = item.expense || 0;
-        document.getElementById('edit_estPrice').value = item.estPrice || 0;
-        
-        document.getElementById('ledgerEditModal').style.display = 'flex';
-      } catch (err) {
-        alert("❌ ボタン処理でエラーが発生しました: " + err.message);
-      }
-    };
+    
 
     function renderLedgerList() {
       const kw = document.getElementById('ledger-search-kw').value.toLowerCase().trim();
