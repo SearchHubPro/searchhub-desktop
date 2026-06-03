@@ -510,9 +510,9 @@
             <tr>
               <th style="width: 80px; text-align:center;">画像 / ランク</th>
               <th style="min-width: 250px;">商品名 / ASIN・型番</th>
-              <th style="width: 120px;">仕入日 / 精査日</th>
-              <th style="width: 130px; text-align: right;">予定売価 / 仕入値</th>
-              <th style="width: 130px; text-align: right;">予定入金 / 想定利益</th>
+              <th style="width: 80px;">仕入日</th>
+              <th style="width: 130px; text-align: right;">予定売価 / 中古最安</th>
+              <th style="width: 130px; text-align: right;">FBA料 / サイズ</th>
               <th style="width: 90px; text-align: center;">操作</th>
             </tr>
           </thead>
@@ -2899,22 +2899,28 @@ function goBackScreen() {
         const rank = escapeHtml(item.rank || '-'); 
         const buyPrice = Number(item.buyPrice || 0); 
         const sellPrice = Number(item.sellPrice || 0);
-        const estDeposit = Number(item.estDeposit || 0); 
-        const purchaseDate = escapeHtml(item.purchaseDate || '---'); 
-        const checkDate = escapeHtml(item.checkDate || '---'); 
         
-        // 利益計算（K列 - J列）
-        const profit = estDeposit - buyPrice; 
-        const profitColor = profit >= 0 ? '#07A27B' : '#e53e3e';
+        // 追加：GASから送られてきた新データ
+        const fbaFee = Number(item.fbaFee || 0);
+        const minUsed = Number(item.minUsed || 0);
+        const size = escapeHtml(item.size || '-');
 
-        // 大型バッジ判定
-        const isLarge = item.isLarge && item.isLarge.toString().includes('大型');
-        const sizeBadge = isLarge ? `<span style="background:#e53e3e; color:white; padding:1px 4px; border-radius:4px; font-size:9px; font-weight:bold;">大型</span>` : '';
-
-        // 画像処理
+        // ① 画像処理（GASで抽出したURLを優先）
         let imgUrl = item.img ? item.img.toString().trim() : '';
         const fallbackImg = `https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${asin}&Format=_SL250_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1`;
         if (!imgUrl || imgUrl === 'No Img' || imgUrl === '-' || imgUrl.includes('[object')) imgUrl = fallbackImg;
+
+        // ② 日付を「〇月〇日」に変換
+        let pDateStr = '-';
+        if (item.purchaseDate) {
+          const d = new Date(item.purchaseDate);
+          if (!isNaN(d.getTime())) pDateStr = (d.getMonth() + 1) + '/' + d.getDate();
+        }
+
+        // サイズ区分のバッジ装飾
+        const sizeBadge = size.includes('大型') 
+          ? `<span style="background:#e53e3e; color:white; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold;">${size}</span>` 
+          : `<span style="color:#4a5568; font-weight:bold; font-size:11px;">${size}</span>`;
 
         html += `
         <tr>
@@ -2923,7 +2929,6 @@ function goBackScreen() {
               <img src="${imgUrl}" style="width:100%; height:100%; object-fit:contain;" onerror="this.onerror=null;this.src='${fallbackImg}';">
             </div>
             <div style="font-size:10px; font-weight:bold; color:#2b6cb0;">${rank} ランク</div>
-            ${sizeBadge}
           </td>
 
           <td style="max-width: 250px;">
@@ -2934,24 +2939,23 @@ function goBackScreen() {
           </td>
 
           <td>
-            <div style="font-size:11px; color:#4a5568; font-weight:bold; margin-bottom:2px;"><span style="font-size:9px; color:#a0aec0;">仕:</span> ${purchaseDate}</div>
-            <div style="font-size:11px; color:#4a5568; font-weight:bold;"><span style="font-size:9px; color:#a0aec0;">精:</span> ${checkDate}</div>
+            <div style="font-size:13px; color:#2d3748; font-weight:bold;">${pDateStr}</div>
           </td>
 
           <td style="text-align: right;">
             <div style="font-size:11px; color:#718096; margin-bottom:2px;">売: ¥${sellPrice.toLocaleString()}</div>
-            <div style="font-size:11px; font-weight:bold; color:#dd6b20;">仕: ¥${buyPrice.toLocaleString()}</div>
+            <div style="font-size:11px; font-weight:bold; color:#dd6b20;">中: ¥${minUsed.toLocaleString()}</div>
           </td>
 
           <td style="text-align: right;">
-            <div style="font-size:11px; color:#718096; margin-bottom:2px;">入: ¥${estDeposit.toLocaleString()}</div>
-            <div style="font-size:14px; font-weight:900; color:${profitColor};">¥${profit.toLocaleString()}</div>
+            <div style="font-size:11px; color:#718096; margin-bottom:4px;">FBA: ¥${fbaFee.toLocaleString()}</div>
+            <div>${sizeBadge}</div>
           </td>
 
           <td style="text-align: center;">
             <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
-              <button onclick="openView('view-amazon'); jumpToAmazonResearch('${asin}', '${title.replace(/'/g, "\\'")}')" style="background:#4a5568; color:white; border:none; padding:4px 0; border-radius:4px; cursor:pointer; width:100%; font-size:10px; font-weight:bold;"><i class="fas fa-search"></i> 深掘り</button>
-              <a href="https://keepa.com/#!product/5-${asin}" target="_blank" style="background:#55a676; color:white; padding:4px 0; border-radius:4px; text-decoration:none; width:100%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold;"><i class="fas fa-chart-line"></i> Keepa</a>
+              <a href="https://www.amazon.co.jp/dp/${asin}" target="_blank" style="background:#f6ad55; color:white; border:none; padding:4px 0; border-radius:4px; cursor:pointer; width:100%; font-size:10px; font-weight:bold; text-decoration:none; display:flex; justify-content:center; align-items:center;"><i class="fab fa-amazon"></i> Amazon</a>
+              <button onclick="editPurchaseItem('${id}')" style="background:#4a5568; color:white; border:none; padding:4px 0; border-radius:4px; cursor:pointer; width:100%; font-size:10px; font-weight:bold;"><i class="fas fa-edit"></i> 編集</button>
             </div>
           </td>
         </tr>`;
