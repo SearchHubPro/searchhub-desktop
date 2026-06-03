@@ -380,34 +380,50 @@
         </select>
       </div>
 
+      <!-- 💡 切替用CSS ＆ 余白削減・見出し固定のCSS -->
       <style>
         #ledgerTable .sales-data { display: none; }
         #ledgerTable.sales-mode .sales-data { display: block; }
         #ledgerTable.sales-mode th .sales-data { display: inline; }
         #ledgerTable.sales-mode .default-data { display: none !important; }
+        
+        /* 💡 テーブルの余白を削り、見出しを上に固定する */
+        #ledgerTable th {
+          position: sticky;
+          top: 51px; /* スマホ・PCのヘッダーのすぐ下にピタッと固定 */
+          background-color: #edf2f7;
+          z-index: 10;
+          box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1);
+          padding: 6px 8px; /* 10pxから削ってスッキリ */
+        }
+        #ledgerTable td {
+          padding: 6px 8px; /* 余白を削って行を詰める */
+          vertical-align: middle;
+        }
+        .compact-btn { padding: 4px 6px !important; font-size: 10px !important; }
       </style>
 
       <div style="overflow-x: auto; background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-        <table id="ledgerTable" style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; white-space: nowrap; min-width: 1000px;">
+        <table id="ledgerTable" style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; white-space: nowrap; min-width: 900px;">
           <thead>
-            <tr style="background: #edf2f7; border-bottom: 2px solid #cbd5e0;">
-              <th style="padding: 10px; width: 70px; text-align:center;">出品</th>
-              <th style="padding: 10px; width: 150px;">仕入先・URL・ID</th>
-              <th style="padding: 10px; width: 100px;">仕入日 / No</th>
-              <th style="padding: 10px; min-width: 250px;">商品名・ASIN</th>
-              <th style="padding: 10px; width: 140px;">
+            <tr style="border-bottom: 2px solid #cbd5e0;">
+              <th style="width: 70px; text-align:center;">出品</th>
+              <th style="width: 150px;">仕入先・URL・ID</th>
+              <th style="width: 90px;">仕入日 / No</th>
+              <th style="min-width: 250px;">商品名・ASIN</th>
+              <th style="width: 130px;">
                 <span class="default-data">コンディション</span>
                 <span class="sales-data" style="color:#2b6cb0;">販売日 / 注文番号</span>
               </th>
-              <th style="padding: 10px; text-align: right; width: 150px;">
+              <th style="text-align: right; width: 140px;">
                 <span class="default-data">仕入 / 販売予定</span>
-                <span class="sales-data" style="color:#2b6cb0;">売上 / 送料 / 手数料</span>
+                <span class="sales-data" style="color:#2b6cb0;">売上 / 送料 / 手料</span>
               </th>
-              <th style="padding: 10px; text-align: right; width: 100px;">
+              <th style="text-align: right; width: 90px;">
                 <span class="default-data">想定利益</span>
                 <span class="sales-data" style="color:#2b6cb0;">確定利益</span>
               </th>
-              <th style="padding: 10px; text-align:center; width: 80px;">操作</th>
+              <th style="text-align:center; width: 70px;">操作</th>
             </tr>
           </thead>
           <tbody id="ledgerResult">
@@ -2207,87 +2223,89 @@ document.getElementById("regPurchaseUrl").value = "";
       resDiv.style.gap = '';
 
       if (pageItems.length === 0) {
-        resDiv.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#a0aec0; padding:30px 10px;">条件に合う商品が見つかりません。</td></tr>';
+        resDiv.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#a0aec0; padding:20px;">条件に合う商品が見つかりません。</td></tr>';
         document.getElementById('ledger-pagination').style.display = 'none';
         return;
       }
 
       let html = '';
       pageItems.forEach((item) => {
-        let statusTag = '<span style="background:#fefcbf; color:#b7791f; border:1px solid #f6e05e; padding:4px 6px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:6px;">🚚 納品待ち</span>';
-        if (item.status === '出品中') statusTag = '<span style="background:#ebf8ff; color:#2b6cb0; border:1px solid #bee3f8; padding:4px 6px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:6px;">📦 出品中</span>';
-        if (item.status === '販売済') statusTag = '<span style="background:#f0fff4; color:#2f855a; border:1px solid #c6f6d5; padding:4px 6px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:6px;">💰 販売済</span>';
-        if (item.status === '返金済み') statusTag = '<span style="background:#fff5f5; color:#c53030; border:1px solid #feb2b2; padding:4px 6px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:6px;">🔄 返金済み</span>';
-        if (item.status === '補填済み') statusTag = '<span style="background:#faf5ff; color:#6b46c1; border:1px solid #d6bcfa; padding:4px 6px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:6px;">🛡️ 補填済み</span>';
+        // 💡 ステータスバッジの余白も少し削ってスッキリさせた
+        let statusTag = '<span style="background:#fefcbf; color:#b7791f; border:1px solid #f6e05e; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">🚚 納品待ち</span>';
+        if (item.status === '出品中') statusTag = '<span style="background:#ebf8ff; color:#2b6cb0; border:1px solid #bee3f8; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">📦 出品中</span>';
+        if (item.status === '販売済') statusTag = '<span style="background:#f0fff4; color:#2f855a; border:1px solid #c6f6d5; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">💰 販売済</span>';
+        if (item.status === '返金済み') statusTag = '<span style="background:#fff5f5; color:#c53030; border:1px solid #feb2b2; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">🔄 返金済み</span>';
+        if (item.status === '補填済み') statusTag = '<span style="background:#faf5ff; color:#6b46c1; border:1px solid #d6bcfa; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">🛡️ 補填済み</span>';
 
         const profitColor = (item.profit >= 0) ? "#07A27B" : "#e53e3e";
 
         // 1. 出品列 (ステータス + トグルボタン)
         let listToggleBtn = '';
         if (item.status === '納品待ち' || item.status === '出品中') {
-           listToggleBtn = `<button onclick="toggleListing('${item.no}', '${item.status}', this)" style="background:${item.status === '納品待ち' ? '#f0fff4' : '#fff5f5'}; color:${item.status === '納品待ち' ? '#2f855a' : '#c53030'}; border:1px solid ${item.status === '納品待ち' ? '#c6f6d5' : '#feb2b2'}; padding:4px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer; width:100%;"><i class="fas ${item.status === '納品待ち' ? 'fa-arrow-up' : 'fa-arrow-down'}"></i> ${item.status === '納品待ち' ? '出品' : '取消'}</button>`;
+           listToggleBtn = `<button onclick="toggleListing('${item.no}', '${item.status}', this)" style="background:${item.status === '納品待ち' ? '#f0fff4' : '#fff5f5'}; color:${item.status === '納品待ち' ? '#2f855a' : '#c53030'}; border:1px solid ${item.status === '納品待ち' ? '#c6f6d5' : '#feb2b2'}; padding:3px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer; width:100%;"><i class="fas ${item.status === '納品待ち' ? 'fa-arrow-up' : 'fa-arrow-down'}"></i> ${item.status === '納品待ち' ? '出品' : '取消'}</button>`;
         }
 
         // 2. 仕入先列 (仕入先 + URL + ID)
         let urlIcon = item.url ? `<a href="${item.url}" target="_blank" style="color:#3182ce; margin-left:4px;"><i class="fas fa-external-link-alt"></i></a>` : '';
         let defHtml = `
-          <div style="font-weight:bold; color:#2d3748; margin-bottom:4px;">${escapeHtml(item.supplier) || '-'}${urlIcon}</div>
+          <div style="font-weight:bold; color:#2d3748; margin-bottom:2px; font-size:11px;">${escapeHtml(item.supplier) || '-'}${urlIcon}</div>
           <div style="font-size:10px; color:#718096; font-family:monospace;">ID: ${escapeHtml(item.itemId) || '-'}</div>
         `;
 
+        // 💡 各 <td> から直接 padding を消して CSS に任せた
         html += `
         <tr style="border-bottom: 1px solid #e2e8f0; background: #fff;">
-          <td style="padding: 10px; text-align: center; vertical-align: middle;">
+          <td style="text-align: center;">
             ${statusTag}<br>
             ${listToggleBtn}
           </td>
           
-          <td style="padding: 10px; vertical-align: middle;">
+          <td>
             ${defHtml}
           </td>
           
-          <td style="padding: 10px; vertical-align: middle;">
-            <div style="font-size:11px; color:#4a5568; font-weight:bold; margin-bottom:4px;">${item.buyDate || '-'}</div>
+          <td>
+            <div style="font-size:11px; color:#4a5568; font-weight:bold; margin-bottom:2px;">${item.buyDate || '-'}</div>
             <div style="font-size:10px; color:#a0aec0; font-weight:bold;">No.${item.no || '-'}</div>
           </td>
           
-          <td style="padding: 10px; max-width: 250px; vertical-align: middle;">
-            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:bold; color:#1a365d; margin-bottom:6px;" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</div>
-            <span style="font-family:monospace; background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold;">${escapeHtml(item.asin)}</span>
-            <span style="font-size:10px; color:#718096; margin-left:6px;">SKU: ${escapeHtml(item.sku)}</span>
+          <td style="max-width: 250px;">
+            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:bold; color:#1a365d; margin-bottom:4px; font-size:12px;" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</div>
+            <span style="font-family:monospace; background:#e0f2fe; color:#0369a1; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold;">${escapeHtml(item.asin)}</span>
+            <span style="font-size:10px; color:#718096; margin-left:4px;">SKU: ${escapeHtml(item.sku)}</span>
           </td>
 
-          <td style="padding: 10px; font-weight:bold; color:#4a5568; vertical-align: middle;">
-            <div class="default-data">${escapeHtml(item.condition) || '-'}</div>
-            <div class="sales-data" style="font-size:11px;">
-              <div style="margin-bottom:4px; color:#2b6cb0;"><i class="far fa-calendar-alt"></i> ${item.sellDate || '-'}</div>
+          <td style="font-weight:bold; color:#4a5568;">
+            <div class="default-data" style="font-size:11px;">${escapeHtml(item.condition) || '-'}</div>
+            <div class="sales-data" style="font-size:10px;">
+              <div style="margin-bottom:2px; color:#2b6cb0;"><i class="far fa-calendar-alt"></i> ${item.sellDate || '-'}</div>
               <div style="font-family:monospace; color:#718096;">${escapeHtml(item.orderNum) || '-'}</div>
             </div>
           </td>
 
-          <td style="padding: 10px; text-align: right; vertical-align: middle;">
+          <td style="text-align: right;">
             <div class="default-data">
               <div style="font-size:10px; color:#718096; margin-bottom:2px;">仕入: ¥${Number(item.buyPrice || 0).toLocaleString()}</div>
-              <div style="font-size:12px; font-weight:bold; color:#3182ce;">予定: ¥${Number(item.estPrice || 0).toLocaleString()}</div>
+              <div style="font-size:11px; font-weight:bold; color:#3182ce;">予定: ¥${Number(item.estPrice || 0).toLocaleString()}</div>
             </div>
-            <div class="sales-data" style="font-size:11px;">
+            <div class="sales-data" style="font-size:10px;">
               <div style="font-weight:bold; color:#1a365d; margin-bottom:2px;">売上: ¥${Number(item.sales || 0).toLocaleString()}</div>
-              <div style="color:#718096; font-size:10px; margin-bottom:2px;">送料: -¥${Number(item.shipping || 0).toLocaleString()}</div>
-              <div style="color:#e53e3e; font-size:10px;">手料: -¥${Number(item.fee || 0).toLocaleString()}</div>
+              <div style="color:#718096; margin-bottom:2px;">送料: -¥${Number(item.shipping || 0).toLocaleString()}</div>
+              <div style="color:#e53e3e;">手料: -¥${Number(item.fee || 0).toLocaleString()}</div>
             </div>
           </td>
 
-          <td style="padding: 10px; text-align: right; font-weight: 900; font-size:15px; vertical-align: middle;">
+          <td style="text-align: right; font-weight: 900; font-size:14px;">
             <div class="default-data" style="color: ${profitColor};">¥${Number(item.profit || 0).toLocaleString()}</div>
             <div class="sales-data" style="color: ${profitColor};">¥${Number(item.profit || 0).toLocaleString()}</div>
           </td>
 
-          <td style="padding: 10px; text-align: center; vertical-align: middle;">
-            <div style="display:flex; flex-direction:column; gap:6px; align-items:center;">
-              <button onclick="toggleLedgerView()" style="background:#4a5568; color:white; border:none; padding:6px; border-radius:4px; cursor:pointer; font-size:10px; width:100%; font-weight:bold;"><i class="fas fa-exchange-alt"></i> 切替</button>
+          <td style="text-align: center;">
+            <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
+              <button onclick="toggleLedgerView()" style="background:#4a5568; color:white; border:none; padding:4px; border-radius:4px; cursor:pointer; font-size:10px; width:100%; font-weight:bold;"><i class="fas fa-exchange-alt"></i> 切替</button>
               <div style="display:flex; gap:4px; width:100%;">
-                <button onclick="openLedgerEdit('${item.no}')" style="background:#3182ce; color:white; border:none; padding:4px 0; border-radius:4px; cursor:pointer; flex:1; font-size:11px;"><i class="fas fa-edit"></i></button>
-                <a href="https://www.amazon.co.jp/dp/${item.asin}" target="_blank" style="background:#dd6b20; color:white; padding:4px 0; border-radius:4px; text-decoration:none; flex:1; display:flex; align-items:center; justify-content:center; font-size:11px;"><i class="fab fa-amazon"></i></a>
+                <button onclick="openLedgerEdit('${item.no}')" style="background:#3182ce; color:white; border:none; padding:4px 0; border-radius:4px; cursor:pointer; flex:1; font-size:10px;"><i class="fas fa-edit"></i></button>
+                <a href="https://www.amazon.co.jp/dp/${item.asin}" target="_blank" style="background:#dd6b20; color:white; padding:4px 0; border-radius:4px; text-decoration:none; flex:1; display:flex; align-items:center; justify-content:center; font-size:10px;"><i class="fab fa-amazon"></i></a>
               </div>
             </div>
           </td>
@@ -2302,7 +2320,30 @@ document.getElementById("regPurchaseUrl").value = "";
       document.getElementById('ledger-btn-next').disabled = (ledgerCurrentPage === totalPages);
       document.getElementById('ledger-pagination').style.display = (totalPages > 1) ? 'flex' : 'none';
       
-      document.getElementById('ledger-search-kw').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // 💡 テーブルの中のスクロールを一番上に戻す
+      const tableWrapper = document.getElementById('ledgerTable').parentElement;
+      if (tableWrapper) tableWrapper.scrollTop = 0;
+    }
+
+    // ✏️ 編集画面を開く処理
+    function openLedgerEdit(no) {
+      const item = globalLedgerData.find(i => String(i.no) === String(no));
+      if (!item) return;
+      
+      document.getElementById('edit_no').value = item.no;
+      document.getElementById('edit_buyDate').value = item.buyDate || '';
+      document.getElementById('edit_supplier').value = item.supplier || '';
+      document.getElementById('edit_title').value = item.title || '';
+      document.getElementById('edit_model').value = item.model || '';
+      document.getElementById('edit_sku').value = item.sku || '';
+      document.getElementById('edit_condition').value = item.condition || '';
+      document.getElementById('edit_itemId').value = item.itemId || '';
+      document.getElementById('edit_description').value = item.description || '';
+      document.getElementById('edit_buyPrice').value = item.buyPrice || 0;
+      document.getElementById('edit_expense').value = item.expense || 0;
+      document.getElementById('edit_estPrice').value = item.estPrice || 0;
+      
+      document.getElementById('ledgerEditModal').style.display = 'flex';
     }
       // ==========================================
     // 🚀 ドラッグ＆ドロップ ファイル取り込み機能
