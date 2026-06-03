@@ -387,24 +387,25 @@
         #ledgerTable.sales-mode th .sales-data { display: inline; }
         #ledgerTable.sales-mode .default-data { display: none !important; }
         
-        /* 💡 テーブルのセル余白を削ってギュッとさせる */
+        /* セルの余白をギュッと詰める */
         #ledgerTable th, #ledgerTable td {
-          padding: 6px 8px !important;
+          padding: 8px 10px !important;
           vertical-align: middle;
           border-bottom: 1px solid #e2e8f0;
         }
         
-        /* 💡 見出しをテーブルの一番上で確実に固定する魔法 */
+        /* 💡 見出しを常に一番上でピタッと固定する魔法 */
         #ledgerTable th {
           position: sticky;
           top: 0;
           background: #edf2f7;
           z-index: 10;
-          box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1); /* スクロール時の影 */
+          /* 下に隙間ができないように影で線を引く */
+          box-shadow: 0 2px 0 0 #cbd5e0;
         }
       </style>
 
-      <div style="overflow-x: auto; overflow-y: auto; max-height: calc(100vh - 200px); background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+      <div style="overflow: auto; max-height: 65vh; background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
         <table id="ledgerTable" style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 11px; text-align: left; white-space: nowrap; min-width: 950px;">
           <thead>
             <tr>
@@ -2190,37 +2191,40 @@ document.getElementById("regPurchaseUrl").value = "";
     }
 
     // 💡 テーブルの切替
-    function toggleLedgerView() {
+    window.toggleLedgerView = function() {
       const table = document.getElementById('ledgerTable');
       if(table) table.classList.toggle('sales-mode');
-    }
+    };
 
-    // 💡 編集画面を開く処理（絶対開く強化版）
-    function openLedgerEdit(no) {
-      // 確実にヒットするように検索条件を強化
-      const item = globalLedgerData.find(i => String(i.no) === String(no));
-      
-      if (!item) {
-        // 万が一見失っても、黙ってスルーせずにアラートを出す！
-        alert("⚠️ 編集するデータが見つかりません。画面を一度更新（リロード）してみてな。");
-        return;
+    // 💡 編集画面を開く処理（絶対にエラーを逃さない・必ず開く仕様）
+    window.openLedgerEdit = function(no) {
+      try {
+        const item = globalLedgerData.find(i => String(i.no) === String(no));
+        
+        // データが見失われた場合は黙ってスルーせずアラートを出す！
+        if (!item) {
+          alert("⚠️ 編集データが見つかりません (No: " + no + ")\n一度「最新を取得」ボタンを押してみてな！");
+          return;
+        }
+        
+        document.getElementById('edit_no').value = item.no || '';
+        document.getElementById('edit_buyDate').value = item.buyDate || '';
+        document.getElementById('edit_supplier').value = item.supplier || '';
+        document.getElementById('edit_title').value = item.title || '';
+        document.getElementById('edit_model').value = item.model || '';
+        document.getElementById('edit_sku').value = item.sku || '';
+        document.getElementById('edit_condition').value = item.condition || '';
+        document.getElementById('edit_itemId').value = item.itemId || '';
+        document.getElementById('edit_description').value = item.description || '';
+        document.getElementById('edit_buyPrice').value = item.buyPrice || 0;
+        document.getElementById('edit_expense').value = item.expense || 0;
+        document.getElementById('edit_estPrice').value = item.estPrice || 0;
+        
+        document.getElementById('ledgerEditModal').style.display = 'flex';
+      } catch (err) {
+        alert("❌ ボタン処理でエラーが発生しました: " + err.message);
       }
-      
-      document.getElementById('edit_no').value = item.no || '';
-      document.getElementById('edit_buyDate').value = item.buyDate || '';
-      document.getElementById('edit_supplier').value = item.supplier || '';
-      document.getElementById('edit_title').value = item.title || '';
-      document.getElementById('edit_model').value = item.model || '';
-      document.getElementById('edit_sku').value = item.sku || '';
-      document.getElementById('edit_condition').value = item.condition || '';
-      document.getElementById('edit_itemId').value = item.itemId || '';
-      document.getElementById('edit_description').value = item.description || '';
-      document.getElementById('edit_buyPrice').value = item.buyPrice || 0;
-      document.getElementById('edit_expense').value = item.expense || 0;
-      document.getElementById('edit_estPrice').value = item.estPrice || 0;
-      
-      document.getElementById('ledgerEditModal').style.display = 'flex';
-    }
+    };
 
     function renderLedgerList() {
       const kw = document.getElementById('ledger-search-kw').value.toLowerCase().trim();
@@ -2260,7 +2264,7 @@ document.getElementById("regPurchaseUrl").value = "";
         if (item.status === '返金済み') statusTag = '<span style="background:#fff5f5; color:#c53030; border:1px solid #feb2b2; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">🔄 返金済み</span>';
         if (item.status === '補填済み') statusTag = '<span style="background:#faf5ff; color:#6b46c1; border:1px solid #d6bcfa; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">🛡️ 補填済み</span>';
 
-        // 💡 1. 想定利益の計算（画面側で計算： 予定売価 - 仕入 - 経費 - 手数料目安10% - FBA450円）
+        // 💡 1. 想定利益（画面上で自動計算: 予定売価 - 仕入 - 経費 - 手数料目安10% - FBA450円）
         const b_price = Number(item.buyPrice || 0);
         const b_exp = Number(item.expense || 0);
         const est_price = Number(item.estPrice || 0);
@@ -2268,7 +2272,7 @@ document.getElementById("regPurchaseUrl").value = "";
         const expectedProfit = est_price > 0 ? (est_price - b_price - b_exp - expectedFee) : 0;
         const estProfitColor = (expectedProfit >= 0) ? "#07A27B" : "#e53e3e";
 
-        // 💡 2. 確定利益（シートのU列 item.profit をそのまま使う）
+        // 💡 2. 確定利益（シートのU列 item.profit をそのまま使う！）
         const actualProfitColor = (Number(item.profit || 0) >= 0) ? "#07A27B" : "#e53e3e";
 
         let listToggleBtn = '';
