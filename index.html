@@ -3102,19 +3102,23 @@ function goBackScreen() {
 
 // 💡 情報sheet設定モーダルを開く
 function openInfoModal() {
+  const ssUrl = AppStorage.get("sh_ssurl", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+  
+  if (!ssUrl || !targetGasUrl) {
+    alert("⚙️ 設定から『販売管理シートURL』と『GAS URL』を先に登録してな！");
+    return;
+  }
+
   document.getElementById('infoModal').style.display = 'flex';
   
-  // 読み込み中をアピール
+  // 読み込み中を表示
   document.getElementById('info-suppliers').value = "読み込み中...";
-  document.getElementById('info-cond-c').value = "読み込み中...";
-  document.getElementById('info-cond-d').value = "読み込み中...";
-  document.getElementById('info-cond-e').value = "読み込み中...";
-  document.getElementById('info-cond-f').value = "読み込み中...";
-
-  // 🚨 変更ポイント: JSON形式でリクエストを投げる！
-  fetch(SCRIPT_URL, {
+  
+  // 💡 SCRIPT_URL の代わりに targetGasUrl を使う！
+  fetch(targetGasUrl, {
     method: 'POST',
-    body: JSON.stringify({ command: 'getInfoSettings' })
+    body: JSON.stringify({ command: 'getInfoSettings', ssUrl: ssUrl }) // 💡 ssUrlも渡す必要がある
   })
   .then(res => res.json())
   .then(data => {
@@ -3125,13 +3129,16 @@ function openInfoModal() {
       document.getElementById('info-cond-e').value = data.conditions.e || "";
       document.getElementById('info-cond-f').value = data.conditions.f || "";
     } else {
-      alert("データの取得に失敗しました");
+      alert("データの取得に失敗しました: " + data.message);
     }
-  }).catch(err => alert("通信エラー"));
+  }).catch(err => { alert("通信エラー: " + err); });
 }
 
 // 💡 情報sheetの設定を保存する
 function saveInfoSettings() {
+  const ssUrl = AppStorage.get("sh_ssurl", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+
   const suppliers = document.getElementById('info-suppliers').value;
   const condC = document.getElementById('info-cond-c').value;
   const condD = document.getElementById('info-cond-d').value;
@@ -3143,11 +3150,12 @@ function saveInfoSettings() {
   btn.innerHTML = "保存中...";
   btn.disabled = true;
 
-  // 🚨 変更ポイント: JSON形式で保存データを投げる！
-  fetch(SCRIPT_URL, {
+  // 💡 SCRIPT_URL の代わりに targetGasUrl を使う！
+  fetch(targetGasUrl, {
     method: 'POST',
     body: JSON.stringify({ 
       command: 'saveInfoSettings',
+      ssUrl: ssUrl, // 💡 ssUrlも忘れずに！
       suppliers: suppliers,
       condC: condC,
       condD: condD,
@@ -3164,7 +3172,7 @@ function saveInfoSettings() {
       alert("保存エラー: " + data.message);
     }
   })
-  .catch(err => alert("通信エラー"))
+  .catch(err => alert("通信エラー: " + err))
   .finally(() => {
     btn.innerHTML = originalText;
     btn.disabled = false;
