@@ -2301,8 +2301,9 @@ document.getElementById("regPurchaseUrl").value = "";
       const start = (ledgerCurrentPage - 1) * ITEMS_PER_PAGE;
       const pageItems = filtered.slice(start, start + ITEMS_PER_PAGE);
 
+      // 💡 列が1つ増えたので colspan を 9 に修正
       if (pageItems.length === 0) {
-        resDiv.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#a0aec0; padding:20px;">条件に合う商品が見つかりません。</td></tr>';
+        resDiv.innerHTML = '<tr><td colspan="9" style="text-align:center; color:#4a5568; font-weight:bold; padding:20px;">条件に合う商品が見つかりません。</td></tr>';
         document.getElementById('ledger-pagination').style.display = 'none';
         return;
       }
@@ -2315,7 +2316,7 @@ document.getElementById("regPurchaseUrl").value = "";
         if (item.status === '返金済み') statusTag = '<span style="background:#fff5f5; color:#c53030; border:1px solid #feb2b2; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">🔄 返金済み</span>';
         if (item.status === '補填済み') statusTag = '<span style="background:#faf5ff; color:#6b46c1; border:1px solid #d6bcfa; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">🛡️ 補填済み</span>';
 
-        // 💡 1. 想定利益（画面上で自動計算: 予定売価 - 仕入 - 経費 - 手数料目安10% - FBA450円）
+        // 💡 1. 想定利益の計算
         const b_price = Number(item.buyPrice || 0);
         const b_exp = Number(item.expense || 0);
         const est_price = Number(item.estPrice || 0);
@@ -2323,7 +2324,7 @@ document.getElementById("regPurchaseUrl").value = "";
         const expectedProfit = est_price > 0 ? (est_price - b_price - b_exp - expectedFee) : 0;
         const estProfitColor = (expectedProfit >= 0) ? "#07A27B" : "#e53e3e";
 
-        // 💡 2. 確定利益（シートのU列 item.profit をそのまま使う！）
+        // 💡 2. 確定利益の色
         const actualProfitColor = (Number(item.profit || 0) >= 0) ? "#07A27B" : "#e53e3e";
 
         let listToggleBtn = '';
@@ -2331,10 +2332,18 @@ document.getElementById("regPurchaseUrl").value = "";
            listToggleBtn = `<button onclick="toggleListing('${item.no}', '${item.status}', this)" style="background:${item.status === '納品待ち' ? '#f0fff4' : '#fff5f5'}; color:${item.status === '納品待ち' ? '#2f855a' : '#c53030'}; border:1px solid ${item.status === '納品待ち' ? '#c6f6d5' : '#feb2b2'}; padding:3px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer; width:100%;"><i class="fas ${item.status === '納品待ち' ? 'fa-arrow-up' : 'fa-arrow-down'}"></i> ${item.status === '納品待ち' ? '出品' : '取消'}</button>`;
         }
 
+        // 💡 ASINから画像を自動生成するロジック
+        const fallbackImg = 'https://i.ibb.co/vK1Sdtp/Search.png';
+        const imgUrl = (item.asin && item.asin.length >= 9) 
+          ? `https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${item.asin}&Format=_SL250_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1` 
+          : fallbackImg;
+
         let urlIcon = item.url ? `<a href="${item.url}" target="_blank" style="color:#3182ce; margin-left:4px;"><i class="fas fa-external-link-alt"></i></a>` : '';
+        
+        // 💡 4. IDの文字を太字でコク変更（color:#4a5568, font-weight:bold）
         let defHtml = `
           <div style="font-weight:bold; color:#2d3748; margin-bottom:2px; font-size:11px;">${escapeHtml(item.supplier) || '-'}${urlIcon}</div>
-          <div style="font-size:10px; color:#718096; font-family:monospace;">ID: ${escapeHtml(item.itemId) || '-'}</div>
+          <div style="font-size:10px; color:#4a5568; font-weight:bold; font-family:monospace;">ID: ${escapeHtml(item.itemId) || '-'}</div>
         `;
 
         html += `
@@ -2344,43 +2353,49 @@ document.getElementById("regPurchaseUrl").value = "";
             ${listToggleBtn}
           </td>
           
+          <td style="text-align: center; vertical-align: middle;">
+            <div style="width:50px; height:50px; background:#fff; border:1px solid #e2e8f0; border-radius:4px; padding:2px; display:inline-block;">
+              <img src="${imgUrl}" style="width:100%; height:100%; object-fit:contain;" onerror="this.onerror=null;this.src='${fallbackImg}';">
+            </div>
+          </td>
+          
           <td>${defHtml}</td>
           
           <td>
-            <div style="font-size:11px; color:#4a5568; font-weight:bold; margin-bottom:2px;">${item.buyDate || '-'}</div>
-            <div style="font-size:10px; color:#a0aec0; font-weight:bold;">No.${item.no || '-'}</div>
+            <div style="font-size:11px; color:#2d3748; font-weight:bold; margin-bottom:2px;">${item.buyDate || '-'}</div>
+            <div style="font-size:10px; color:#4a5568; font-weight:bold;">No.${item.no || '-'}</div>
           </td>
           
           <td style="max-width: 250px;">
             <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:bold; color:#1a365d; margin-bottom:4px; font-size:12px;" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</div>
             <span style="font-family:monospace; background:#e0f2fe; color:#0369a1; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold;">${escapeHtml(item.asin)}</span>
-            <span style="font-size:10px; color:#718096; margin-left:4px;">SKU: ${escapeHtml(item.sku)}</span>
+            <span style="font-size:10px; color:#4a5568; font-weight:bold; margin-left:4px;">SKU: ${escapeHtml(item.sku)}</span>
           </td>
 
-          <td style="font-weight:bold; color:#4a5568;">
+          <td style="font-weight:bold; color:#2d3748; text-align: center;">
             <div class="default-data" style="font-size:11px;">${escapeHtml(item.condition) || '-'}</div>
             <div class="sales-data" style="font-size:10px;">
               <div style="margin-bottom:2px; color:#2b6cb0;"><i class="far fa-calendar-alt"></i> ${item.sellDate || '-'}</div>
-              <div style="font-family:monospace; color:#718096;">${escapeHtml(item.orderNum) || '-'}</div>
+              <div style="font-family:monospace; color:#2d3748; font-weight:bold;">${escapeHtml(item.orderNum) || '-'}</div>
             </div>
           </td>
 
           <td style="text-align: right;">
             <div class="default-data">
-              <div style="font-size:10px; color:#718096; margin-bottom:2px;">仕入: ¥${Number(b_price).toLocaleString()}</div>
+              <div style="font-size:11px; font-weight:bold; color:#4a5568; margin-bottom:2px;">仕入: ¥${Number(b_price).toLocaleString()}</div>
               <div style="font-size:11px; font-weight:bold; color:#3182ce;">予定: ¥${Number(est_price).toLocaleString()}</div>
             </div>
             <div class="sales-data" style="font-size:10px;">
               <div style="font-weight:bold; color:#1a365d; margin-bottom:2px;">売上: ¥${Number(item.sales || 0).toLocaleString()}</div>
-              <div style="color:#718096; margin-bottom:2px;">送料: ${item.shipping < 0 ? '' : '-'}¥${Math.abs(Number(item.shipping || 0)).toLocaleString()}</div>
-              <div style="color:#e53e3e;">手料: ${item.fee < 0 ? '' : '-'}¥${Math.abs(Number(item.fee || 0)).toLocaleString()}</div>
+              <div style="color:#4a5568; font-weight:bold; margin-bottom:2px;">送料: ${item.shipping < 0 ? '' : '-'}¥${Math.abs(Number(item.shipping || 0)).toLocaleString()}</div>
+              <div style="color:#e53e3e; font-weight:bold;">手料: ${item.fee < 0 ? '' : '-'}¥${Math.abs(Number(item.fee || 0)).toLocaleString()}</div>
             </div>
           </td>
 
           <td style="text-align: right; font-weight: 900; font-size:14px;">
             <div class="default-data" style="color: ${estProfitColor};">
               ¥${expectedProfit.toLocaleString()}
-              <div style="font-size:9px; color:#a0aec0; margin-top:2px; font-weight:normal;">(目安)</div>
+              <div style="font-size:9px; color:#718096; margin-top:2px; font-weight:bold;">(目安)</div>
             </div>
             <div class="sales-data" style="color: ${actualProfitColor};">
               ¥${Number(item.profit || 0).toLocaleString()}
