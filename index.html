@@ -2021,6 +2021,13 @@ document.getElementById("regPurchaseUrl").value = "";
         // 🌟 1. 画像処理（GASから届いた綺麗なURLをそのまま使う！）
         let imgUrl = item.img ? item.img.toString().trim() : '';
 
+　　　　// ★★★ ここに追加！ ★★★
+      if(imgUrl.includes("404")) { // 404が含まれるか、あるいは特定の異常パターンをチェック
+          console.warn("異常なURLを検知:", item.asin, imgUrl);
+      }
+      console.log("検証用URL:", item.asin, imgUrl); 
+      // ★★★★★★★★★★★★★
+
         // 万が一の保険（ASINから画像を取得する裏URL）
         const fallbackAsinImg = `https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${item.asin}&Format=_SL250_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1`;
         
