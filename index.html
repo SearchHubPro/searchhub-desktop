@@ -2943,8 +2943,22 @@ function goBackScreen() {
         const size = escapeHtml(item.size || '-');
 
         // 💡 GASから送られてきた画像をそのまま使用
-        let imgUrl = item.img ? item.img.toString().trim() : '';
+let imgUrl = item.img ? item.img.toString().trim() : '';
+const fallbackAsinImg = `https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${item.asin}&Format=_SL250_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1`;
 
+if (!imgUrl || imgUrl === '-' || imgUrl === 'CellImage' || imgUrl.includes('404')) {
+    imgUrl = fallbackAsinImg;
+}
+
+// HTML生成部分も、読み込み失敗時に自動でNoImageに切り替わるように記述
+html += `
+<tr>
+  <td style="text-align:center;">
+    <div style="width:50px; height:50px; background:#fff; border:1px solid #eee; border-radius:4px; margin: 0 auto 4px auto; padding:2px; display:flex; align-items:center; justify-content:center;">
+      <img src="${imgUrl}" style="width:100%; height:100%; object-fit:contain;" onerror="this.src='${fallbackAsinImg}'">
+    </div>
+    <div style="font-size:11px; font-weight:bold; color:${rankColor};">${rankText}</div>
+  </td>
         // 日付: 仕入日(黒)と精査日(赤)
         const formatDate = (dateStr) => {
           if (!dateStr || dateStr === '-' || dateStr === '') return '-';
