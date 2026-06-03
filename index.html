@@ -510,8 +510,8 @@
             <tr>
               <th style="width: 80px; text-align:center;">画像 / ランク</th>
               <th style="min-width: 250px;">商品名 / ASIN・型番</th>
-              <th style="width: 90px;">仕入日 / 精査日</th>
-              <th style="width: 130px; text-align: right;">平均売価 / 中古最安</th>
+              <th style="width: 90px; text-align: center;">仕入日 / <span style="color:#e53e3e;">精査日</span></th>
+              <th style="width: 130px; text-align: right;">平均売価 / <span style="color:#e53e3e;">中古最安</span></th>
               <th style="width: 130px; text-align: right;">FBA料 / サイズ</th>
               <th style="width: 90px; text-align: center;">操作</th>
             </tr>
@@ -2951,38 +2951,39 @@ function goBackScreen() {
         const pDateStr = formatDate(item.purchaseDate);
         const cDateStr = formatDate(item.checkDate);
 
+        // 💡 標準サイズの背景色を緑（大型と同じバッジスタイル）に変更！
         const sizeBadge = size.includes('大型') 
-          ? `<span style="background:#e53e3e; color:white; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold;">${size}</span>` 
-          : `<span style="color:#4a5568; font-weight:bold; font-size:11px;">${size}</span>`;
+          ? `<span style="background:#e53e3e; color:white; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold;">${size}</span>` 
+          : `<span style="background:#07A27B; color:white; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold;">${size}</span>`;
 
         html += `
         <tr>
           <td style="text-align:center;">
             <div style="width:50px; height:50px; background:#fff; border:1px solid #eee; border-radius:4px; margin: 0 auto 4px auto; padding:2px; display:flex; align-items:center; justify-content:center;">
-              <img src="${imgUrl}" style="width:100%; height:100%; object-fit:contain;">
+              <img src="${imgUrl}" style="width:100%; height:100%; object-fit:contain;" onerror="this.onerror=null;this.src='${fallbackAsinImg}';">
             </div>
             <div style="font-size:11px; font-weight:bold; color:${rankColor};">${rankText}</div>
           </td>
 
           <td style="max-width: 250px;">
             <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:bold; color:#1a365d; margin-bottom:4px; font-size:12px;" title="${title}">${title}</div>
-            <span style="font-family:monospace; background:#fffaf0; color:#dd6b20; border:1px solid #fbd38d; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold;">${asin}</span>
-            <span style="font-size:10px; color:#718096; margin-left:4px;">型番: ${model}</span>
-            <div style="font-size:9px; color:#a0aec0; margin-top:2px;">ID: ${id}</div>
+            <span style="font-family:monospace; background:#fffaf0; color:#dd6b20; border:1px solid #fbd38d; padding:2px 4px; border-radius:4px; font-size:12px; font-weight:bold;">${asin}</span>
+            <span style="font-size:12px; color:#4a5568; font-weight:bold; margin-left:4px;">型番: ${model}</span>
+            <div style="font-size:12px; color:#4a5568; font-weight:bold; margin-top:4px;">ID: ${id}</div>
           </td>
 
-          <td>
+          <td style="text-align: center;">
             <div style="font-size:12px; color:#2d3748; font-weight:bold; margin-bottom:4px;">${pDateStr}</div>
             <div style="font-size:12px; color:#e53e3e; font-weight:bold;">${cDateStr}</div>
           </td>
 
           <td style="text-align: right;">
-            <div style="font-size:11px; color:#718096; margin-bottom:4px;">平均: ¥${sellPrice.toLocaleString()}</div>
-            <div style="font-size:12px; font-weight:bold; color:#dd6b20;">最安: ¥${minUsed.toLocaleString()}</div>
+            <div style="font-size:12px; color:#4a5568; font-weight:bold; margin-bottom:4px;">平均: ¥${sellPrice.toLocaleString()}</div>
+            <div style="font-size:12px; font-weight:bold; color:#e53e3e;">最安: ¥${minUsed.toLocaleString()}</div>
           </td>
 
           <td style="text-align: right;">
-            <div style="font-size:11px; color:#718096; margin-bottom:4px;">FBA: ¥${fbaFee.toLocaleString()}</div>
+            <div style="font-size:11px; color:#4a5568; font-weight:bold; margin-bottom:4px;">FBA: ¥${fbaFee.toLocaleString()}</div>
             <div>${sizeBadge}</div>
           </td>
 
