@@ -2189,17 +2189,24 @@ document.getElementById("regPurchaseUrl").value = "";
       }
     }
 
-    // 💡 編集ボタンと切替ボタンが絶対に反応するように「window」に直接繋ぎ直した！
-    window.toggleLedgerView = function() {
+    // 💡 テーブルの切替
+    function toggleLedgerView() {
       const table = document.getElementById('ledgerTable');
       if(table) table.classList.toggle('sales-mode');
-    };
+    }
 
-    window.openLedgerEdit = function(no) {
+    // 💡 編集画面を開く処理（絶対開く強化版）
+    function openLedgerEdit(no) {
+      // 確実にヒットするように検索条件を強化
       const item = globalLedgerData.find(i => String(i.no) === String(no));
-      if (!item) return;
       
-      document.getElementById('edit_no').value = item.no;
+      if (!item) {
+        // 万が一見失っても、黙ってスルーせずにアラートを出す！
+        alert("⚠️ 編集するデータが見つかりません。画面を一度更新（リロード）してみてな。");
+        return;
+      }
+      
+      document.getElementById('edit_no').value = item.no || '';
       document.getElementById('edit_buyDate').value = item.buyDate || '';
       document.getElementById('edit_supplier').value = item.supplier || '';
       document.getElementById('edit_title').value = item.title || '';
@@ -2213,7 +2220,7 @@ document.getElementById("regPurchaseUrl").value = "";
       document.getElementById('edit_estPrice').value = item.estPrice || 0;
       
       document.getElementById('ledgerEditModal').style.display = 'flex';
-    };
+    }
 
     function renderLedgerList() {
       const kw = document.getElementById('ledger-search-kw').value.toLowerCase().trim();
