@@ -161,21 +161,26 @@
     #ptr-indicator { position: fixed; top: -50px; left: 0; width: 100%; text-align: center; z-index: 1000; transition: top 0.3s; font-weight: bold; color: #008296; font-size: 13px; background: rgba(255,255,255,0.95); padding: 10px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-radius: 0 0 12px 12px; pointer-events: none;}
 
     /* =========================================================================
-       🚀 PC最適化 (Amazon・Yahoo風のワイド画面対応) 
-       ========================================================================= */
-    @media (min-width: 768px) {
-      .header { padding: 16px 32px; }
-      .header-left, .header-right { width: auto; }
-      
+       🚀 PC最適化 (Amazon・Yahoo風のワイド画面対応) 
+       ========================================================================= */
+    @media (min-width: 768px) {
+      html, body { margin: 0; padding: 0; } /* 💡 白帯対策: 余白を完全にゼロに */
+      #ptr-indicator { display: none !important; } /* 💡 白帯対策: PCでは不要な引っ張り更新バーを非表示にして隙間を潰す */
+      
+      .header { padding: 16px 24px; width: 100%; box-sizing: border-box; }
+      /* 💡 アイコンを強制的に左右の端（24pxの位置）に固定 */
+      .header-left { position: absolute; left: 24px; width: auto; }
+      .header-right { position: absolute; right: 24px; width: auto; }
+      
       body {
         max-width: 100%; /* 💡 1200px制限を解除して100%（全画面）にする */
-        margin: 0; 
-        background-color: #f2f4f8; 
-      }
-      .header-wrapper {
-        max-width: 100%; /* 💡 ここも100%にする */
-        margin: 0;
-      }
+        background-color: #f2f4f8; 
+      }
+      .header-wrapper {
+        width: 100%;
+        max-width: 100%; /* 💡 ここも100%にする */
+        margin: 0;
+      }
       .view {
         background-color: #ffffff; /* アプリ部分は白 */
       }
