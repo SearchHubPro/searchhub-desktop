@@ -2942,6 +2942,12 @@ function goBackScreen() {
         // 💡 GASから送られてきた画像をそのまま使用
         let imgUrl = item.img ? item.img.toString().trim() : '';
 
+        // ★追加：URLが空っぽ、または異常な場合はASINから画像を自動生成する
+        const fallbackAsinImg = `https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${item.asin}&Format=_SL250_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1`;
+        if (!imgUrl || imgUrl === '-' || imgUrl === 'CellImage' || imgUrl.includes('404')) {
+          imgUrl = fallbackAsinImg;
+        }
+
         // 日付: 仕入日(黒)と精査日(赤)
         const formatDate = (dateStr) => {
           if (!dateStr || dateStr === '-' || dateStr === '') return '-';
