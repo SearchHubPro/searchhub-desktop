@@ -29,7 +29,7 @@
   }
     
     .header-wrapper { position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .header { background-color: #1a365d; color: white; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: relative; }
+    .header { background-color: #1a365d; color: white; padding: calc(14px + env(safe-area-inset-top)) 24px 14px 24px; display: flex; align-items: center; justify-content: space-between; position: relative; }
     
     .header-left { display: flex; gap: 12px; align-items: center; z-index: 2; }
     .header-center { position: absolute; left: 50%; transform: translateX(-50%); text-align: center; width: 40%; z-index: 1; }
@@ -164,8 +164,7 @@
        🚀 PC最適化 (Amazon・Yahoo風のワイド画面対応) 
        ========================================================================= */
     @media (min-width: 768px) {
-      .header { padding: 16px 32px; }
-      .header-left, .header-right { width: auto; }
+.header { padding: calc(16px + env(safe-area-inset-top)) 32px 16px 32px; }      .header-left, .header-right { width: auto; }
       
       body {
         max-width: 100%; /* 💡 1200px制限を解除して100%（全画面）にする */
@@ -267,20 +266,19 @@
   </div>
 
   <div class="header-wrapper">
-    <div class="header">
-      <div class="header-left">
-        <button class="header-btn" id="backBtn" style="display:none;" onclick="goBackScreen()"><i class="fas fa-chevron-left"></i></button>
-        <button class="header-btn" style="position:relative; z-index:9999;" onclick="openConfig()"><i class="fas fa-cog"></i></button>
-      </div>
-      <div class="header-center">
-        <h1 id="headerTitle">SearchHub Pro</h1>
-        <div class="last-update" id="lastUpdate">待機中...</div>
-      </div>
-      <div class="header-right">
-        <button class="header-btn discord-btn discord-off" id="dcToggleBtn" onclick="toggleDiscord()"><i class="fab fa-discord"></i></button>
-      </div>
-    </div>
-  </div>
+  <div class="header">
+    <div class="header-left">
+      <button class="header-btn" id="backBtn" style="display:none;" onclick="goBackScreen()"><i class="fas fa-chevron-left"></i></button>
+      <button class="header-btn" style="position:relative; z-index:9999;" onclick="openConfig()"><i class="fas fa-cog"></i></button>
+      <button class="header-btn discord-btn discord-off" id="dcToggleBtn" onclick="toggleDiscord()"><i class="fab fa-discord"></i></button>
+    </div>
+    <div class="header-center">
+      <h1 id="headerTitle">SearchHub Pro</h1>
+      <div class="last-update" id="lastUpdate">待機中...</div>
+    </div>
+    <div class="header-right"></div>
+  </div>
+</div>
 
   <div id="view-home" class="view active">
     <div class="graph-card">
