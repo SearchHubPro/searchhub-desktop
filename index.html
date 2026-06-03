@@ -162,18 +162,16 @@
 
     /* =========================================================================
        🚀 PC最適化 (Amazon・Yahoo風のワイド画面対応) 
-       ここから下のコードが、PCの広い画面を検知して自動でデザインを再構築する魔法や！
        ========================================================================= */
     @media (min-width: 768px) {
       body {
-        max-width: 1200px; /* Amazonのようにコンテンツの最大幅を固定 */
-        margin: 0 auto;    /* 画面の真ん中に寄せる */
-        background-color: #f2f4f8; /* 外側の余白は薄いグレーにしてアプリ感を出す */
-        box-shadow: 0 0 25px rgba(0,0,0,0.05); /* ほんのり影をつける */
+        max-width: 100%; /* 💡 1200px制限を解除して100%（全画面）にする */
+        margin: 0; 
+        background-color: #f2f4f8; 
       }
       .header-wrapper {
-        max-width: 1200px;
-        margin: 0 auto;
+        max-width: 100%; /* 💡 ここも100%にする */
+        margin: 0;
       }
       .view {
         background-color: #ffffff; /* アプリ部分は白 */
@@ -268,20 +266,17 @@
   <div class="header-wrapper">
     <div class="header">
       <div class="header-left">
-        <button class="header-btn" id="backBtn" style="display:none;" onclick="openView('view-home')"><i class="fas fa-chevron-left"></i></button>
-        <button class="header-btn" onclick="openConfig()"><i class="fas fa-cog"></i></button>
-        <button class="header-btn" onclick="openManager()"><i class="fas fa-folder-open"></i></button>
-      </div>
+        <button class="header-btn" id="backBtn" style="display:none;" onclick="goBackScreen()"><i class="fas fa-chevron-left"></i></button>
+        <button class="header-btn" style="position:relative; z-index:9999;" onclick="openConfig()"><i class="fas fa-cog"></i></button>
+        </div>
       <div class="header-center">
         <h1 id="headerTitle">SearchHub Pro</h1>
         <div class="last-update" id="lastUpdate">待機中...</div>
       </div>
       <div class="header-right">
         <button class="header-btn discord-btn discord-off" id="dcToggleBtn" onclick="toggleDiscord()"><i class="fab fa-discord"></i></button>
-        <button class="header-btn" onclick="forceReload(this)"><i class="fas fa-sync-alt"></i></button>
-      </div>
+        </div>
     </div>
-  </div>
 
   <div id="view-home" class="view active">
     <div class="graph-card">
@@ -385,8 +380,24 @@
         </select>
       </div>
 
-      <div id="ledgerResult" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;">
-        <div class="loading-spinner" style="grid-column: 1 / -1;">⌛ Managerシートから帳簿データを同期中...</div>
+      <div style="overflow-x: auto; background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; white-space: nowrap; min-width: 1000px;">
+          <thead>
+            <tr style="background: #edf2f7; border-bottom: 2px solid #cbd5e0;">
+              <th style="padding: 10px; width: 60px; text-align:center;">出品</th>
+              <th style="padding: 10px; width: 60px; text-align:center;">画像</th>
+              <th style="padding: 10px;">ステータス・No</th>
+              <th style="padding: 10px;">商品名・ASIN</th>
+              <th style="padding: 10px;">コンディション</th>
+              <th style="padding: 10px;">仕入 / 販売予定</th>
+              <th style="padding: 10px;">手残り利益</th>
+              <th style="padding: 10px; text-align:center;">操作</th>
+            </tr>
+          </thead>
+          <tbody id="ledgerResult">
+            <tr><td colspan="8" class="loading-spinner" style="padding:30px; text-align:center;">⌛ Managerシートから帳簿データを同期中...</td></tr>
+          </tbody>
+        </table>
       </div>
       
       <div id="ledger-pagination" class="pagination" style="display:none;">
@@ -398,17 +409,7 @@
   </div>
  <div id="view-bulk-register" class="view">
     <div class="content">
-      <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
-        <div>
-          <h2 style="font-size: 14px; color: #1a365d; margin: 0 0 4px 0;"><i class="fas fa-file-upload"></i> レポート一括取り込み</h2>
-          <p style="font-size: 11px; color: #4a5568; margin: 0;">テキストファイル（.txt / .csv）をドロップ</p>
-        </div>
-        <label id="drop-zone" class="drop-zone" style="padding: 10px 20px; margin: 0; min-width: 150px; cursor: pointer;" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-          <i class="fas fa-cloud-upload-alt drop-icon" style="font-size: 20px; margin-bottom: 0;"></i>
-          <input type="file" id="file-input" style="display:none;" accept=".txt,.csv,.tsv" onchange="handleFileSelect(event)">
-        </label>
-      </div>
-
+      
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <button onclick="loadBulkRegisterData()" style="background:#1a365d; color:white; border:none; padding:8px 16px; border-radius:8px; font-weight:bold; font-size:12px; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
           <i class="fas fa-sync-alt"></i> データを取得
@@ -614,7 +615,7 @@
   </div>
 
 <div id="bulkDescModal" class="modal">
-    <div class="modal-content" style="max-width: 90%; width: 450px;">
+    <div class="modal-content" style="max-width: 90%; width: 450px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
       <h3 style="margin-top:0; border-bottom:2px solid #e2e8f0; padding-bottom:8px;"><i class="fas fa-edit"></i> 商品説明の編集</h3>
       <input type="hidden" id="bulkEditSku">
       <div style="font-size:11px; color:#4a5568; margin-bottom:6px; font-weight:bold;" id="bulkEditTitle"></div>
@@ -715,6 +716,7 @@
     const homeOrder = ['turnover', 'purchase', 'sales']; 
 
     let currentActiveView = 'view-home';
+    let viewHistoryStack = ['view-home']; // 💡 追加：画面の履歴を記憶する配列
     let globalViewedLinks = [];
     let globalHistoryData = {};
     let globalInventoryData = [];
@@ -909,7 +911,11 @@
       }
     }
 
-    function openView(viewId) {
+    function openView(viewId, isBack = false) {
+      if (!isBack && currentActiveView !== viewId) {
+        viewHistoryStack.push(currentActiveView); // 移動前に今の画面を記憶！
+      }
+      
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
       document.getElementById(viewId).classList.add('active');
       currentActiveView = viewId;
@@ -2174,122 +2180,61 @@ document.getElementById("regPurchaseUrl").value = "";
       const start = (ledgerCurrentPage - 1) * ITEMS_PER_PAGE;
       const pageItems = filtered.slice(start, start + ITEMS_PER_PAGE);
 
-      resDiv.style.display = 'grid';
-      resDiv.style.gridTemplateColumns = 'repeat(auto-fill, minmax(340px, 1fr))';
-      resDiv.style.gap = '16px';
+      // 💡 古い display:grid などの指定を消して、テーブル用にリセット
+      resDiv.style.display = ''; 
+      resDiv.style.gridTemplateColumns = '';
+      resDiv.style.gap = '';
 
       if (pageItems.length === 0) {
-        resDiv.innerHTML = '<div class="card" style="text-align:center; color:#a0aec0; padding:30px 10px; grid-column: 1 / -1;">条件に合う商品が見つかりません。</div>';
+        resDiv.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#a0aec0; padding:30px 10px;">条件に合う商品が見つかりません。</td></tr>';
         document.getElementById('ledger-pagination').style.display = 'none';
         return;
       }
 
-      // 折り畳み（アコーディオン）のアニメーション用スタイルを追加
-      let html = `
-        <style>
-          .ledger-details summary::-webkit-details-marker { display: none; } /* デフォルトの矢印を消す */
-          .ledger-details[open] summary .fa-chevron-down { transform: rotate(180deg); } /* 開いた時に矢印を反転 */
-        </style>
-      `;
-
+      let html = '';
       pageItems.forEach((item) => {
         let statusTag = '<span style="background:#fefcbf; color:#b7791f; border:1px solid #f6e05e; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:bold;">🚚 納品待ち</span>';
-        let borderColor = "#f6e05e"; 
-        
-        if (item.status === '出品中') {
-            statusTag = '<span style="background:#ebf8ff; color:#2b6cb0; border:1px solid #bee3f8; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:bold;">📦 出品中</span>';
-            borderColor = "#3182ce";
-        }
-        if (item.status === '販売済') {
-            statusTag = '<span style="background:#f0fff4; color:#2f855a; border:1px solid #c6f6d5; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:bold;">💰 販売済</span>';
-            borderColor = "#38a169";
-        }
-        if (item.status === '返金済み') {
-            statusTag = '<span style="background:#fff5f5; color:#c53030; border:1px solid #feb2b2; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:bold;">🔄 返金済み</span>';
-            borderColor = "#e53e3e";
-        }
-        if (item.status === '補填済み') {
-            statusTag = '<span style="background:#faf5ff; color:#6b46c1; border:1px solid #d6bcfa; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:bold;">🛡️ 補填済み</span>';
-            borderColor = "#805ad5";
-        }
+        if (item.status === '出品中') statusTag = '<span style="background:#ebf8ff; color:#2b6cb0; border:1px solid #bee3f8; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:bold;">📦 出品中</span>';
+        if (item.status === '販売済') statusTag = '<span style="background:#f0fff4; color:#2f855a; border:1px solid #c6f6d5; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:bold;">💰 販売済</span>';
+        if (item.status === '返金済み') statusTag = '<span style="background:#fff5f5; color:#c53030; border:1px solid #feb2b2; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:bold;">🔄 返金済み</span>';
+        if (item.status === '補填済み') statusTag = '<span style="background:#faf5ff; color:#6b46c1; border:1px solid #d6bcfa; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:bold;">🛡️ 補填済み</span>';
 
+        const uniqueId = "inv_" + item.no; 
         const profitColor = (item.profit >= 0) ? "#07A27B" : "#e53e3e";
-        const urlLink = item.url ? `<a href="${item.url}" target="_blank" style="color:#3182ce; margin-left:4px; text-decoration:none;"><i class="fas fa-external-link-alt"></i></a>` : '';
 
-        // 👇 さっきのアラートだったボタンを、本物の関数の呼び出しに書き換える！ 👇
         let actionBtnHtml = `
-          <div style="display:flex; gap:6px;">
-            <a href="https://www.amazon.co.jp/dp/${item.asin}" target="_blank" style="color:#dd6b20; background:#fffaf0; border:1px solid #feebc8; padding:4px 10px; border-radius:6px; font-size:13px; text-decoration:none; display:flex; align-items:center;"><i class="fab fa-amazon"></i></a>
-            <button onclick="openLedgerEdit('${item.no}')" style="color:#3182ce; background:#ebf8ff; border:1px solid #bee3f8; padding:4px 10px; border-radius:6px; font-size:13px; cursor:pointer;"><i class="fas fa-edit"></i></button>
+            <button onclick="toggleListing('${item.no}', '${item.status}', this)" style="background:${item.status === '納品待ち' ? '#f0fff4' : '#fff5f5'}; color:${item.status === '納品待ち' ? '#2f855a' : '#c53030'}; border:1px solid ${item.status === '納品待ち' ? '#c6f6d5' : '#feb2b2'}; padding:6px; border-radius:4px; font-size:11px; font-weight:bold; cursor:pointer; width:100%;">
+              <i class="fas ${item.status === '納品待ち' ? 'fa-arrow-up' : 'fa-arrow-down'}"></i> ${item.status === '納品待ち' ? '出品' : '取消'}
+            </button>
         `;
-        // 👇 出品ボタン（納品待ちは『出品』、出品中は『出品取消』になるトグル仕様）👇
-        if (item.status === '納品待ち') {
-          actionBtnHtml += `<button onclick="toggleListing('${item.no}', '${item.status}', this)" style="color:#2f855a; background:#f0fff4; border:1px solid #c6f6d5; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-arrow-up"></i> 出品</button>`;
-        } else if (item.status === '出品中') {
-          actionBtnHtml += `<button onclick="toggleListing('${item.no}', '${item.status}', this)" style="color:#c53030; background:#fff5f5; border:1px solid #feb2b2; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-arrow-down"></i> 取消</button>`;
-        }
-        actionBtnHtml += `</div>`;
+
+        let imgHtml = item.img ? `<img src="${item.img}" style="width:45px; height:45px; object-fit:contain; background:#fff; border:1px solid #eee; border-radius:4px;">` : `<div style="width:45px; height:45px; background:#f8fafc; border:1px solid #eee; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:9px; color:#999;">No Img</div>`;
 
         html += `
-        <div class="card" style="padding:16px; border-left:4px solid ${borderColor}; display:flex; flex-direction:column; gap:8px; margin-bottom:0; box-shadow:0 2px 4px rgba(0,0,0,0.05);">
-          
-          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px dashed #e2e8f0; padding-bottom:10px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              ${statusTag}
-              <span style="font-size:11px; color:#a0aec0; font-weight:bold;">No.${item.no || '-'}</span>
+        <tr style="border-bottom: 1px solid #e2e8f0; background: #fff;">
+          <td style="padding: 10px; text-align: center;">${actionBtnHtml}</td>
+          <td style="padding: 10px; text-align: center;">${imgHtml}</td>
+          <td style="padding: 10px;">${statusTag}<br><span style="font-size:10px; color:#a0aec0; font-weight:bold; display:block; margin-top:4px;">No.${item.no || '-'}</span></td>
+          <td style="padding: 10px; max-width: 250px;">
+            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:bold; color:#1a365d; margin-bottom:4px;" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</div>
+            <span style="font-family:monospace; background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold;">${escapeHtml(item.asin)}</span>
+            <span style="font-size:11px; color:#718096; margin-left:6px;">SKU: ${escapeHtml(item.sku)}</span>
+          </td>
+          <td style="padding: 10px; font-weight:bold; color:#4a5568;">${escapeHtml(item.condition) || '-'}</td>
+          <td style="padding: 10px; text-align: right;">
+            <div style="font-size:10px; color:#718096;">仕入: ¥${Number(item.buyPrice).toLocaleString()}</div>
+            <div style="font-size:13px; font-weight:bold; color:#3182ce; margin-top:2px;">予定: ¥${Number(item.estPrice).toLocaleString()}</div>
+          </td>
+          <td style="padding: 10px; text-align: right; font-weight: 900; color: ${profitColor}; font-size:15px;">
+            ¥${Number(item.profit).toLocaleString()}
+          </td>
+          <td style="padding: 10px; text-align: center;">
+            <div style="display:flex; gap:4px; justify-content:center;">
+              <button onclick="openLedgerEdit('${item.no}')" style="background:#3182ce; color:white; border:none; padding:6px 10px; border-radius:4px; cursor:pointer;"><i class="fas fa-edit"></i> 編集</button>
+              <a href="https://www.amazon.co.jp/dp/${item.asin}" target="_blank" style="background:#dd6b20; color:white; padding:6px 10px; border-radius:4px; text-decoration:none;"><i class="fab fa-amazon"></i></a>
             </div>
-            ${actionBtnHtml}
-          </div>
-
-          <div style="display:grid; grid-template-columns:1fr 1fr; row-gap:8px; column-gap:12px; font-size:11px; color:#4a5568; margin-top:4px;">
-            <div style="grid-column: 1 / -1;">
-              <div style="color:#a0aec0; font-size:10px; margin-bottom:2px;">ASIN</div>
-              <div style="font-weight:900; color:#1a365d; font-size:14px; font-family:monospace;">${escapeHtml(item.asin)}</div>
-              <div style="font-size:10px; color:#a0aec0; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHtml(item.title)}">${escapeHtml(item.title) || '-'}</div>
-            </div>
-            
-            <div><span style="color:#a0aec0; margin-right:4px;">型番</span><span style="font-weight:bold;">${escapeHtml(item.model) || '-'}</span></div>
-            <div><span style="color:#a0aec0; margin-right:4px;">SKU</span><span>${escapeHtml(item.sku) || '-'}</span></div>
-            
-            <div><span style="color:#a0aec0; margin-right:4px;">商品ID</span><span>${escapeHtml(item.itemId) || '-'}</span></div>
-            <div><span style="color:#a0aec0; margin-right:4px;">コンデ</span><span style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-weight:bold;">${escapeHtml(item.condition) || '-'}</span></div>
-            
-            <div><span style="color:#a0aec0; margin-right:4px;">仕入先</span><span>${escapeHtml(item.supplier) || '-'}${urlLink}</span></div>
-            <div><span style="color:#a0aec0; margin-right:4px;">仕入日</span><span>${item.buyDate || '-'}</span></div>
-            
-            <div style="grid-column: 1 / -1; display:flex; align-items:center; gap:8px;">
-              <span style="color:#a0aec0;">販売日: ${item.sellDate || '-'}</span>
-              <span style="color:#e2e8f0;">|</span>
-              <span style="color:#a0aec0;">注文番号: <span style="color:#4a5568; font-family:monospace;">${escapeHtml(item.orderNum) || '-'}</span></span>
-            </div>
-          </div>
-
-          <details class="ledger-details" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; margin-top:4px;">
-            <summary style="padding:10px 12px; font-size:12px; font-weight:bold; color:#4a5568; cursor:pointer; outline:none; list-style:none; display:flex; justify-content:space-between; align-items:center;">
-              <span style="display:flex; align-items:center; gap:6px;">
-                <i class="fas fa-yen-sign" style="color:#a0aec0;"></i> 金額・利益の内訳
-              </span>
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span style="font-size:14px; font-weight:900; color:${profitColor};">¥${Number(item.profit).toLocaleString()}</span>
-                <i class="fas fa-chevron-down" style="font-size:12px; color:#a0aec0; transition: transform 0.2s;"></i>
-              </div>
-            </summary>
-            
-            <div style="padding:0 12px 12px 12px;">
-              <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; text-align:right; border-top:1px dashed #cbd5e0; padding-top:10px; margin-bottom:10px;">
-                <div><div style="font-size:9px; color:#718096; margin-bottom:2px;">仕入値</div><div style="font-size:12px; font-weight:bold; color:#1a365d;">¥${Number(item.buyPrice).toLocaleString()}</div></div>
-                <div><div style="font-size:9px; color:#718096; margin-bottom:2px;">送料/経費</div><div style="font-size:12px; font-weight:bold; color:#1a365d;">¥${Number(item.expense).toLocaleString()}</div></div>
-                <div><div style="font-size:9px; color:#718096; margin-bottom:2px;">販売予定</div><div style="font-size:12px; font-weight:bold; color:#3182ce;">¥${Number(item.estPrice).toLocaleString()}</div></div>
-              </div>
-              
-              <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; text-align:right; border-top:1px dashed #cbd5e0; padding-top:10px;">
-                <div><div style="font-size:9px; color:#718096; margin-bottom:2px;">売上額</div><div style="font-size:12px; font-weight:bold; color:#1a365d;">¥${Number(item.sales).toLocaleString()}</div></div>
-                <div><div style="font-size:9px; color:#718096; margin-bottom:2px;">配送料</div><div style="font-size:12px; font-weight:bold; color:#1a365d;">¥${Number(item.shipping).toLocaleString()}</div></div>
-                <div><div style="font-size:9px; color:#718096; margin-bottom:2px;">手数料</div><div style="font-size:12px; font-weight:bold; color:#e53e3e;">¥${Number(item.fee).toLocaleString()}</div></div>
-              </div>
-            </div>
-          </details>
-          </div>
+          </td>
+        </tr>
         `;
       });
       
@@ -2735,6 +2680,15 @@ document.getElementById("regPurchaseUrl").value = "";
       }
       btn.innerHTML = originalText;
       btn.disabled = false;
+    }
+
+function goBackScreen() {
+      if (viewHistoryStack.length > 0) {
+        const prevView = viewHistoryStack.pop(); // 1つ前の画面を取り出す
+        openView(prevView, true); // isBack=trueで開く（履歴を無限ループさせないため）
+      } else {
+        openView('view-home'); // 履歴がなければホームへ
+      }
     }
   </script>
 
