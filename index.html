@@ -3111,10 +3111,10 @@ function openInfoModal() {
   document.getElementById('info-cond-e').value = "読み込み中...";
   document.getElementById('info-cond-f').value = "読み込み中...";
 
-  // GASからデータを取得（※エンドポイントURLは自分のものに変更）
+  // 🚨 変更ポイント: JSON形式でリクエストを投げる！
   fetch(SCRIPT_URL, {
     method: 'POST',
-    body: new URLSearchParams({ command: 'getInfoSettings' })
+    body: JSON.stringify({ command: 'getInfoSettings' })
   })
   .then(res => res.json())
   .then(data => {
@@ -3143,9 +3143,10 @@ function saveInfoSettings() {
   btn.innerHTML = "保存中...";
   btn.disabled = true;
 
+  // 🚨 変更ポイント: JSON形式で保存データを投げる！
   fetch(SCRIPT_URL, {
     method: 'POST',
-    body: new URLSearchParams({ 
+    body: JSON.stringify({ 
       command: 'saveInfoSettings',
       suppliers: suppliers,
       condC: condC,
