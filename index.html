@@ -400,11 +400,11 @@
           top: 0;
           background: #edf2f7;
           z-index: 10;
-          box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1);
+          box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1); /* スクロール時の影 */
         }
       </style>
 
-      <div style="overflow-x: auto; overflow-y: auto; max-height: 70vh; background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+      <div style="overflow-x: auto; overflow-y: auto; max-height: calc(100vh - 200px); background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
         <table id="ledgerTable" style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 11px; text-align: left; white-space: nowrap; min-width: 950px;">
           <thead>
             <tr>
@@ -420,9 +420,9 @@
                 <span class="default-data">仕入 / 販売予定</span>
                 <span class="sales-data" style="color:#2b6cb0;">売上 / 送料 / 手数料</span>
               </th>
-              <th style="text-align: right; width: 90px;">
+              <th style="text-align: right; width: 100px;">
                 <span class="default-data">想定利益</span>
-                <span class="sales-data" style="color:#2b6cb0;">確定利益</span>
+                <span class="sales-data" style="color:#2b6cb0;">確定利益(U列)</span>
               </th>
               <th style="text-align:center; width: 70px;">操作</th>
             </tr>
@@ -2189,7 +2189,7 @@ document.getElementById("regPurchaseUrl").value = "";
       }
     }
 
-    // 💡 編集ボタンが絶対反応するように、プログラムの世界(window)に直接命令を繋ぎ直した！
+    // 💡 編集ボタンと切替ボタンが絶対に反応するように「window」に直接繋ぎ直した！
     window.toggleLedgerView = function() {
       const table = document.getElementById('ledgerTable');
       if(table) table.classList.toggle('sales-mode');
@@ -2253,28 +2253,16 @@ document.getElementById("regPurchaseUrl").value = "";
         if (item.status === '返金済み') statusTag = '<span style="background:#fff5f5; color:#c53030; border:1px solid #feb2b2; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">🔄 返金済み</span>';
         if (item.status === '補填済み') statusTag = '<span style="background:#faf5ff; color:#6b46c1; border:1px solid #d6bcfa; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">🛡️ 補填済み</span>';
 
-        // 💡 ① 画面側で想定利益を計算（販売予定 - 仕入 - 経費 - 手数料10% - FBA目安450円）
+        // 💡 1. 想定利益の計算（画面側で計算： 予定売価 - 仕入 - 経費 - 手数料目安10% - FBA450円）
         const b_price = Number(item.buyPrice || 0);
         const b_exp = Number(item.expense || 0);
         const est_price = Number(item.estPrice || 0);
-        
         const expectedFee = Math.floor(est_price * 0.10) + 450;
         const expectedProfit = est_price > 0 ? (est_price - b_price - b_exp - expectedFee) : 0;
         const estProfitColor = (expectedProfit >= 0) ? "#07A27B" : "#e53e3e";
 
-        // 💡 ② 実績から「確定利益」を計算
-        const s_sales = Number(item.sales || 0);
-        const s_ship = Number(item.shipping || 0);
-        const s_fee = Number(item.fee || 0);
-
-        let actualProfitText = "---";
-        let actualProfitColor = "#718096";
-
-        if (s_sales > 0 || s_fee !== 0 || item.status === '販売済' || item.status === '返金済み' || item.status === '補填済み') {
-            const actualProfit = s_sales + s_ship + s_fee - b_price - b_exp;
-            actualProfitText = '¥' + actualProfit.toLocaleString();
-            actualProfitColor = actualProfit >= 0 ? "#07A27B" : "#e53e3e";
-        }
+        // 💡 2. 確定利益（シートのU列 item.profit をそのまま使う）
+        const actualProfitColor = (Number(item.profit || 0) >= 0) ? "#07A27B" : "#e53e3e";
 
         let listToggleBtn = '';
         if (item.status === '納品待ち' || item.status === '出品中') {
@@ -2321,18 +2309,20 @@ document.getElementById("regPurchaseUrl").value = "";
               <div style="font-size:11px; font-weight:bold; color:#3182ce;">予定: ¥${Number(est_price).toLocaleString()}</div>
             </div>
             <div class="sales-data" style="font-size:10px;">
-              <div style="font-weight:bold; color:#1a365d; margin-bottom:2px;">売上: ¥${Number(s_sales).toLocaleString()}</div>
-              <div style="color:#718096; margin-bottom:2px;">送料: ${s_ship < 0 ? '' : '-'}¥${Math.abs(s_ship).toLocaleString()}</div>
-              <div style="color:#e53e3e;">手料: ${s_fee < 0 ? '' : '-'}¥${Math.abs(s_fee).toLocaleString()}</div>
+              <div style="font-weight:bold; color:#1a365d; margin-bottom:2px;">売上: ¥${Number(item.sales || 0).toLocaleString()}</div>
+              <div style="color:#718096; margin-bottom:2px;">送料: ${item.shipping < 0 ? '' : '-'}¥${Math.abs(Number(item.shipping || 0)).toLocaleString()}</div>
+              <div style="color:#e53e3e;">手料: ${item.fee < 0 ? '' : '-'}¥${Math.abs(Number(item.fee || 0)).toLocaleString()}</div>
             </div>
           </td>
 
           <td style="text-align: right; font-weight: 900; font-size:14px;">
             <div class="default-data" style="color: ${estProfitColor};">
               ¥${expectedProfit.toLocaleString()}
-              <div style="font-size:8px; color:#a0aec0; margin-top:2px; font-weight:normal;">(推計)</div>
+              <div style="font-size:9px; color:#a0aec0; margin-top:2px; font-weight:normal;">(目安)</div>
             </div>
-            <div class="sales-data" style="color: ${actualProfitColor};">${actualProfitText}</div>
+            <div class="sales-data" style="color: ${actualProfitColor};">
+              ¥${Number(item.profit || 0).toLocaleString()}
+            </div>
           </td>
 
           <td style="text-align: center;">
