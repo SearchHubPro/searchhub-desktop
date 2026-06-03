@@ -159,14 +159,15 @@
     
     #ptr-indicator { position: fixed; top: -50px; left: 0; width: 100%; text-align: center; z-index: 1000; transition: top 0.3s; font-weight: bold; color: #008296; font-size: 13px; background: rgba(255,255,255,0.95); padding: 10px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-radius: 0 0 12px 12px; pointer-events: none;}
 
-    /* =========================================================================
+   /* =========================================================================
        🚀 PC最適化 (Amazon・Yahoo風のワイド画面対応) 
        ========================================================================= */
     @media (min-width: 768px) {
-.header { padding: calc(16px + env(safe-area-inset-top)) 32px 16px 32px; }      .header-left, .header-right { width: auto; }
+      .header { padding: calc(16px + env(safe-area-inset-top)) 32px 16px 32px; }
+      .header-left, .header-right { width: auto; }
       
-      body {
-        max-width: 100%; /* 💡 1200px制限を解除して100%（全画面）にする */
+      body {
+        max-width: 100%; /* 💡 1200px制限を解除して100%（全画面）にする */
         margin: 0; 
         background-color: #f2f4f8; 
       }
@@ -202,13 +203,50 @@
         gap: 16px;
       }
       
-      /* 検索履歴もタイル状に */
+      /* ========================================================
+         🌟 追加：Amazonリサーチの「2画面」レイアウト制御！
+         ======================================================== */
+      /* 検索前：検索履歴はタイル状（横並び） */
       #amazonHistoryArea {
         display: grid !important;
         flex-direction: row !important;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 12px;
+        align-content: start;
       }
+
+      #amazon-container {
+        transition: all 0.3s ease;
+      }
+
+      /* 🚀 検索実行時：左に履歴、右に結果の2カラム！ */
+      #amazon-container.search-active {
+        display: grid;
+        grid-template-columns: 320px 1fr; /* 左が履歴(320px固定)、右が結果(残り全部) */
+        gap: 24px;
+        align-items: start;
+      }
+
+      /* 🚀 検索実行時：履歴を「縦並び」にしてスクロール可能にする */
+      #amazon-container.search-active #amazonHistoryArea {
+        display: flex !important;
+        flex-direction: column !important;
+        max-height: calc(100vh - 180px); /* 画面の高さに合わせてスクロール */
+        overflow-y: auto;
+        padding-right: 8px; /* スクロールバーとカードの隙間 */
+      }
+
+      /* スクロールバーをおしゃれに細くする */
+      #amazon-container.search-active #amazonHistoryArea::-webkit-scrollbar { width: 6px; }
+      #amazon-container.search-active #amazonHistoryArea::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 4px; }
+      #amazon-container.search-active #amazonHistoryArea::-webkit-scrollbar-track { background: transparent; }
+      
+      /* 🚀 検索実行時：右側の結果は幅を100%使い切る */
+      #amazon-container.search-active #amazonResult > .card {
+        max-width: 100% !important;
+        margin: 0 !important;
+      }
+      /* ======================================================== */
       
       /* グリッドの中のカード設定（高さを揃えて綺麗に並べる） */
       .card {
@@ -227,7 +265,7 @@
         grid-column: 1 / -1;
       }
 
-      /* ③ Amazonリサーチ結果は幅が広くなりすぎると見にくいので中央配置 */
+      /* ③ 初期状態のAmazonリサーチ結果案内は中央配置 */
       #amazonResult > .card {
         max-width: 800px;
         margin: 0 auto !important;
@@ -553,11 +591,15 @@
         <input type="text" id="amazonKw" placeholder="ASINや型番を入力...">
         <button onclick="runAmazonResearch()" id="searchBtn">解析</button>
       </div>
-      <div id="amazonHistoryArea" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;"></div>
-      
-      <div id="amazonResult">
-        <div class="card" style="text-align:center; color:#a0aec0; padding:20px; font-size:12px;">ASINやキーワードを入力して解析ボタンを押してな！</div>
+
+      <div id="amazon-container">
+        <div id="amazonHistoryArea" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;"></div>
+        
+        <div id="amazonResult">
+          <div class="card" style="text-align:center; color:#a0aec0; padding:20px; font-size:12px;">ASINやキーワードを入力して解析ボタンを押してな！</div>
+        </div>
       </div>
+      
     </div>
   </div>
 
@@ -1069,7 +1111,11 @@
       if (viewId === 'view-amazon') {
         document.getElementById('amazonKw').value = '';
         document.getElementById('amazonResult').style.display = 'none';
-        document.getElementById('amazonHistoryArea').style.display = 'flex';
+        
+        // 💡 検索前はクラスを外して、初期の横並びレイアウトに戻す！
+        document.getElementById('amazon-container').classList.remove('search-active');
+        document.getElementById('amazonHistoryArea').style.display = 'grid';
+        
         loadAmazonHistory();
       }
       window.scrollTo(0,0);
@@ -1357,18 +1403,21 @@ fetchConditionList();
       let history = [];
       try { history = JSON.parse(AppStorage.get("sh_amazon_history", "[]")); } catch(e) {}
       if(history.length === 0) { histArea.innerHTML = ''; return; }
+      
       let html = '<div style="font-size:12px; font-weight:bold; color:#718096; margin-bottom:4px; grid-column:1/-1;">🕒 最近の検索履歴</div>';
       history.forEach(item => {
         let imgHtml = item.img ? `<div style="width:50px; height:50px; background:#fff; border:1px solid #eee; border-radius:6px; padding:2px; flex-shrink:0;"><img src="${item.img}" style="width:100%; height:100%; object-fit:contain;"></div>` : '<div style="width:50px; height:50px; background:#f8fafc; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:9px; color:#999; border:1px solid #eee;">No Img</div>';
+        
+        // 💡 親と子の両方に overflow:hidden と min-width:0 を設定して完全ガード！
         html += `
-        <div onclick="document.getElementById('amazonKw').value='${item.kw}'; runAmazonResearch();" class="card" style="display:flex; gap:10px; align-items:center; padding:10px; margin-bottom:0; cursor:pointer; border-left:4px solid #4a5568;">
+        <div onclick="document.getElementById('amazonKw').value='${item.kw}'; runAmazonResearch();" class="card" style="display:flex; gap:10px; align-items:center; padding:10px; margin-bottom:0; cursor:pointer; border-left:4px solid #4a5568; overflow:hidden; width:100%; box-sizing:border-box;">
           ${imgHtml}
-          <div style="flex:1; min-width:0;">
-            <div style="font-size:11px; font-weight:bold; color:#1a365d; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:4px;">${escapeHtml(item.title)}</div>
-            <div style="display:flex; align-items:center; flex-wrap:wrap; gap:4px;">
-              <span style="background:#e0f2fe; color:#0369a1; padding:2px 5px; border-radius:4px; font-size:9px; font-weight:bold;">${item.kw}</span>
-              <span style="border:1px solid ${item.rColor}; color:${item.rColor}; padding:1px 5px; border-radius:4px; font-size:9px; font-weight:bold;">${item.rank}</span>
-              <span style="background:#f0f4ff; color:#2c4c8f; border:1px solid #dbeafe; padding:1px 5px; border-radius:4px; font-size:9px; font-weight:bold;">中古 ${item.used}</span>
+          <div style="flex:1; min-width:0; overflow:hidden;">
+            <div style="font-size:11px; font-weight:bold; color:#1a365d; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:4px; width:100%;">${escapeHtml(item.title)}</div>
+            <div style="display:flex; align-items:center; flex-wrap:wrap; gap:4px; overflow:hidden;">
+              <span style="background:#e0f2fe; color:#0369a1; padding:2px 5px; border-radius:4px; font-size:9px; font-weight:bold; white-space:nowrap;">${item.kw}</span>
+              <span style="border:1px solid ${item.rColor}; color:${item.rColor}; padding:1px 5px; border-radius:4px; font-size:9px; font-weight:bold; white-space:nowrap;">${item.rank}</span>
+              <span style="background:#f0f4ff; color:#2c4c8f; border:1px solid #dbeafe; padding:1px 5px; border-radius:4px; font-size:9px; font-weight:bold; white-space:nowrap;">中古 ${item.used}</span>
             </div>
           </div>
         </div>`;
@@ -1381,18 +1430,26 @@ fetchConditionList();
       try { history = JSON.parse(AppStorage.get("sh_amazon_history", "[]")); } catch(e) {}
       history = history.filter(item => item.kw !== data.kw);
       history.unshift(data);
-      if(history.length > 10) history = history.slice(0, 10);
+      if(history.length > 20) history = history.slice(0, 20); // 💡 ここを20に変更
       AppStorage.set("sh_amazon_history", JSON.stringify(history));
       loadAmazonHistory();
     }
     
     async function runAmazonResearch(fallbackTitle) {
-      const kw = document.getElementById("amazonKw").value.trim(); const resView = document.getElementById("amazonResult"); const apiKey = AppStorage.get("sh_keepa", "");
-      if (!kw) return alert("キーワードかASINを入力してな！"); if (!apiKey) { openConfig(); return alert("⚙️設定からKeepaAPIキーを入力してな！"); }
+      const kw = document.getElementById("amazonKw").value.trim(); 
+      const resView = document.getElementById("amazonResult"); 
+      const apiKey = AppStorage.get("sh_keepa", "");
+      if (!kw) return alert("キーワードかASINを入力してな！"); 
+      if (!apiKey) { openConfig(); return alert("⚙️設定からKeepaAPIキーを入力してな！"); }
+      
       resView.innerHTML = '<div class="loading-spinner">⌛ Keepa APIと高速通信・解析中...</div>';
-document.getElementById('amazonHistoryArea').style.display = 'none';
+      
+      // 🚨 以前はここで履歴を消してた（'none'）のを消去！代わりにクラスを付与！
+      document.getElementById('amazon-container').classList.add('search-active');
       resView.style.display = 'block';
+      
       try {
+        // ... (以下既存のコードそのまま)
         let asin = kw;
         if (!/^[A-Z0-9]{10}$/i.test(kw)) {
           const searchRes = await fetch('https://api.keepa.com/search?key=' + apiKey + '&domain=5&type=product&term=' + encodeURIComponent(kw));
