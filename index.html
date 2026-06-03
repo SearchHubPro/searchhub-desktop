@@ -161,12 +161,20 @@
     #ptr-indicator { position: fixed; top: -50px; left: 0; width: 100%; text-align: center; z-index: 1000; transition: top 0.3s; font-weight: bold; color: #008296; font-size: 13px; background: rgba(255,255,255,0.95); padding: 10px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-radius: 0 0 12px 12px; pointer-events: none;}
 
     /* =========================================================================
-       🚀 PC最適化 (Amazon・Yahoo風のワイド画面対応) 
-       ========================================================================= */
-    @media (min-width: 768px) {
-      .header { padding: 16px 32px; }
-      .header-left, .header-right { width: auto; }
-      
+       🚀 PC最適化 (Amazon・Yahoo風のワイド画面対応) 
+       ========================================================================= */
+    @media (min-width: 768px) {
+      /* 💡 ヘッダーの中身を強制的に画面の両端まで広げる */
+      .header {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 16px 24px !important;
+      }
+      .header-left, .header-right {
+        width: auto !important;
+      }
+
       body {
         max-width: 100%; /* 💡 1200px制限を解除して100%（全画面）にする */
         margin: 0; 
