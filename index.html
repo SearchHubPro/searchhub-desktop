@@ -510,8 +510,8 @@
             <tr>
               <th style="width: 80px; text-align:center;">画像 / ランク</th>
               <th style="min-width: 250px;">商品名 / ASIN・型番</th>
-              <th style="width: 80px;">仕入日</th>
-              <th style="width: 130px; text-align: right;">予定売価 / 中古最安</th>
+              <th style="width: 90px;">仕入日 / 精査日</th>
+              <th style="width: 130px; text-align: right;">平均売価 / 中古最安</th>
               <th style="width: 130px; text-align: right;">FBA料 / サイズ</th>
               <th style="width: 90px; text-align: center;">操作</th>
             </tr>
@@ -522,6 +522,35 @@
         </table>
       </div>
     </div>
+
+    <div id="purchase-edit-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+      <div style="background:white; padding:20px; border-radius:8px; width:90%; max-width:400px; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+        <h3 style="margin-top:0; color:#2d3748; font-size:16px; border-bottom:2px solid #edf2f7; padding-bottom:8px; margin-bottom:16px;">✏️ 仕入れデータ編集</h3>
+        <input type="hidden" id="edit-purchase-id">
+        
+        <div style="margin-bottom:12px;">
+          <label style="font-size:11px; color:#718096; font-weight:bold; display:block; margin-bottom:4px;">商品名</label>
+          <input type="text" id="edit-purchase-title" style="width:100%; padding:8px; border:1px solid #cbd5e0; border-radius:4px; font-size:13px; box-sizing:border-box;">
+        </div>
+        
+        <div style="display:flex; gap:10px; margin-bottom:12px;">
+          <div style="flex:1;">
+            <label style="font-size:11px; color:#718096; font-weight:bold; display:block; margin-bottom:4px;">平均売価 (¥)</label>
+            <input type="number" id="edit-purchase-sell" style="width:100%; padding:8px; border:1px solid #cbd5e0; border-radius:4px; font-size:13px; box-sizing:border-box;">
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:11px; color:#718096; font-weight:bold; display:block; margin-bottom:4px;">仕入れ値 (¥)</label>
+            <input type="number" id="edit-purchase-buy" style="width:100%; padding:8px; border:1px solid #cbd5e0; border-radius:4px; font-size:13px; box-sizing:border-box;">
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px;">
+          <button onclick="closePurchaseEditModal()" style="padding:8px 16px; background:#e2e8f0; color:#4a5568; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">キャンセル</button>
+          <button onclick="savePurchaseEdit()" style="padding:8px 16px; background:#3182ce; color:white; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">保存する</button>
+        </div>
+      </div>
+    </div>
+
   </div>
   <div id="view-amazon" class="view">
     <div class="content">
@@ -2899,23 +2928,25 @@ function goBackScreen() {
         const rank = escapeHtml(item.rank || '-'); 
         const buyPrice = Number(item.buyPrice || 0); 
         const sellPrice = Number(item.sellPrice || 0);
-        
-        // 追加：GASから送られてきた新データ
         const fbaFee = Number(item.fbaFee || 0);
         const minUsed = Number(item.minUsed || 0);
         const size = escapeHtml(item.size || '-');
 
-        // ① 画像処理（GASで抽出したURLを優先）
+        // ① 画像処理: セル内画像(CellImage)で読み込めないため、ASINからAmazon公式画像を取得する仕様に強制する
         let imgUrl = item.img ? item.img.toString().trim() : '';
         const fallbackImg = `https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${asin}&Format=_SL250_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1`;
-        if (!imgUrl || imgUrl === 'No Img' || imgUrl === '-' || imgUrl.includes('[object')) imgUrl = fallbackImg;
-
-        // ② 日付を「〇月〇日」に変換
-        let pDateStr = '-';
-        if (item.purchaseDate) {
-          const d = new Date(item.purchaseDate);
-          if (!isNaN(d.getTime())) pDateStr = (d.getMonth() + 1) + '/' + d.getDate();
+        if (!imgUrl || imgUrl === 'No Img' || imgUrl === '-' || imgUrl.includes('CellImage') || imgUrl.includes('[object')) {
+          imgUrl = fallbackImg;
         }
+
+        // ② 日付処理: 仕入日と精査日をそれぞれ「〇月〇日」に変換
+        const formatDate = (dateStr) => {
+          if (!dateStr || dateStr === '-' || dateStr === '') return '-';
+          const d = new Date(dateStr);
+          return isNaN(d.getTime()) ? dateStr : (d.getMonth() + 1) + '/' + d.getDate();
+        };
+        const pDateStr = formatDate(item.purchaseDate);
+        const cDateStr = formatDate(item.checkDate);
 
         // サイズ区分のバッジ装飾
         const sizeBadge = size.includes('大型') 
@@ -2939,12 +2970,13 @@ function goBackScreen() {
           </td>
 
           <td>
-            <div style="font-size:13px; color:#2d3748; font-weight:bold;">${pDateStr}</div>
+            <div style="font-size:12px; color:#2d3748; font-weight:bold; margin-bottom:4px;">${pDateStr}</div>
+            <div style="font-size:12px; color:#e53e3e; font-weight:bold;">${cDateStr}</div>
           </td>
 
           <td style="text-align: right;">
-            <div style="font-size:11px; color:#718096; margin-bottom:2px;">売: ¥${sellPrice.toLocaleString()}</div>
-            <div style="font-size:11px; font-weight:bold; color:#dd6b20;">中: ¥${minUsed.toLocaleString()}</div>
+            <div style="font-size:11px; color:#718096; margin-bottom:4px;">平均: ¥${sellPrice.toLocaleString()}</div>
+            <div style="font-size:12px; font-weight:bold; color:#dd6b20;">最安: ¥${minUsed.toLocaleString()}</div>
           </td>
 
           <td style="text-align: right;">
@@ -2955,12 +2987,34 @@ function goBackScreen() {
           <td style="text-align: center;">
             <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
               <a href="https://www.amazon.co.jp/dp/${asin}" target="_blank" style="background:#f6ad55; color:white; border:none; padding:4px 0; border-radius:4px; cursor:pointer; width:100%; font-size:10px; font-weight:bold; text-decoration:none; display:flex; justify-content:center; align-items:center;"><i class="fab fa-amazon"></i> Amazon</a>
-              <button onclick="editPurchaseItem('${id}')" style="background:#4a5568; color:white; border:none; padding:4px 0; border-radius:4px; cursor:pointer; width:100%; font-size:10px; font-weight:bold;"><i class="fas fa-edit"></i> 編集</button>
+              <button onclick="openPurchaseEditModal('${id}')" style="background:#4a5568; color:white; border:none; padding:4px 0; border-radius:4px; cursor:pointer; width:100%; font-size:10px; font-weight:bold;"><i class="fas fa-edit"></i> 編集</button>
             </div>
           </td>
         </tr>`;
       });
       resDiv.innerHTML = html;
+    }
+    function openPurchaseEditModal(id) {
+      // globalPurchaseListData から該当データを探す
+      const item = globalPurchaseListData.find(i => String(i.id) === String(id));
+      if (!item) return;
+
+      document.getElementById('edit-purchase-id').value = item.id;
+      document.getElementById('edit-purchase-title').value = item.title;
+      document.getElementById('edit-purchase-sell').value = item.sellPrice || 0;
+      document.getElementById('edit-purchase-buy').value = item.buyPrice || 0;
+
+      document.getElementById('purchase-edit-modal').style.display = 'flex';
+    }
+
+    function closePurchaseEditModal() {
+      document.getElementById('purchase-edit-modal').style.display = 'none';
+    }
+
+    async function savePurchaseEdit() {
+      // ここにGASへデータを送信して上書き保存する処理を入れる（UI構築後、次のステップで実装）
+      alert("UIは完成や！次はGASに保存する処理を作るで！");
+      closePurchaseEditModal();
     }
   </script>
 
