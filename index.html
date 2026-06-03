@@ -2018,26 +2018,29 @@ document.getElementById("regPurchaseUrl").value = "";
 
       let html = "";
       globalResearcherData.forEach((item, index) => {
-        // 🌟 1. 画像処理（GASから届いた綺麗なURLをそのまま使う！）
+        // 🌟 1. 画像処理
         let imgUrl = item.img ? item.img.toString().trim() : '';
 
-　　　　// ★★★ ここに追加！ ★★★
-      if(imgUrl.includes("404")) { // 404が含まれるか、あるいは特定の異常パターンをチェック
-          console.warn("異常なURLを検知:", item.asin, imgUrl);
-      }
-      console.log("検証用URL:", item.asin, imgUrl); 
-      // ★★★★★★★★★★★★★
+        // ★★★ デバッグ＆修復ロジックをここに組み込み ★★★
+        console.log("検証用URL:", item.asin, imgUrl);
+        if (imgUrl.includes("404")) {
+           console.warn("異常なURLを検知:", item.asin, imgUrl);
+        }
+        // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 
         // 万が一の保険（ASINから画像を取得する裏URL）
         const fallbackAsinImg = `https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${item.asin}&Format=_SL250_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1`;
         
-        if (!imgUrl || imgUrl === 'No Img' || imgUrl === '-' || imgUrl.includes('[object')) {
+        // 🌟 判定強化：404が含まれる場合や空の場合も保険のURLに差し替える
+        if (!imgUrl || imgUrl === 'No Img' || imgUrl === '-' || imgUrl.includes('[object') || imgUrl.includes("404")) {
           imgUrl = fallbackAsinImg;
         }
 
         let imgHtml = `<div style="width:60px; height:60px; background:#fff; border:1px solid #eee; border-radius:6px; padding:2px; flex-shrink:0;">
-          <img src="${imgUrl}" style="width:100%; height:100%; object-fit:contain;" onerror="this.onerror=null;this.src='${fallbackAsinImg}';">
+          <img src="${imgUrl}" style="width:100%; height:100%; object-fit:contain;" onerror="this.src='${fallbackAsinImg}'">
         </div>`;
+        
+        // ...（以下、既存のHTML生成処理を継続）
 
         // 🌟 4. ランク色分け
         let rankColor = '#000000'; // その他は黒
