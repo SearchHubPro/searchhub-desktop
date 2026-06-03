@@ -264,18 +264,18 @@
   </div>
 
   <div class="header-wrapper">
-    <div class="header">
-      <div class="header-left">
-        <button class="header-btn" id="backBtn" style="display:none;" onclick="goBackScreen()"><i class="fas fa-chevron-left"></i></button>
-        <button class="header-btn" style="position:relative; z-index:9999;" onclick="openConfig()"><i class="fas fa-cog"></i></button>
-        </div>
-      <div class="header-center">
-        <h1 id="headerTitle">SearchHub Pro</h1>
-        <div class="last-update" id="lastUpdate">待機中...</div>
-      </div>
-      <div class="header-right">
+    <div class="header">
+      <div class="header-left">
+        <button class="header-btn" id="backBtn" style="display:none;" onclick="goBackScreen()"><i class="fas fa-chevron-left"></i></button>
+        <button class="header-btn" style="position:relative; z-index:9999;" onclick="openConfig()"><i class="fas fa-cog"></i></button>
+      </div>
+      <div class="header-center">
+        <h1 id="headerTitle">SearchHub Pro</h1>
+        <div class="last-update" id="lastUpdate">待機中...</div>
+      </div>
+      <div class="header-right">
         <button class="header-btn discord-btn discord-off" id="dcToggleBtn" onclick="toggleDiscord()"><i class="fab fa-discord"></i></button>
-        </div>
+      </div>
     </div>
   </div>
 
@@ -640,14 +640,13 @@
       <label>SearchHub Sniper 極のGASURL</label>
       <input type="url" id="cfgSniperUrl" placeholder="https://script.google.com/macros/.../exec">
       <label>SearchHub : WatcherのGASURL</label>
-      <input type="url" id="cfg10SiteUrl" placeholder="https://script.google.com/macros/.../exec">
-      <div style="border-top:1px dashed #ccc; margin-top:15px; padding-top:5px;"></div>
-      
-      <button onclick="enablePushNotifications(this)" style="width:100%; background:#ff9900; color:white; padding:10px; border:none; border-radius:6px; font-weight:bold; margin-top:10px; box-shadow:0 2px 4px rgba(0,0,0,0.2);">🔔 スマホに通知を送る許可をする</button>
-      <div class="modal-actions">
-        <button style="background:#e2e8f0; color:#4a5568;" onclick="closeConfig()">閉じる</button>
-        <button style="background:#1a365d; color:white;" onclick="saveConfig()">設定を保存</button>
-      </div>
+      <input type="url" id="cfg10SiteUrl" placeholder="https://script.google.com/macros/.../exec">
+      <div style="border-top:1px dashed #ccc; margin-top:15px; padding-top:5px;"></div>
+      
+      <div class="modal-actions">
+        <button style="background:#e2e8f0; color:#4a5568;" onclick="closeConfig()">閉じる</button>
+        <button style="background:#1a365d; color:white;" onclick="saveConfig()">設定を保存</button>
+      </div>
     </div>
   </div>
 
