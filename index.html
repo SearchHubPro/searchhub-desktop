@@ -2307,23 +2307,8 @@ document.getElementById("regPurchaseUrl").value = "";
         return;
       }
 
-      // 💡 1. 各列の横幅（width）を指定して、コンディションを右に寄せる！
-      let html = `
-        <div style="overflow-x: auto; max-height: calc(100vh - 250px); overflow-y: auto;">
-          <table style="width: 100%; border-collapse: collapse; min-width: 1000px; font-size: 13px;">
-            <thead style="position: sticky; top: 0; background: #f8fafc; z-index: 10;">
-              <tr style="border-bottom: 2px solid #e2e8f0; text-align: left; color: #475569;">
-                <th style="padding: 12px 8px; width: 70px; text-align: center;">出品</th>
-                <th style="padding: 12px 8px; width: 140px;">仕入先・URL・ID</th>
-                <th style="padding: 12px 8px; width: 110px;">仕入日 / No</th>
-                <th style="padding: 12px 8px;">商品名・ASIN</th> <th style="padding: 12px 8px; width: 100px; text-align: center;">コンディション</th> 
-                <th style="padding: 12px 8px; width: 120px; text-align: right;">${typeof isSalesMode !== 'undefined' && isSalesMode ? '売上 / 送料' : '仕入 / 販売予定'}</th>
-                <th style="padding: 12px 8px; width: 100px; text-align: right;">${typeof isSalesMode !== 'undefined' && isSalesMode ? '確定利益' : '想定利益'}</th>
-                <th style="padding: 12px 8px; width: 70px; text-align: center;">操作</th>
-              </tr>
-            </thead>
-            <tbody>
-      `;
+      // 💡 余計な見出し（thead）を消して、中身だけを生成するように戻したで！
+      let html = '';
 
       pageItems.forEach((item) => {
         let statusTag = '<span style="background:#fefcbf; color:#b7791f; border:1px solid #f6e05e; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">🚚 納品待ち</span>';
@@ -2415,7 +2400,6 @@ document.getElementById("regPurchaseUrl").value = "";
         `;
       });
       
-      html += `</tbody></table></div>`;
       resDiv.innerHTML = html;
 
       document.getElementById('ledger-page-info').innerText = `${ledgerCurrentPage} / ${totalPages} ページ`;
