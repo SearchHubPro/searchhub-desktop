@@ -3007,6 +3007,21 @@ function goBackScreen() {
     // ▼ モーダル操作用の関数 ▼
     function openPurchaseEditModal(id) {
       document.getElementById('edit-purchase-id').value = id;
+      
+      // 💡 開いた時に元々の仕入日が入るようにする親切設計！
+      const item = globalPurchaseListData.find(i => String(i.id) === String(id));
+      if (item && item.purchaseDate && item.purchaseDate !== '-') {
+         const d = new Date(item.purchaseDate);
+         if (!isNaN(d.getTime())) {
+           const yyyy = d.getFullYear();
+           const mm = String(d.getMonth() + 1).padStart(2, '0');
+           const dd = String(d.getDate()).padStart(2, '0');
+           document.getElementById('edit-purchase-date').value = `${yyyy}-${mm}-${dd}`;
+         }
+      } else {
+         document.getElementById('edit-purchase-date').value = '';
+      }
+      
       document.getElementById('purchase-edit-modal').style.display = 'flex';
     }
 
@@ -3016,15 +3031,71 @@ function goBackScreen() {
     }
 
     async function savePurchaseEdit() {
-      alert("保存処理はこれから作るで！");
-      closePurchaseEditModal();
+      const id = document.getElementById('edit-purchase-id').value;
+      const newDate = document.getElementById('edit-purchase-date').value;
+      
+      const researcherUrl = AppStorage.get("sh_researcher_url", "");
+      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+      
+      if (!researcherUrl || !targetGasUrl) return alert("⚙️URL設定が足りんで！");
+
+      const btn = document.querySelector('button[onclick="savePurchaseEdit()"]');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = "⌛ 保存中...";
+      btn.disabled = true;
+
+      try {
+        // 💡 GASに『updatePurchaseItem』という命令で日付の変更を送る！
+        const res = await fetch(targetGasUrl, {
+          method: 'POST',
+          body: JSON.stringify({ command: 'updatePurchaseItem', ssUrl: researcherUrl, id: id, purchaseDate: newDate })
+        });
+        const json = await res.json();
+        if (json.success) {
+          closePurchaseEditModal();
+          loadPurchaseListData(); // 保存できたらリストを自動で最新に更新！
+        } else {
+          alert("❌ 保存失敗: " + json.message);
+        }
+      } catch(e) {
+        alert("❌ 通信エラーが発生しました");
+      }
+      btn.innerHTML = originalText;
+      btn.disabled = false;
     }
     
     async function deletePurchaseItem() {
-      if(confirm("ほんまにこの商品を削除してもええか？")) {
-        alert("削除処理もこれから作るで！");
-        closePurchaseEditModal();
+      if(!confirm("ほんまにこの商品を削除してもええか？")) return;
+      
+      const id = document.getElementById('edit-purchase-id').value;
+      const researcherUrl = AppStorage.get("sh_researcher_url", "");
+      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+
+      if (!researcherUrl || !targetGasUrl) return alert("⚙️URL設定が足りんで！");
+
+      const btn = document.querySelector('button[onclick="deletePurchaseItem()"]');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = "⌛ 削除中...";
+      btn.disabled = true;
+
+      try {
+        // 💡 GASに『deletePurchaseItem』という命令で削除リクエストを送る！
+        const res = await fetch(targetGasUrl, {
+          method: 'POST',
+          body: JSON.stringify({ command: 'deletePurchaseItem', ssUrl: researcherUrl, id: id })
+        });
+        const json = await res.json();
+        if (json.success) {
+          closePurchaseEditModal();
+          loadPurchaseListData(); // 削除できたらリストを自動で最新に更新！
+        } else {
+          alert("❌ 削除失敗: " + json.message);
+        }
+      } catch(e) {
+        alert("❌ 通信エラーが発生しました");
       }
+      btn.innerHTML = originalText;
+      btn.disabled = false;
     }
   </script>
 
