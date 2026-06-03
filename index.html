@@ -2302,30 +2302,12 @@ document.getElementById("regPurchaseUrl").value = "";
       const pageItems = filtered.slice(start, start + ITEMS_PER_PAGE);
 
       if (pageItems.length === 0) {
-        // 💡 画像列をなくしたので colspan は 8 に戻す
         resDiv.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#4a5568; font-weight:bold; padding:20px;">条件に合う商品が見つかりません。</td></tr>';
         document.getElementById('ledger-pagination').style.display = 'none';
         return;
       }
 
-      // 💡 テーブル見出しから「画像」を削除し、ズレを解消！
-      let html = `
-        <div style="overflow-x: auto; max-height: calc(100vh - 250px); overflow-y: auto;">
-          <table style="width: 100%; border-collapse: collapse; min-width: 1000px; font-size: 13px;">
-            <thead style="position: sticky; top: 0; background: #f8fafc; z-index: 10;">
-              <tr style="border-bottom: 2px solid #e2e8f0; text-align: left; color: #475569;">
-                <th style="padding: 12px 8px; width: 80px; text-align: center;">出品</th>
-                <th style="padding: 12px 8px;">仕入先・URL・ID</th>
-                <th style="padding: 12px 8px;">仕入日 / No</th>
-                <th style="padding: 12px 8px;">商品名・ASIN</th>
-                <th style="padding: 12px 8px; text-align: center;">コンディション</th> <th style="padding: 12px 8px;">${isSalesMode ? '売上 / 送料' : '仕入 / 販売予定'}</th>
-                <th style="padding: 12px 8px; text-align: right;">${isSalesMode ? '確定利益' : '想定利益'}</th>
-                <th style="padding: 12px 8px; text-align: center;">操作</th>
-              </tr>
-            </thead>
-            <tbody>
-      `;
-
+      let html = '';
       pageItems.forEach((item) => {
         let statusTag = '<span style="background:#fefcbf; color:#b7791f; border:1px solid #f6e05e; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">🚚 納品待ち</span>';
         if (item.status === '出品中') statusTag = '<span style="background:#ebf8ff; color:#2b6cb0; border:1px solid #bee3f8; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">📦 出品中</span>';
@@ -2353,66 +2335,61 @@ document.getElementById("regPurchaseUrl").value = "";
           <div style="font-size:10px; color:#4a5568; font-weight:bold; font-family:monospace;">ID: ${escapeHtml(item.itemId) || '-'}</div>
         `;
 
-        let modeHtml = '';
-        if (isSalesMode) {
-           modeHtml = `
-            <td style="text-align: right; padding: 12px 8px;">
-              <div style="font-weight:bold; color:#1a365d; margin-bottom:2px; font-size:11px;">売上: ¥${Number(item.sellPrice || 0).toLocaleString()}</div>
-              <div style="color:#4a5568; font-weight:bold; font-size:11px;">送料: ${item.shipping < 0 ? '' : '-'}¥${Math.abs(Number(item.shipping || 0)).toLocaleString()}</div>
-            </td>
-            <td style="text-align: right; padding: 12px 8px; font-weight: 900; font-size:14px;">
-              <div style="color: ${actualProfitColor};">¥${Number(item.profit || 0).toLocaleString()}</div>
-              <div style="font-size:9px; color:#718096; margin-top:2px; font-weight:bold;">(手数料: ¥${Math.abs(Number(item.fee || 0)).toLocaleString()})</div>
-            </td>
-           `;
-        } else {
-           modeHtml = `
-            <td style="text-align: right; padding: 12px 8px;">
-              <div style="font-size:11px; font-weight:bold; color:#4a5568; margin-bottom:2px;">仕入: ¥${Number(b_price).toLocaleString()}</div>
-              <div style="font-size:11px; font-weight:bold; color:#3182ce;">予定: ¥${Number(est_price).toLocaleString()}</div>
-            </td>
-            <td style="text-align: right; padding: 12px 8px; font-weight: 900; font-size:14px;">
-              <div style="color: ${estProfitColor};">¥${expectedProfit.toLocaleString()}</div>
-              <div style="font-size:9px; color:#718096; margin-top:2px; font-weight:bold;">(目安)</div>
-            </td>
-           `;
-        }
-
         html += `
-        <tr style="border-bottom: 1px solid #f1f5f9;">
-          <td style="padding: 12px 8px; text-align: center; vertical-align: top;">
+        <tr>
+          <td style="text-align: center;">
             ${statusTag}<br>
             ${listToggleBtn}
           </td>
           
-          <td style="padding: 12px 8px; vertical-align: top;">${defHtml}</td>
+          <td>${defHtml}</td>
           
-          <td style="padding: 12px 8px; vertical-align: top;">
+          <td>
             <div style="font-size:11px; color:#2d3748; font-weight:bold; margin-bottom:2px;">${item.buyDate || '-'}</div>
             <div style="font-size:10px; color:#4a5568; font-weight:bold;">No.${item.no || '-'}</div>
           </td>
           
-          <td style="padding: 12px 8px; vertical-align: top; max-width: 250px;">
+          <td style="max-width: 250px;">
             <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:bold; color:#1a365d; margin-bottom:4px; font-size:12px;" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</div>
             <span style="font-family:monospace; background:#e0f2fe; color:#0369a1; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold;">${escapeHtml(item.asin)}</span>
             <span style="font-size:10px; color:#4a5568; font-weight:bold; margin-left:4px;">SKU: ${escapeHtml(item.sku)}</span>
           </td>
 
-          <td style="padding: 12px 8px; font-weight:bold; color:#2d3748; text-align: center; vertical-align: top;">
-            ${isSalesMode ? 
-              `<div style="margin-bottom:2px; color:#2b6cb0; font-size:10px;"><i class="far fa-calendar-alt"></i> ${item.sellDate || '-'}</div>
-               <div style="font-family:monospace; color:#2d3748; font-weight:bold; font-size:10px;">${escapeHtml(item.orderNum) || '-'}</div>` 
-              : `<div style="font-size:11px;">${escapeHtml(item.condition) || '-'}</div>`
-            }
+          <td style="font-weight:bold; color:#2d3748; text-align: center;">
+            <div class="default-data" style="font-size:11px;">${escapeHtml(item.condition) || '-'}</div>
+            <div class="sales-data" style="font-size:10px;">
+              <div style="margin-bottom:2px; color:#2b6cb0;"><i class="far fa-calendar-alt"></i> ${item.sellDate || '-'}</div>
+              <div style="font-family:monospace; color:#2d3748; font-weight:bold;">${escapeHtml(item.orderNum) || '-'}</div>
+            </div>
           </td>
 
-          ${modeHtml}
+          <td style="text-align: right;">
+            <div class="default-data">
+              <div style="font-size:11px; font-weight:bold; color:#4a5568; margin-bottom:2px;">仕入: ¥${Number(b_price).toLocaleString()}</div>
+              <div style="font-size:11px; font-weight:bold; color:#3182ce;">予定: ¥${Number(est_price).toLocaleString()}</div>
+            </div>
+            <div class="sales-data" style="font-size:10px;">
+              <div style="font-weight:bold; color:#1a365d; margin-bottom:2px;">売上: ¥${Number(item.sales || 0).toLocaleString()}</div>
+              <div style="color:#4a5568; font-weight:bold; margin-bottom:2px;">送料: ${item.shipping < 0 ? '' : '-'}¥${Math.abs(Number(item.shipping || 0)).toLocaleString()}</div>
+              <div style="color:#e53e3e; font-weight:bold;">手料: ${item.fee < 0 ? '' : '-'}¥${Math.abs(Number(item.fee || 0)).toLocaleString()}</div>
+            </div>
+          </td>
 
-          <td style="padding: 12px 8px; text-align: center; vertical-align: top;">
+          <td style="text-align: right; font-weight: 900; font-size:14px;">
+            <div class="default-data" style="color: ${estProfitColor};">
+              ¥${expectedProfit.toLocaleString()}
+              <div style="font-size:9px; color:#718096; margin-top:2px; font-weight:bold;">(目安)</div>
+            </div>
+            <div class="sales-data" style="color: ${actualProfitColor};">
+              ¥${Number(item.profit || 0).toLocaleString()}
+            </div>
+          </td>
+
+          <td style="text-align: center;">
             <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
-              <button onclick="toggleMode()" style="background:#4a5568; color:white; border:none; padding:4px; border-radius:4px; cursor:pointer; font-size:10px; width:100%; font-weight:bold;"><i class="fas fa-exchange-alt"></i> 切替</button>
+              <button onclick="toggleLedgerView()" style="background:#4a5568; color:white; border:none; padding:4px; border-radius:4px; cursor:pointer; font-size:10px; width:100%; font-weight:bold;"><i class="fas fa-exchange-alt"></i> 切替</button>
               <div style="display:flex; gap:4px; width:100%;">
-                <button onclick='openLedgerModal(${JSON.stringify(item).replace(/'/g, "&apos;")})' style="background:#3182ce; color:white; border:none; padding:4px 0; border-radius:4px; cursor:pointer; flex:1; font-size:10px;"><i class="fas fa-edit"></i></button>
+                <button onclick="openLedgerEdit('${item.no}')" style="background:#3182ce; color:white; border:none; padding:4px 0; border-radius:4px; cursor:pointer; flex:1; font-size:10px;"><i class="fas fa-edit"></i></button>
                 <a href="https://www.amazon.co.jp/dp/${item.asin}" target="_blank" style="background:#dd6b20; color:white; padding:4px 0; border-radius:4px; text-decoration:none; flex:1; display:flex; align-items:center; justify-content:center; font-size:10px;"><i class="fab fa-amazon"></i></a>
               </div>
             </div>
@@ -2421,7 +2398,6 @@ document.getElementById("regPurchaseUrl").value = "";
         `;
       });
       
-      html += `</tbody></table></div>`;
       resDiv.innerHTML = html;
 
       document.getElementById('ledger-page-info').innerText = `${ledgerCurrentPage} / ${totalPages} ページ`;
