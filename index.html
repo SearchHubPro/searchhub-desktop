@@ -2811,7 +2811,10 @@ document.getElementById("regPurchaseUrl").value = "";
         if (json.success && json.data) {
           globalConditionData = json.data;
           const select = document.getElementById("edit_condition");
-          select.innerHTML = '<option value="">選択してください</option>';
+          
+          // 💡 ここを変更！ただの「選択してください」やなくて「空欄に戻す」役割を持たせる
+          select.innerHTML = '<option value="">ーー 空欄に戻す ーー</option>';
+          
           globalConditionData.forEach(c => {
             select.innerHTML += `<option value="${c.name}">${c.name}</option>`;
           });
@@ -2823,6 +2826,13 @@ document.getElementById("regPurchaseUrl").value = "";
     function applyConditionDescription() {
       const selectedName = document.getElementById("edit_condition").value;
       const descInput = document.getElementById("edit_description");
+      
+      // 🚀 【追加】もし「空欄に戻す」を選んだら、下の説明文も強制的に消し去る！
+      if (selectedName === "") {
+        descInput.value = "";
+        return;
+      }
+      
       const found = globalConditionData.find(c => c.name === selectedName);
       if (found && found.desc) {
         descInput.value = found.desc;
