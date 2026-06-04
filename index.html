@@ -28,7 +28,6 @@
       min-height: 100vh;
     }
     
-    /* 💡 ヘッダーの余計な隙間と影を完全に撲滅 */
     .header-wrapper { position: sticky; top: 0; z-index: 100; box-shadow: none !important; margin: 0 !important; padding: 0 !important; }
     .header { background-color: #ffffff; color: #333; padding: calc(14px + env(safe-area-inset-top)) 24px 14px 24px; display: flex; align-items: center; justify-content: space-between; position: relative; border-bottom: 2px solid #000000; margin: 0 !important; }
     
@@ -44,8 +43,8 @@
     .discord-on { color: #5865F2 !important; }
     .discord-off { color: #4a5568 !important; opacity: 0.4; }
 
-    /* 💡 view自体の隙間もゼロに */
-    .view { display: none; margin: 0 !important; padding: 0 !important; }
+    /* 💡 魔法の overflow: hidden を追加！これでタブ上の謎の隙間が物理的に消滅する！ */
+    .view { display: none; margin: 0 !important; padding: 0 !important; overflow: hidden; }
     .view.active { display: block; animation: fadeIn 0.3s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     
@@ -94,8 +93,8 @@
     .dash-dot { display: none; position: absolute; top: -6px; right: -6px; width: 16px; height: 16px; background-color: #e53e3e; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3); border: 2px solid white; }
     .dash-dot.active { display: block; animation: pop 0.3s ease; }
 
-    /* 💡 タブの部分は上にピタッとくっつけるために margin:0 を設定！ */
-    .tabs-container { background-color: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: calc(52px + env(safe-area-inset-top)); z-index: 99; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 !important; padding: 0 !important; border-top: none !important; }
+    /* 💡 タブの部分は上にピタッとくっつけるために margin:0 と top:0 を設定！ */
+    .tabs-container { background-color: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 99; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 !important; padding: 0 !important; border-top: none !important; }
     .tabs-container::-webkit-scrollbar { display: none; }
     .tabs { display: flex; white-space: nowrap; padding: 0 4px; margin: 0 !important; }
     .tab-btn { position: relative; padding: 12px 14px; background: none; border: none; font-size: 12px; font-weight: bold; color: #718096; border-bottom: 3px solid transparent; outline: none; flex-shrink: 0; }
@@ -104,7 +103,7 @@
     .tab-dot.active { display: block; animation: pop 0.3s ease; }
     @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
     
-    /* 💡 その他の画面（コンテンツ）は、上に隙間をあけて詰まらないようにする！ */
+    /* 💡 共通コンテンツ（スマホ版）：上に隙間（16px）を持たせる */
     .content { padding: 16px 12px 12px 12px; min-height: 80vh; transform: translate3d(0,0,0); }   
     .tab-content { display: none; }
     .tab-content.active { display: block; }
@@ -180,11 +179,9 @@
       }
       .view {
         background-color: transparent; 
-        margin: 0 !important;
-        padding: 0 !important;
       }
       
-      /* 💡 PC版：リサーチャーやその他画面は上にちゃんと隙間（24px）をあける！ */
+      /* 💡 PC版：ResearcherやManagerなど「その他」の画面は上にちゃんと隙間（24px）をあける！ */
       .content {
         padding: 24px; 
       }
