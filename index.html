@@ -2952,7 +2952,7 @@ document.getElementById("regPurchaseUrl").value = "";
       document.getElementById('bulkDescModal').style.display = 'flex';
     }
 
-    // ⑥ 編集した商品説明を保存して表とシートに反映
+   // ⑥ 編集した商品説明を保存して表とシートに反映（★原因特定用テスト版）
     async function saveBulkDesc() {
       const sku = document.getElementById('bulkEditSku').value;
       const newDesc = document.getElementById('bulkEditDescText').value;
@@ -2963,13 +2963,11 @@ document.getElementById("regPurchaseUrl").value = "";
       }
       document.getElementById('bulkDescModal').style.display = 'none';
 
-      // 🚀 GASに通信して逆反映させる
       const ssUrl = AppStorage.get("sh_ssurl", "");
       let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
       
       if (ssUrl && targetGasUrl) {
         try {
-          // 💡 しっかり返事を待って、エラーがあればアラートを出すように変更！
           const res = await fetch(targetGasUrl, {
             method: 'POST',
             body: JSON.stringify({ 
@@ -2981,12 +2979,18 @@ document.getElementById("regPurchaseUrl").value = "";
           });
           const json = await res.json();
           
-          if (!json.success) {
+          if (json.success) {
+            // 💡 ここを追加！無事にGASまで届いて返事が来たらアラートを出す！
+            alert("✅ GASへの通信は成功しました！\n（もしシートが変わってないなら、GAS内でSKUが見つけられずに空振りしてます）");
+          } else {
             alert("❌ GAS側で書き込みエラー: " + (json.message || "不明なエラー"));
           }
         } catch(e) {
-          alert("❌ 通信そのものに失敗しました。\nURLやデプロイ状況を確認してな！\n詳細: " + e.message);
+          // 💡 ここに来るなら、古い親機が動いていてJSONの解読に失敗してる！
+          alert("❌ 通信エラー（または親機の更新が反映されていません）\n詳細: " + e.message);
         }
+      } else {
+        alert("⚠️ ManagerのURLかGASのURLが設定されていません。");
       }
     }
 
