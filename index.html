@@ -2952,7 +2952,7 @@ document.getElementById("regPurchaseUrl").value = "";
       document.getElementById('bulkDescModal').style.display = 'flex';
     }
 
-    // ⑥ 編集した商品説明を保存して表に反映
+    // ⑥ 編集した商品説明を保存して表とシートに反映
     function saveBulkDesc() {
       const sku = document.getElementById('bulkEditSku').value;
       const newDesc = document.getElementById('bulkEditDescText').value;
@@ -2962,6 +2962,23 @@ document.getElementById("regPurchaseUrl").value = "";
         descCell.innerText = newDesc; // 画面上の表示を更新
       }
       document.getElementById('bulkDescModal').style.display = 'none';
+
+      // 🚀 【追加】GASに通信して、販売管理sheetにも逆反映させる！
+      const ssUrl = AppStorage.get("sh_ssurl", "");
+      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+      
+      if (ssUrl && targetGasUrl) {
+        // 画面を止めずに裏側(非同期)でサクッと保存通信する
+        fetch(targetGasUrl, {
+          method: 'POST',
+          body: JSON.stringify({ 
+            command: 'updateBulkDesc', 
+            ssUrl: ssUrl, 
+            sku: sku, 
+            desc: newDesc 
+          })
+        }).catch(e => console.log("シート逆反映エラー:", e));
+      }
     }
 
     // ⑦ 登録完了ボタン（表示中のSKUだけをGASへ投げる）
