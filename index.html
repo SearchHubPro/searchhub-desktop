@@ -363,6 +363,11 @@
             <i class="fas fa-external-link-alt" style="margin-right: 4px;"></i> レポート取得
           </button>
 
+          <a href="https://sellercentral.amazon.co.jp/product-search/bulk" target="_blank" 
+             style="background:#ff9900; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; text-decoration:none; display:flex; align-items:center; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+            <i class="fab fa-amazon" style="margin-right: 4px;"></i> アップロード
+          </a>
+
           <label id="mini-drop-zone" style="background:#f8fafc; border: 2px dashed #cbd5e0; color:#4a5568; padding:4px 12px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer; display:flex; align-items:center; transition: all 0.2s;" 
                  ondragover="handleDragOverMini(event)" 
                  ondragleave="handleDragLeaveMini(event)" 
@@ -379,7 +384,7 @@
           <span style="font-size:12px; font-weight:bold; color:#4a5568;" id="ledgerCount">表示中: ---件</span>
         </div>
         
-      </div> 
+      </div>
 
       <div class="search-box" style="margin-bottom:16px;">
         <input type="text" id="ledger-search-kw" placeholder="SKU・ASIN・商品名・仕入先で検索..." oninput="ledgerCurrentPage=1; renderLedgerList();" style="flex:2;">
