@@ -3402,8 +3402,10 @@ function saveInfoSettings() {
         } else { alert("通知ブロック中。"); btn.innerText = "🔔 通知許可する"; btn.disabled = false; }
       } catch (err) { alert("エラー\n" + err.message); btn.innerText = "🔔 通知許可する"; btn.disabled = false; }
     }
+  </script>
 
-   // ==========================================
+  <script>
+    // ==========================================
     // 💡 各種シートへ飛ぶメニューの操作用JS
     // ==========================================
     function openSheetLinksModal() {
@@ -3422,7 +3424,6 @@ function saveInfoSettings() {
       }
       window.open(url, '_blank');
     }
-
   </script>
 </body>
 </html>
