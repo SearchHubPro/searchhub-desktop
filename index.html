@@ -845,9 +845,9 @@
       <input type="hidden" id="edit_no">
       
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px;">
-        <div><label style="font-size:11px; font-weight:bold;">仕入日</label><input type="text" id="edit_buyDate" style="width:100%; padding:8px; box-sizing:border-box;"></div>
-        <div><label style="font-size:11px; font-weight:bold;">仕入先</label><input type="text" id="edit_supplier" style="width:100%; padding:8px; box-sizing:border-box;"></div>
-      </div>
+      <div><label style="font-size:11px; font-weight:bold;">仕入日</label><input type="text" id="edit_buyDate" style="width:100%; padding:8px; box-sizing:border-box;"></div>
+      <div><label style="font-size:11px; font-weight:bold;">仕入先</label><select id="edit_supplier" style="width:100%; padding:8px; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; outline:none;"><option value="">読込中...</option></select></div>
+    </div>
       
       <label style="font-size:11px; font-weight:bold; display:block; margin-top:8px;">商品名</label>
       <input type="text" id="edit_title" style="width:100%; padding:8px; box-sizing:border-box; background:#f8fafc;">
@@ -2726,17 +2726,44 @@ document.getElementById("regPurchaseUrl").value = "";
       }
     }
 
-    // ✏️ 編集画面を開く処理
-    function openLedgerEdit(no) {
-      // 💡 余計な空白が入っていても確実に一致するように「.trim()」を追加
+    // ✏️ 編集画面を開く処理（プルダウン対応版）
+    async function openLedgerEdit(no) {
       const item = globalLedgerData.find(i => String(i.no).trim() === String(no).trim());
-      
       if (!item) {
-        // 💡 無言でスルーせず、エラーをアラートで知らせる
         alert("⚠️ 編集するデータが見つかりません (No: " + no + ")\n一度「最新を取得」ボタンを押してみてな！");
         return;
       }
       
+      document.getElementById('ledgerEditModal').style.display = 'flex';
+
+      // 💡 もし仕入先リストがまだ空っぽなら、このタイミングでGASから取得する
+      if (typeof window.globalSupplierData === 'undefined' || window.globalSupplierData.length === 0) {
+        const ssUrl = AppStorage.get("sh_ssurl", "");
+        let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+        if (ssUrl && targetGasUrl) {
+          try {
+            const res = await fetch(targetGasUrl, { method: 'POST', body: JSON.stringify({ command: 'getSuppliers', ssUrl: ssUrl }) });
+            const json = await res.json();
+            if (json.success && json.data) window.globalSupplierData = json.data;
+          } catch(e) {}
+        }
+      }
+
+      // 💡 プルダウンの中身を作る
+      const supSelect = document.getElementById('edit_supplier');
+      if (supSelect && window.globalSupplierData) {
+        supSelect.innerHTML = '<option value="">ーー 未設定 ーー</option>';
+        let isExist = false;
+        window.globalSupplierData.forEach(s => {
+          supSelect.innerHTML += `<option value="${s}">${s}</option>`;
+          if (item.supplier === s) isExist = true;
+        });
+        // もし「情報sheet」にない昔の手入力データがあれば、特別に選択肢に追加しておく
+        if (item.supplier && !isExist) {
+          supSelect.innerHTML += `<option value="${item.supplier}">${item.supplier} (手入力)</option>`;
+        }
+      }
+
       document.getElementById('edit_no').value = item.no || '';
       document.getElementById('edit_buyDate').value = item.buyDate || '';
       document.getElementById('edit_supplier').value = item.supplier || '';
@@ -2749,8 +2776,40 @@ document.getElementById("regPurchaseUrl").value = "";
       document.getElementById('edit_buyPrice').value = item.buyPrice || 0;
       document.getElementById('edit_expense').value = item.expense || 0;
       document.getElementById('edit_estPrice').value = item.estPrice || 0;
+    }
+
+    // 🗑️ 【新規追加】帳簿データを削除する処理
+    async function deleteLedgerItem() {
+      if(!confirm("本当にこの商品を削除してもよろしいですか？\n※一括商品登録シートにデータがある場合はそれも連動して削除されます。")) return;
       
-      document.getElementById('ledgerEditModal').style.display = 'flex';
+      const no = document.getElementById('edit_no').value;
+      const btn = document.getElementById('deleteLedgerBtn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = "⌛ 削除中...";
+      btn.disabled = true;
+
+      const ssUrl = AppStorage.get("sh_ssurl", "");
+      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+
+      try {
+        const res = await fetch(targetGasUrl, {
+          method: 'POST',
+          body: JSON.stringify({ command: 'deleteLedgerItem', ssUrl: ssUrl, no: no })
+        });
+        const json = await res.json();
+        
+        if (json.success) {
+          document.getElementById('ledgerEditModal').style.display = 'none';
+          loadLedgerData(); // リストを最新に更新
+        } else {
+          alert("❌ 削除失敗: " + json.message);
+        }
+      } catch(e) {
+        alert("❌ 通信エラーが発生しました");
+      }
+      
+      btn.innerHTML = originalText;
+      btn.disabled = false;
     }
 
     // 💾 編集データをGASに保存する処理
