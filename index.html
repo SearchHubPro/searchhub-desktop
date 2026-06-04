@@ -195,11 +195,10 @@
       /* ② リストをAmazonの商品一覧のように「タイル状（多段グリッド）」に並べる！ */
       .tab-content.active, 
       #researcherResult, 
-      #priceResult, 
       #monthly-purchase-list, 
       #monthly-sales-list {
-        display: grid !important; /* JSのblock指定を上書き */
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* 画面幅に合わせて自動で列が増える！ */
+        display: grid !important; 
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
         gap: 16px;
       }
       
@@ -688,8 +687,39 @@
       </div>
       <input type="text" id="price-search-kw" class="search-bar-only" placeholder="ASINや商品名で一発検索..." oninput="invCurrentPage=1; renderInventoryList();">
       
-      <div id="priceResult">
-        <div class="loading-spinner">⌛ マネージャーシートから現役の在庫リストを抽出中...</div>
+      <style>
+        /* 💡 価格改定のテーブル専用スタイル */
+        #priceTable th, #priceTable td {
+          padding: 8px 10px !important;
+          vertical-align: middle;
+          border-bottom: 1px solid #e2e8f0;
+        }
+        #priceTable th {
+          position: sticky;
+          top: 0;
+          background: #edf2f7;
+          z-index: 10;
+          box-shadow: 0 2px 0 0 #cbd5e0;
+        }
+      </style>
+
+      <div style="overflow: auto; max-height: 65vh; background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <table id="priceTable" style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 11px; text-align: left; white-space: nowrap; min-width: 950px;">
+          <thead>
+            <tr>
+              <th style="width: 60px; text-align:center;">画像</th>
+              <th style="min-width: 280px;">商品情報 (タイトル・ASIN・SKU)</th>
+              <th style="width: 140px;">ライバル状況</th>
+              <th style="width: 120px;">現在価格 / 原価</th>
+              <th style="width: 120px; text-align:center;">改定価格テスト</th>
+              <th style="width: 110px; text-align:right;">手残り利益</th>
+              <th style="width: 100px; text-align:center;">操作</th>
+            </tr>
+          </thead>
+          <tbody id="priceResult">
+            <tr><td colspan="7" class="loading-spinner" style="padding:20px; text-align:center;">⌛ マネージャーシートから現役の在庫リストを抽出中...</td></tr>
+          </tbody>
+        </table>
       </div>
       
       <div id="price-pagination" class="pagination" style="display:none;">
@@ -1798,7 +1828,7 @@ document.getElementById("regPurchaseUrl").value = "";
       const start = (invCurrentPage - 1) * ITEMS_PER_PAGE; const pageItems = filtered.slice(start, start + ITEMS_PER_PAGE);
       const resDiv = document.getElementById('priceResult');
       
-      if (pageItems.length === 0) { resDiv.innerHTML = '<div class="card" style="text-align:center; color:#a0aec0; padding:30px 10px;">見つかりませんでした。</div>'; document.getElementById('price-pagination').style.display = 'none'; return; }
+      if (pageItems.length === 0) { resDiv.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#a0aec0; padding:30px 10px;">見つかりませんでした。</td></tr>'; document.getElementById('price-pagination').style.display = 'none'; return; }
       
       let html = "";
       pageItems.forEach(function(item, index) {
@@ -1808,54 +1838,53 @@ document.getElementById("regPurchaseUrl").value = "";
           let bColor = "#6d9eeb"; if (item.daysText.includes("30")) bColor = "#ea4335"; else if (item.daysText.includes("21")) bColor = "#fbbc04"; 
           badgeHtml = `<span style="background:${bColor}; color:white; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold; margin-left:6px;">⚠️ ${item.daysText}</span>`;
         }
-        let imgHtml = '<div style="width:65px; height:65px; background:#f8fafc; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:10px; color:#999; border:1px solid #eee;">No Img</div>';
-        if (item.img) imgHtml = `<div style="width:65px; height:65px; background:#fff; border:1px solid #eee; border-radius:8px; padding:2px; flex-shrink:0;"><img src="${item.img}" style="width:100%; height:100%; object-fit:contain;"></div>`;
+        let imgHtml = '<div style="width:50px; height:50px; background:#f8fafc; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:9px; color:#999; border:1px solid #eee; margin:0 auto;">No Img</div>';
+        if (item.img) imgHtml = `<div style="width:50px; height:50px; background:#fff; border:1px solid #eee; border-radius:6px; padding:2px; flex-shrink:0; margin:0 auto;"><img src="${item.img}" style="width:100%; height:100%; object-fit:contain;"></div>`;
 
-        let rivalsHtml = `<div style="font-size:10px; color:#a0aec0; margin-top:6px; padding:4px;">ライバル情報なし</div>`;
+        let rivalsHtml = `<div style="font-size:10px; color:#a0aec0;">ライバル情報なし</div>`;
         if (item.rivals && item.rivals.length > 0) {
-          rivalsHtml = `<select style="width:100%; padding:6px; font-size:11px; font-weight:bold; color:#1a365d; border:1px solid #cbd5e0; border-radius:4px; margin-top:8px; background:#fff; outline:none;">`;
-          rivalsHtml += `<option value="" disabled selected>ライバルセラー確認 (${item.rivals.length}件)</option>`;
+          rivalsHtml = `<select style="width:100%; padding:6px; font-size:11px; font-weight:bold; color:#1a365d; border:1px solid #cbd5e0; border-radius:4px; background:#fff; outline:none;">`;
+          rivalsHtml += `<option value="" disabled selected>確認 (${item.rivals.length}件)</option>`;
           item.rivals.forEach(r => { rivalsHtml += `<option>${escapeHtml(r)}</option>`; });
           rivalsHtml += `</select>`;
         }
         
         html += `
-        <div class="card" style="display:flex; flex-direction:column; padding:12px; margin-bottom:10px;">
-          <div style="display:flex; gap:12px; align-items:flex-start;">
-            ${imgHtml}
-            <div style="flex:1; min-width:0;">
-              <div style="font-size:12px; font-weight:bold; color:#1a365d; line-height:1.3; margin-bottom:6px;">💎 ${escapeHtml(item.title)}</div>
-              <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:2px;">
-                <span style="background:#e0f2fe; color:#0369a1; padding:1px 5px; border-radius:4px; font-size:10px; font-weight:bold;">${item.asin}</span>
-                <span style="background:#e2e8f0; color:#4a5568; padding:1px 5px; border-radius:4px; font-size:10px; font-weight:bold;">${escapeHtml(item.condition)}</span>
-                ${badgeHtml}
+        <tr style="background:#fff;">
+          <td style="text-align:center;">${imgHtml}</td>
+          <td style="max-width:250px; white-space:normal;">
+            <div style="font-size:12px; font-weight:bold; color:#1a365d; line-height:1.3; margin-bottom:6px;">💎 ${escapeHtml(item.title)}</div>
+            <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
+              <span style="background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold; font-family:monospace;">${item.asin}</span>
+              <span style="font-size:10px; color:#4a5568; font-weight:bold;">SKU: ${escapeHtml(item.sku)}</span>
+              <span style="background:#e2e8f0; color:#4a5568; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold;">${escapeHtml(item.condition)}</span>
+              ${badgeHtml}
+            </div>
+          </td>
+          <td>${rivalsHtml}</td>
+          <td>
+            <div style="font-size:13px; font-weight:bold; color:#2d3748; margin-bottom:4px;">¥${Number(item.price).toLocaleString()}</div>
+            <div style="font-size:10px; color:#718096; line-height:1.4;">仕入: ¥${Number(item.cost).toLocaleString()}<br>FBA: ¥${Number(item.fbaFee).toLocaleString()}</div>
+          </td>
+          <td style="text-align:center;">
+            <div style="display:flex; align-items:center; justify-content:center;">
+              <span style="font-size:13px; font-weight:bold; color:#333; margin-right:4px;">¥</span>
+              <input type="number" id="sim_price_${uniqueId}" value="${item.price > 0 ? item.price : ''}" placeholder="0" onfocus="this.placeholder=''" onblur="this.placeholder='0'" oninput="calcSimProfit('${uniqueId}', ${item.cost}, ${item.fbaFee}, ${item.feePercent || 10})" style="width:80px; text-align:right; padding:6px; border:1px solid #cbd5e0; border-radius:4px; font-size:14px; font-weight:900; color:#1a365d; outline:none;">
+            </div>
+          </td>
+          <td style="text-align:right;">
+            <span id="sim_profit_${uniqueId}" style="font-size:16px; font-weight:900; color:#07A27B;">計算中...</span>
+          </td>
+          <td>
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <a href="https://sellercentral.amazon.co.jp/myinventory/inventory?searchTerm=${item.asin}" target="_blank" style="background:#e53e3e; color:white; text-decoration:none; padding:6px 0; border-radius:4px; font-size:11px; font-weight:bold; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fas fa-edit"></i> セラセンへ</a>
+              <div style="display:flex; gap:4px;">
+                <a href="https://keepa.com/#!product/5-${item.asin}" target="_blank" style="background:#55a676; color:white; text-decoration:none; padding:4px 0; border-radius:4px; font-size:10px; font-weight:bold; display:flex; align-items:center; justify-content:center; flex:1;"><i class="fas fa-chart-line"></i></a>
+                <a href="https://www.amazon.co.jp/dp/${item.asin}" target="_blank" style="background:#f7941d; color:white; text-decoration:none; padding:4px 0; border-radius:4px; font-size:10px; font-weight:bold; display:flex; align-items:center; justify-content:center; flex:1;"><i class="fab fa-amazon"></i></a>
               </div>
             </div>
-          </div>
-          ${rivalsHtml}
-          <div style="background:#f8fafc; padding:10px; border-radius:6px; margin-top:10px; border:1px solid #e2e8f0;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-              <span style="font-size:11px; font-weight:bold; color:#4a5568;">改定価格テスト:</span>
-              <div style="display:flex; align-items:center;">
-                <span style="font-size:14px; font-weight:bold; color:#333; margin-right:4px;">¥</span>
-                <input type="number" id="sim_price_${uniqueId}" value="${item.price > 0 ? item.price : ''}" placeholder="0" onfocus="this.placeholder=''" onblur="this.placeholder='0'" oninput="calcSimProfit('${uniqueId}', ${item.cost}, ${item.fbaFee}, ${item.feePercent || 10})" style="width:85px; text-align:right; padding:6px; border:1px solid #cbd5e0; border-radius:4px; font-size:15px; font-weight:900; color:#1a365d; outline:none;">
-              </div>
-            </div>
-            <div style="display:flex; justify-content:space-between; font-size:10px; color:#718096; margin-bottom:8px;">
-  <span>仕入: ¥${Number(item.cost).toLocaleString()}</span>
-  <span>手数料: ¥${Math.floor(Number(String(item.price || 0).replace(/,/g, '')) * (Number(item.feePercent) / 100)).toLocaleString()} / FBA: ¥${Number(item.fbaFee).toLocaleString()}</span>
-</div>
-            <div style="display:flex; justify-content:space-between; align-items:flex-end; border-top:1px dashed #cbd5e0; padding-top:8px;">
-              <span style="font-size:11px; font-weight:bold; color:#4a5568;">手残り利益:</span>
-              <span id="sim_profit_${uniqueId}" style="font-size:16px; font-weight:900; color:#07A27B;">計算中...</span>
-            </div>
-          </div>
-          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
-            <a href="https://keepa.com/#!product/5-${item.asin}" target="_blank" style="background:#55a676; color:white; text-decoration:none; padding:8px 12px; border-radius:6px; font-size:11px; font-weight:bold; display:flex; align-items:center; gap:4px;"><i class="fas fa-chart-line"></i> Keepa</a>
-            <a href="https://www.amazon.co.jp/dp/${item.asin}" target="_blank" style="background:#f7941d; color:white; text-decoration:none; padding:8px 12px; border-radius:6px; font-size:11px; font-weight:bold; display:flex; align-items:center; gap:4px;"><i class="fab fa-amazon"></i> カタログ</a>
-            <a href="https://sellercentral.amazon.co.jp/myinventory/inventory?searchTerm=${item.asin}" target="_blank" style="background:#e53e3e; color:white; text-decoration:none; padding:8px 12px; border-radius:6px; font-size:11px; font-weight:bold; display:flex; align-items:center; gap:4px;"><i class="fas fa-edit"></i> セラセン改定へ</a>
-          </div>
-        </div>`;
+          </td>
+        </tr>`;
       });
       resDiv.innerHTML = html;
       
