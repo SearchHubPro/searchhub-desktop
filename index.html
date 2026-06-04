@@ -233,8 +233,13 @@
         flex-direction: column !important;
         max-height: calc(100vh - 180px);
         overflow-y: auto;
-        overflow-x: hidden; /* 💡 横はみ出しを完全カット */
+        overflow-x: hidden;
         padding-right: 8px; 
+      }
+      
+      #amazon-container.search-active #amazonHistoryArea > .card,
+      #amazon-container.search-active #amazonHistoryArea > div {
+        flex-shrink: 0 !important;
       }
 
       /* スクロールバーをおしゃれに細くする */
