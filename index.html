@@ -19,21 +19,20 @@
   
   <style>
     body { 
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Meiryo", sans-serif; 
-    margin: 0; 
-    padding: 0; 
-    background-color: #ffffff;
-    color: #333; 
-    padding-bottom: env(safe-area-inset-bottom); 
-    min-height: 100vh;
-  }
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Meiryo", sans-serif; 
+      margin: 0; 
+      padding: 0; 
+      background-color: #ffffff;
+      color: #333; 
+      padding-bottom: env(safe-area-inset-bottom); 
+      min-height: 100vh;
+    }
     
-    .header-wrapper { position: sticky; top: 0; z-index: 100; box-shadow: none !important; }
-    /* 💡 背景を白(#ffffff)にして、下に黒線(border-bottom)を追加！ */
-    .header { background-color: #ffffff; color: #333; padding: calc(14px + env(safe-area-inset-top)) 24px 14px 24px; display: flex; align-items: center; justify-content: space-between; position: relative; border-bottom: 2px solid #000000; }
+    /* 💡 ヘッダーの余計な隙間と影を完全に撲滅 */
+    .header-wrapper { position: sticky; top: 0; z-index: 100; box-shadow: none !important; margin: 0 !important; padding: 0 !important; }
+    .header { background-color: #ffffff; color: #333; padding: calc(14px + env(safe-area-inset-top)) 24px 14px 24px; display: flex; align-items: center; justify-content: space-between; position: relative; border-bottom: 2px solid #000000; margin: 0 !important; }
     
     .header-left { display: flex; gap: 12px; align-items: center; z-index: 2; }
-    /* 💡 ロゴが綺麗に収まるように幅を40%から60%に拡大！ */
     .header-center { position: absolute; left: 50%; transform: translateX(-50%); text-align: center; width: 60%; z-index: 1; }
     .header h1 { margin: 0; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .header-right { display: flex; gap: 14px; align-items: center; z-index: 2; justify-content: flex-end; }
@@ -45,10 +44,11 @@
     .discord-on { color: #5865F2 !important; }
     .discord-off { color: #4a5568 !important; opacity: 0.4; }
 
-    .view { display: none; }
+    /* 💡 view自体の隙間もゼロに */
+    .view { display: none; margin: 0 !important; padding: 0 !important; }
     .view.active { display: block; animation: fadeIn 0.3s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    /* ドラッグ＆ドロップ領域のスタイル */
+    
     .drop-zone { border: 2px dashed #cbd5e0; border-radius: 12px; padding: 40px 20px; text-align: center; background: #f8fafc; transition: all 0.3s ease; }
     .drop-zone.dragover { border-color: #3182ce; background: #ebf8ff; transform: scale(1.02); }
     .drop-icon { font-size: 48px; color: #a0aec0; margin-bottom: 12px; transition: color 0.3s; }
@@ -56,7 +56,7 @@
     .drop-text { font-size: 15px; font-weight: bold; color: #4a5568; }
     .file-btn { display: inline-block; background: #3182ce; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
     .file-btn:hover { background: #2b6cb0; }
-    /* --- 新ホーム画面（グラフ＆ダッシュボード） --- */
+    
     .graph-card { background: #ffffff; border-radius: 0 0 12px 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin: 0 16px 16px 16px; border: 1px solid #d5d9d9; border-top: none; min-height: 290px; }
     .home-top-tabs { display: flex; justify-content: flex-start; gap: 4px; margin-bottom: 12px; border-bottom: 1px solid #d5d9d9; }
     .home-tab-btn { padding: 8px 12px; border: none; font-size: 13px; font-weight: bold; background: transparent; color: #565959; cursor: pointer; border-bottom: 3px solid transparent; flex: 1; text-align: center; }
@@ -74,7 +74,6 @@
     .home-month-btn { padding: 6px 16px; border: 1px solid #d5d9d9; border-radius: 20px; background: #ffffff; color: #0f1111; font-size: 12px; white-space: nowrap; cursor: pointer; }
     .home-month-btn.active { background: #f3fbfd; border-color: #008296; color: #008296; font-weight: bold; }
 
-    /* 円グラフ（回転率） */
     .turnover-container { display: grid; grid-template-columns: 1.2fr 1fr; gap: 10px; align-items: center; height: 210px; }
     .metrics-list { display: flex; flex-direction: column; gap: 6px; }
     .metric-item { display: flex; justify-content: space-between; font-size: 11px; color: #565959; border-bottom: 1px dashed #eee; padding-bottom: 2px; }
@@ -88,7 +87,6 @@
     .percentage { position: absolute; font-family: 'Roboto', sans-serif; font-size: 28px; font-weight: 900; color: #0f1111; display: flex; flex-direction: column; align-items: center; }
     .percentage span { font-size: 10px; color: #565959; margin-top: -5px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
 
-    /* 下部ボタン群のリファイン */
     .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px 20px 16px; }
     .dash-btn { position: relative; background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 10px; text-align: center; color: #1a365d; font-weight: bold; font-size: 13px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: transform 0.1s; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; white-space: nowrap;}
     .dash-btn:active { transform: scale(0.95); background: #f8fafc; }
@@ -96,16 +94,19 @@
     .dash-dot { display: none; position: absolute; top: -6px; right: -6px; width: 16px; height: 16px; background-color: #e53e3e; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3); border: 2px solid white; }
     .dash-dot.active { display: block; animation: pop 0.3s ease; }
 
+    /* 💡 タブの部分は上にピタッとくっつけるために margin:0 を設定！ */
     .tabs-container { background-color: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: calc(52px + env(safe-area-inset-top)); z-index: 99; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 !important; padding: 0 !important; border-top: none !important; }
     .tabs-container::-webkit-scrollbar { display: none; }
-    .tabs { display: flex; white-space: nowrap; padding: 0 4px; }
+    .tabs { display: flex; white-space: nowrap; padding: 0 4px; margin: 0 !important; }
     .tab-btn { position: relative; padding: 12px 14px; background: none; border: none; font-size: 12px; font-weight: bold; color: #718096; border-bottom: 3px solid transparent; outline: none; flex-shrink: 0; }
     .tab-btn.active { color: #2b6cb0; border-bottom-color: #2b6cb0; background-color: #ebf8ff; }
     .tab-dot { display: none; position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background-color: #e53e3e; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
     .tab-dot.active { display: block; animation: pop 0.3s ease; }
     @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
     
-    .content { padding: 12px 12px 12px 12px; min-height: 80vh; transform: translate3d(0,0,0); }   .tab-content { display: none; }
+    /* 💡 その他の画面（コンテンツ）は、上に隙間をあけて詰まらないようにする！ */
+    .content { padding: 16px 12px 12px 12px; min-height: 80vh; transform: translate3d(0,0,0); }   
+    .tab-content { display: none; }
     .tab-content.active { display: block; }
     
     .card { background: white; border-radius: 8px; padding: 12px; margin-bottom: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.2s; }
@@ -164,29 +165,30 @@
        🚀 PC最適化 (Amazon・Yahoo風のワイド画面対応) 
        ========================================================================= */
     @media (min-width: 768px) {
-      .header { padding: calc(16px + env(safe-area-inset-top)) 32px 16px 32px; }
+      .header { padding: calc(16px + env(safe-area-inset-top)) 32px 16px 32px; margin: 0 !important; }
       .header-left, .header-right { width: auto; }
       
       body {
         max-width: 100%; 
         margin: 0; 
-        /* 💡 背景をグレーに戻す！ */
         background-color: #f2f4f8; 
       }
       .header-wrapper {
         max-width: 100%; 
-        margin: 0;
+        margin: 0 !important;
+        padding: 0 !important;
       }
       .view {
-        /* 💡 ここは一旦消すか透明にする（bodyのグレーを生かすため） */
         background-color: transparent; 
+        margin: 0 !important;
+        padding: 0 !important;
       }
+      
+      /* 💡 PC版：リサーチャーやその他画面は上にちゃんと隙間（24px）をあける！ */
       .content {
-        /* 💡 PC版はタブの下に少し隙間を作る（コンテンツがくっつきすぎないように） */
         padding: 24px; 
       }
       
-      /* ① ダッシュボードのボタンを1列じゃなく、横にズラッと並べる！ */
       .dashboard-grid {
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         gap: 20px;
@@ -196,7 +198,6 @@
       .dash-btn i { font-size: 32px; margin-bottom: 4px; }
       .dash-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); background-color: #f8fafc; }
 
-      /* ② リストをAmazonの商品一覧のように「タイル状（多段グリッド）」に並べる！ */
       .tab-content.active, 
       #monthly-purchase-list, 
       #monthly-sales-list {
@@ -205,10 +206,6 @@
         gap: 16px;
       }
 
-      /* ========================================================
-         🌟 追加：Amazonリサーチの「2画面」レイアウト制御！
-         ======================================================== */
-      /* 検索前：検索履歴はタイル状（横並び） */
       #amazonHistoryArea {
         display: grid !important;
         flex-direction: row !important;
@@ -217,19 +214,13 @@
         align-content: start;
       }
 
-      #amazon-container {
-        transition: all 0.3s ease;
-      }
-
-      /* 🚀 検索実行時：左に履歴、右に結果の2カラム！ */
+      #amazon-container { transition: all 0.3s ease; }
       #amazon-container.search-active {
         display: grid;
-        grid-template-columns: 300px minmax(0, 1fr); /* 💡 はみ出し防止の minmax */
+        grid-template-columns: 300px minmax(0, 1fr);
         gap: 24px;
         align-items: start;
       }
-
-      /* 🚀 検索実行時：履歴を「縦並び」にしてスクロール可能にする */
       #amazon-container.search-active #amazonHistoryArea {
         display: flex !important;
         flex-direction: column !important;
@@ -238,64 +229,27 @@
         overflow-x: hidden;
         padding-right: 8px; 
       }
-      
       #amazon-container.search-active #amazonHistoryArea > .card,
-      #amazon-container.search-active #amazonHistoryArea > div {
-        flex-shrink: 0 !important;
-      }
-
-      /* スクロールバーをおしゃれに細くする */
+      #amazon-container.search-active #amazonHistoryArea > div { flex-shrink: 0 !important; }
       #amazon-container.search-active #amazonHistoryArea::-webkit-scrollbar { width: 6px; }
       #amazon-container.search-active #amazonHistoryArea::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 4px; }
       #amazon-container.search-active #amazonHistoryArea::-webkit-scrollbar-track { background: transparent; }
+      #amazon-container.search-active #amazonResult > .card { max-width: 100% !important; margin: 0 !important; }
       
-      /* 🚀 検索実行時：右側の結果は幅を100%使い切る */
-      #amazon-container.search-active #amazonResult > .card {
-        max-width: 100% !important;
-        margin: 0 !important;
-      }
-      /* ======================================================== */
-      
-      /* グリッドの中のカード設定（縦並びの強制を解除！） */
-      .card {
-        margin-bottom: 0 !important;
-        /* 🚨 ここにあった flex-direction: column; を削除！ */
-      }
-      .card:hover {
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
-        border-color: #cbd5e0;
-      }
+      .card { margin-bottom: 0 !important; }
+      .card:hover { box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-color: #cbd5e0; }
+      .loading-spinner, .no-data { grid-column: 1 / -1; }
+      #amazonResult > .card { max-width: 800px; margin: 0 auto !important; }
 
-      /* ローディングや「データなし」の文字は全幅を使う */
-      .loading-spinner, .no-data {
-        grid-column: 1 / -1;
-      }
-
-      /* ③ 初期状態のAmazonリサーチ結果案内は中央配置 */
-      #amazonResult > .card {
-        max-width: 800px;
-        margin: 0 auto !important;
-      }
-
-      /* ④ グラフエリアの最適化 */
       .graph-card { margin: 0 24px 24px 24px; }
-      .turnover-container { 
-        grid-template-columns: 1fr 1fr; 
-        max-width: 800px; 
-        margin: 0 auto; 
-        gap: 40px; 
-      }
+      .turnover-container { grid-template-columns: 1fr 1fr; max-width: 800px; margin: 0 auto; gap: 40px; }
       
-      /* タブの見た目（PC用にゆったり） */
-      /* 💡 ここに margin-top: 0 !important; を追加してヘッダーの黒線にピッタリくっつける！ */
-      .tabs { justify-content: flex-start; padding: 0 24px; border-bottom: 2px solid #e2e8f0; margin-top: 0 !important; }
+      /* 💡 PC版：タブの部分も強制的に隙間ゼロにして黒線にくっつける！ */
+      .tabs { justify-content: flex-start; padding: 0 24px; border-bottom: 2px solid #e2e8f0; margin: 0 !important; }
       .tab-btn { padding: 16px 24px; font-size: 14px; cursor: pointer; }
       .tab-btn:hover { background-color: #f8fafc; }
       
-      /* モーダル（設定画面など）を少し大きく */
       .modal-content { max-width: 500px; }
-      
-      /* マウス操作用にボタンスクロールなど視覚効果追加 */
       button { cursor: pointer; transition: opacity 0.2s; }
       button:hover { opacity: 0.9; }
     }
