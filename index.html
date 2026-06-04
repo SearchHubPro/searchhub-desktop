@@ -28,7 +28,7 @@
     min-height: 100vh;
   }
     
-    .header-wrapper { position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .header-wrapper { position: sticky; top: 0; z-index: 100; box-shadow: none !important; }
     /* 💡 背景を白(#ffffff)にして、下に黒線(border-bottom)を追加！ */
     .header { background-color: #ffffff; color: #333; padding: calc(14px + env(safe-area-inset-top)) 24px 14px 24px; display: flex; align-items: center; justify-content: space-between; position: relative; border-bottom: 2px solid #000000; }
     
@@ -96,7 +96,7 @@
     .dash-dot { display: none; position: absolute; top: -6px; right: -6px; width: 16px; height: 16px; background-color: #e53e3e; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3); border: 2px solid white; }
     .dash-dot.active { display: block; animation: pop 0.3s ease; }
 
-    .tabs-container { background-color: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: calc(52px + env(safe-area-inset-top)); z-index: 99; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .tabs-container { background-color: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: calc(52px + env(safe-area-inset-top)); z-index: 99; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 0 !important; }
     .tabs-container::-webkit-scrollbar { display: none; }
     .tabs { display: flex; white-space: nowrap; padding: 0 4px; }
     .tab-btn { position: relative; padding: 12px 14px; background: none; border: none; font-size: 12px; font-weight: bold; color: #718096; border-bottom: 3px solid transparent; outline: none; flex-shrink: 0; }
