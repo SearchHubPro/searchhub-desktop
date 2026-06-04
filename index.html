@@ -2230,21 +2230,18 @@ document.getElementById("regPurchaseUrl").value = "";
       resDiv.innerHTML = html;
     }
 
-    // 3️⃣ チェックしたやつ（いらんやつ）をリストから消去！
+   // 3️⃣ チェックしたやつ（いらんやつ）をリストから消去！
     async function removeCheckedItems() {
-      const remainingItems = [];
-      let checkedCount = 0;
+      const asinsToDelete = [];
       
       globalResearcherData.forEach((item, index) => {
         const checkbox = document.getElementById(`check_${index}`);
         if (checkbox && checkbox.checked) {
-          checkedCount++; // 消すやつとしてカウント
-        } else {
-          remainingItems.push(item); // 💡 これが正解！「残す商品」のデータを丸ごと収集する！
+          asinsToDelete.push(item.asin); // 💡 元のASIN収集に戻す
         }
       });
       
-      if(checkedCount === 0) return alert("削除する項目にチェックを入れてな！");
+      if(asinsToDelete.length === 0) return alert("削除する項目にチェックを入れてな！");
 
       const btn = document.querySelector('button[onclick="removeCheckedItems()"]');
       const originalText = btn.innerHTML;
@@ -2256,19 +2253,29 @@ document.getElementById("regPurchaseUrl").value = "";
       
       if (researcherUrl && targetGasUrl) {
         try {
-          await fetch(targetGasUrl, { 
+          // 🚨 1. CORSエラーの原因だった「headers」の指定を完全削除！
+          // 🚨 2. 送るデータも元の asinsToDelete に戻す！
+          const res = await fetch(targetGasUrl, { 
             method: 'POST', 
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // 💡 通信エラー防止ヘッダー
             body: JSON.stringify({ 
               command: 'updateResearcherSheet', 
               ssUrl: researcherUrl, 
-              remainingItems: remainingItems // 💡 「残す商品データ」をそのままGASに送る！
+              remainingItems: asinsToDelete 
             }) 
           });
-          // 削除完了後、GASから最新のリストを再取得
-          await loadResearcherData();
+          
+          // 💡 3. 【最重要】ここが「反映されなかった」原因の解決策！
+          // 以前はサーバーの処理を待たずに次へ進んでいたため、古いデータを読み込んでいた。
+          // await res.json() でGASの「削除完了」を確実に待つ！
+          const json = await res.json();
+          
+          if (json.success) {
+            await loadResearcherData(); // 完全に削除されてから最新データを取得
+          } else {
+            alert("❌ 削除失敗: " + (json.message || "不明なエラー"));
+          }
         } catch (e) {
-          alert("通信エラー: " + e.message);
+          alert("❌ 通信エラー: " + e.message);
         }
       } else {
         alert("設定からResearcherのURLを登録してな！");
