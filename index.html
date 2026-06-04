@@ -96,7 +96,7 @@
     .dash-dot { display: none; position: absolute; top: -6px; right: -6px; width: 16px; height: 16px; background-color: #e53e3e; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3); border: 2px solid white; }
     .dash-dot.active { display: block; animation: pop 0.3s ease; }
 
-    .tabs-container { background-color: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: calc(52px + env(safe-area-inset-top)); z-index: 99; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 0 !important; }
+    .tabs-container { background-color: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: calc(52px + env(safe-area-inset-top)); z-index: 99; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 !important; padding: 0 !important; border-top: none !important; }
     .tabs-container::-webkit-scrollbar { display: none; }
     .tabs { display: flex; white-space: nowrap; padding: 0 4px; }
     .tab-btn { position: relative; padding: 12px 14px; background: none; border: none; font-size: 12px; font-weight: bold; color: #718096; border-bottom: 3px solid transparent; outline: none; flex-shrink: 0; }
@@ -105,7 +105,7 @@
     .tab-dot.active { display: block; animation: pop 0.3s ease; }
     @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
     
-    .content { padding: 0 12px 12px 12px; min-height: 80vh; transform: translate3d(0,0,0); }    .tab-content { display: none; }
+    .content { padding: 12px 12px 12px 12px; min-height: 80vh; transform: translate3d(0,0,0); }   .tab-content { display: none; }
     .tab-content.active { display: block; }
     
     .card { background: white; border-radius: 8px; padding: 12px; margin-bottom: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.2s; }
@@ -160,7 +160,7 @@
     
     #ptr-indicator { position: fixed; top: -50px; left: 0; width: 100%; text-align: center; z-index: 1000; transition: top 0.3s; font-weight: bold; color: #008296; font-size: 13px; background: rgba(255,255,255,0.95); padding: 10px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-radius: 0 0 12px 12px; pointer-events: none;}
 
-   /* =========================================================================
+ /* =========================================================================
        🚀 PC最適化 (Amazon・Yahoo風のワイド画面対応) 
        ========================================================================= */
     @media (min-width: 768px) {
@@ -182,8 +182,8 @@
         background-color: transparent; 
       }
       .content {
-        /* 💡 PC版も上の隙間を消す！ */
-        padding: 0 24px 24px 24px; 
+        /* 💡 PC版はタブの下に少し隙間を作る（コンテンツがくっつきすぎないように） */
+        padding: 24px; 
       }
       
       /* ① ダッシュボードのボタンを1列じゃなく、横にズラッと並べる！ */
@@ -287,7 +287,8 @@
       }
       
       /* タブの見た目（PC用にゆったり） */
-      .tabs { justify-content: flex-start; padding: 0 24px; border-bottom: 2px solid #e2e8f0; }
+      /* 💡 ここに margin-top: 0 !important; を追加してヘッダーの黒線にピッタリくっつける！ */
+      .tabs { justify-content: flex-start; padding: 0 24px; border-bottom: 2px solid #e2e8f0; margin-top: 0 !important; }
       .tab-btn { padding: 16px 24px; font-size: 14px; cursor: pointer; }
       .tab-btn:hover { background-color: #f8fafc; }
       
