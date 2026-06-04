@@ -3023,7 +3023,7 @@ function goBackScreen() {
       }
     }
 
-    function renderPurchaseList() {
+   function renderPurchaseList() {
       const resDiv = document.getElementById('purchaseListResult');
       const countEl = document.getElementById('purchaseListCount');
       const kw = document.getElementById('purchase-list-search-kw').value.toLowerCase().trim();
@@ -3073,19 +3073,19 @@ function goBackScreen() {
           imgUrl = fallbackAsinImg;
         }
 
-        // 日付: 仕入日(黒)と精査日(赤)
+        // 💡 日付を「〇月〇日」フォーマットに変換する魔法！
         const formatDate = (dateStr) => {
           if (!dateStr || dateStr === '-' || dateStr === '') return '-';
           const d = new Date(dateStr);
-          return isNaN(d.getTime()) ? dateStr : (d.getMonth() + 1) + '/' + d.getDate();
+          return isNaN(d.getTime()) ? dateStr : (d.getMonth() + 1) + '月' + d.getDate() + '日';
         };
         const pDateStr = formatDate(item.purchaseDate);
         const cDateStr = formatDate(item.checkDate);
 
-        // 💡 標準サイズの背景色を緑（大型と同じバッジスタイル）に変更！
+        // 💡 標準サイズの背景色を緑（大型と同じバッジスタイル）に変更し、文字も少し大きく！
         const sizeBadge = size.includes('大型') 
-          ? `<span style="background:#e53e3e; color:white; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold;">${size}</span>` 
-          : `<span style="background:#07A27B; color:white; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:bold;">${size}</span>`;
+          ? `<span style="background:#e53e3e; color:white; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">${size}</span>` 
+          : `<span style="background:#07A27B; color:white; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">${size}</span>`;
 
         html += `
         <tr>
@@ -3097,31 +3097,37 @@ function goBackScreen() {
           </td>
 
           <td style="max-width: 250px;">
-            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:bold; color:#1a365d; margin-bottom:4px; font-size:12px;" title="${title}">${title}</div>
-            <span style="font-family:monospace; background:#fffaf0; color:#dd6b20; border:1px solid #fbd38d; padding:2px 4px; border-radius:4px; font-size:12px; font-weight:bold;">${asin}</span>
-            <span style="font-size:12px; color:#4a5568; font-weight:bold; margin-left:4px;">型番: ${model}</span>
-            <div style="font-size:12px; color:#4a5568; font-weight:bold; margin-top:4px;">ID: ${id}</div>
+            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:bold; color:#1a365d; margin-bottom:6px; font-size:13px;" title="${title}">${title}</div>
+            <span style="font-family:monospace; background:#fffaf0; color:#dd6b20; border:1px solid #fbd38d; padding:2px 6px; border-radius:4px; font-size:12px; font-weight:bold;">${asin}</span>
+            <span style="font-size:12px; color:#4a5568; font-weight:bold; margin-left:6px;">型番: ${model}</span>
+            <div style="font-size:11px; color:#a0aec0; font-weight:bold; margin-top:6px;">ID: ${id}</div>
           </td>
 
-          <td style="text-align: center;">
-            <div style="font-size:12px; color:#2d3748; font-weight:bold; margin-bottom:4px;">${pDateStr}</div>
-            <div style="font-size:12px; color:#e53e3e; font-weight:bold;">${cDateStr}</div>
+          <td style="text-align: center; vertical-align: middle;">
+            <div style="font-size:14px; color:#2d3748; font-weight:900; margin-bottom:6px;">${pDateStr}</div>
+            <div style="font-size:14px; color:#e53e3e; font-weight:900;">${cDateStr}</div>
           </td>
 
-          <td style="text-align: right;">
-            <div style="font-size:12px; color:#4a5568; font-weight:bold; margin-bottom:4px;">平均: ¥${sellPrice.toLocaleString()}</div>
-            <div style="font-size:12px; font-weight:bold; color:#e53e3e;">最安: ¥${minUsed.toLocaleString()}</div>
+          <td style="text-align: right; vertical-align: middle;">
+            <div style="font-size:13px; color:#4a5568; font-weight:bold; margin-bottom:6px;">
+              平均: <span style="font-size:16px; color:#2d3748; font-weight:900;">¥${sellPrice.toLocaleString()}</span>
+            </div>
+            <div style="font-size:13px; font-weight:bold; color:#e53e3e;">
+              最安: <span style="font-size:16px; font-weight:900;">¥${minUsed.toLocaleString()}</span>
+            </div>
           </td>
 
-          <td style="text-align: right;">
-            <div style="font-size:11px; color:#4a5568; font-weight:bold; margin-bottom:4px;">FBA: ¥${fbaFee.toLocaleString()}</div>
+          <td style="text-align: right; vertical-align: middle;">
+            <div style="font-size:12px; color:#4a5568; font-weight:bold; margin-bottom:8px;">
+              FBA: <span style="font-size:15px; color:#2d3748; font-weight:900;">¥${fbaFee.toLocaleString()}</span>
+            </div>
             <div>${sizeBadge}</div>
           </td>
 
-          <td style="text-align: center;">
-            <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
-              <a href="https://www.amazon.co.jp/dp/${asin}" target="_blank" style="background:#f6ad55; color:white; border:none; padding:4px 0; border-radius:4px; cursor:pointer; width:100%; font-size:10px; font-weight:bold; text-decoration:none; display:flex; justify-content:center; align-items:center;"><i class="fab fa-amazon"></i> Amazon</a>
-              <button onclick="openPurchaseEditModal('${id}')" style="background:#4a5568; color:white; border:none; padding:4px 0; border-radius:4px; cursor:pointer; width:100%; font-size:10px; font-weight:bold;"><i class="fas fa-edit"></i> 編集</button>
+          <td style="text-align: center; vertical-align: middle;">
+            <div style="display:flex; flex-direction:column; gap:6px; align-items:center;">
+              <a href="https://www.amazon.co.jp/dp/${asin}" target="_blank" style="background:#f6ad55; color:white; border:none; padding:6px 0; border-radius:4px; cursor:pointer; width:100%; font-size:11px; font-weight:bold; text-decoration:none; display:flex; justify-content:center; align-items:center; gap:4px; box-shadow:0 1px 2px rgba(0,0,0,0.1);"><i class="fab fa-amazon"></i> Amazon</a>
+              <button onclick="openPurchaseEditModal('${id}')" style="background:#4a5568; color:white; border:none; padding:6px 0; border-radius:4px; cursor:pointer; width:100%; font-size:11px; font-weight:bold; box-shadow:0 1px 2px rgba(0,0,0,0.1);"><i class="fas fa-edit"></i> 編集</button>
             </div>
           </td>
         </tr>`;
