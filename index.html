@@ -307,8 +307,8 @@
         <span style="font-size:10px; color:#718096; font-weight:normal; margin-top:4px;">帳簿管理・月別分析・価格改定</span>
       </button>
 
-      <button class="dash-btn" onclick="openView('view-researcher-menu')">
-        <i class="fas fa-clipboard-check" style="color:#a855f7;"></i>SearchHub Researcher
+      <button class="dash-btn" onclick="openView('view-researcher-menu'); markResearcherRead();">
+        <i class="fas fa-clipboard-check" style="color:#a855f7;"></i>SearchHub Researcher<span class="dash-dot" id="dash-dot-researcher"></span>
         <span style="font-size:10px; color:#718096; font-weight:normal; margin-top:4px;">Keepa一括解析・利益商品開拓</span>
       </button>
 
@@ -1304,7 +1304,12 @@ fetchConditionList();
             });
           }
         }
-        AppStorage.set("sh_history_data", JSON.stringify(globalHistoryData)); recalcBadges(); 
+        AppStorage.set("sh_history_data", JSON.stringify(globalHistoryData)); 
+        recalcBadges(); 
+        
+        // 🌟 ここ！履歴更新が終わったついでにResearcherの状態もチェックする！
+        checkResearcherStatus(); 
+        
       } catch(err) { document.getElementById("lastUpdate").innerText = "通信失敗"; hideLoader(); }
     }
 
@@ -1314,7 +1319,6 @@ fetchConditionList();
       document.getElementById("cfgKeepa").value = AppStorage.get("sh_keepa", ""); 
       document.getElementById("cfgSsUrl").value = AppStorage.get("sh_ssurl", "");
       document.getElementById("cfgResearcherUrl").value = AppStorage.get("sh_researcher_url", ""); 
-      // 💡 追加：WatcherとSniperのシートURLを読み込む
       document.getElementById("cfgWatcherSheetUrl").value = AppStorage.get("sh_watcher_sheet_url", ""); 
       document.getElementById("cfgSniperSheetUrl").value = AppStorage.get("sh_sniper_sheet_url", ""); 
       
@@ -1329,7 +1333,6 @@ fetchConditionList();
       AppStorage.set("sh_keepa", document.getElementById("cfgKeepa").value.trim()); 
       AppStorage.set("sh_ssurl", document.getElementById("cfgSsUrl").value.trim());
       AppStorage.set("sh_researcher_url", document.getElementById("cfgResearcherUrl").value.trim()); 
-      // 💡 追加：WatcherとSniperのシートURLを保存する
       AppStorage.set("sh_watcher_sheet_url", document.getElementById("cfgWatcherSheetUrl").value.trim()); 
       AppStorage.set("sh_sniper_sheet_url", document.getElementById("cfgSniperSheetUrl").value.trim()); 
       
@@ -1355,6 +1358,61 @@ fetchConditionList();
         if (json.success) AppStorage.set("sh_discord_toggle", nextStatus);
         else { updateDiscordBtnUI(currentStatus); alert("設定の同期に失敗したわ。"); }
       } catch(e) { updateDiscordBtnUI(currentStatus); alert("通信エラーが発生しました。"); }
+    }
+
+    // ==========================================
+    // 🚀 ステップ2：Researcherの完了検知 ＆ 赤丸制御
+    // ==========================================
+    
+    // 💡 Researcherが「開かれた」時に赤丸を消して既読にする処理
+    window.markResearcherRead = function() {
+      if (AppStorage.get('sh_researcher_state') === 'unread') {
+        AppStorage.set('sh_researcher_state', 'read'); // 既読状態を保存
+        const dot = document.getElementById('dash-dot-researcher');
+        if (dot) dot.classList.remove('active'); // 赤丸を消す
+      }
+    };
+
+    // 💡 GASにB列の状態を聞きに行く処理
+    async function checkResearcherStatus() {
+      const researcherUrl = AppStorage.get("sh_researcher_url", "");
+      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+      if (!researcherUrl || !targetGasUrl) return;
+
+      try {
+        const res = await fetch(targetGasUrl, {
+          method: 'POST',
+          body: JSON.stringify({ command: 'checkResearcherStatus', ssUrl: researcherUrl })
+        });
+        const json = await res.json();
+        
+        if (json.success && json.data) {
+          const isResearching = json.data.isResearching; // trueならB列にデータあり
+          const currentState = AppStorage.get('sh_researcher_state', 'read');
+          const dot = document.getElementById('dash-dot-researcher');
+          
+          if (isResearching) {
+            // 🚨 B列にデータあり＝リサーチ中！赤丸は出さない
+            AppStorage.set('sh_researcher_state', 'running');
+            if(dot) dot.classList.remove('active');
+          } else {
+            // ✅ B列が空っぽ！
+            if (currentState === 'running') {
+              // 「リサーチ中」から「空っぽ」に変わった直後＝完了したて！
+              AppStorage.set('sh_researcher_state', 'unread');
+              if(dot) dot.classList.add('active'); // 赤丸ON！
+            } else if (currentState === 'unread') {
+              // 完了したけど、まだユーザーが開いてないから赤丸維持
+              if(dot) dot.classList.add('active');
+            } else {
+              // 既に確認済み（read）なら赤丸は出さない
+              if(dot) dot.classList.remove('active');
+            }
+          }
+        }
+      } catch(e) {
+        console.log("Researcher状態確認エラー", e);
+      }
     }
     
     // 🚀 ステップ②: グラフの左右スワイプ対応版 setupSwipe & swipeToTab
@@ -2117,7 +2175,6 @@ document.getElementById("regPurchaseUrl").value = "";
         // 💡 iOSのSafari通信弾き対策で headers を追加！
         const res = await fetch(targetGasUrl, { 
           method: 'POST', 
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({ command: 'getResearcherData', ssUrl: researcherUrl }) 
         });
         
@@ -3032,7 +3089,7 @@ function goBackScreen() {
       try {
         const res = await fetch(targetGasUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+         
           body: JSON.stringify({ command: 'getPurchaseList', ssUrl: researcherUrl })
         });
         
