@@ -359,7 +359,15 @@
         <i class="fas fa-crosshairs" style="color:#e53e3e;"></i>SearchHub Sniper<span class="dash-dot" id="dash-dot-sniper"></span>
         <span style="font-size:10px; color:#718096; font-weight:normal; margin-top:4px;">利益商品自動狙撃・即時購入ログ</span>
       </button>
-    </div> </div> <div id="view-manager-menu" class="view">
+
+      <button class="dash-btn" onclick="openSheetLinksModal()">
+        <i class="fas fa-table" style="color:#3182ce;"></i>各種シート
+        <span style="font-size:10px; color:#718096; font-weight:normal; margin-top:4px;">スプレッドシートを直接開く</span>
+      </button>
+    </div>
+  </div> 
+
+  <div id="view-manager-menu" class="view">
     <div class="content">
       <div class="dashboard-grid">
         <button class="dash-btn" onclick="openView('view-ledger')"><i class="fas fa-book" style="color:#2b6cb0;"></i>販売管理</button>
@@ -799,8 +807,9 @@
   </div>
 
   <div id="configModal" class="modal">
-      <div class="modal-content">
-      <h3>⚙️ アプリ基本設定</h3>
+    <div class="modal-content">
+      <h3 style="margin-bottom:12px;">⚙️ アプリ基本設定</h3>
+      
       <label>Keepa APIキー</label>
       <input type="text" id="cfgKeepa" placeholder="あなたのKeepaAPIキー">
       
@@ -809,18 +818,27 @@
       
       <label>SearchHub : ResearcherのURL</label>
       <input type="url" id="cfgResearcherUrl" placeholder="https://docs.google.com/spreadsheets/...">
+
+      <label>SearchHub : WatcherのURL</label>
+      <input type="url" id="cfgWatcherSheetUrl" placeholder="https://docs.google.com/spreadsheets/...">
+
+      <label>SearchHub Sniper 極のURL</label>
+      <input type="url" id="cfgSniperSheetUrl" placeholder="https://docs.google.com/spreadsheets/...">
       
-      <div style="border-top:1px dashed #ccc; margin-top:15px; padding-top:5px;"></div>
+      <div style="border-top:1px dashed #ccc; margin:15px 0 5px 0; padding-top:5px;"></div>
+      
       <label>SearchHub Sniper 極のGASURL</label>
       <input type="url" id="cfgSniperUrl" placeholder="https://script.google.com/macros/.../exec">
-      <label>SearchHub : WatcherのGASURL</label>
-      <input type="url" id="cfg10SiteUrl" placeholder="https://script.google.com/macros/.../exec">
-      <div style="border-top:1px dashed #ccc; margin-top:15px; padding-top:5px;"></div>
-      
-      <div class="modal-actions">
-        <button style="background:#e2e8f0; color:#4a5568;" onclick="closeConfig()">閉じる</button>
-        <button style="background:#1a365d; color:white;" onclick="saveConfig()">設定を保存</button>
-      </div>
+      
+      <label style="margin-top:0; margin-bottom:2px; padding:0;">SearchHub : WatcherのGASURL</label>
+      <input type="url" id="cfg10SiteUrl" placeholder="https://script.google.com/macros/.../exec" style="margin-top:0;">
+      
+      <div style="border-top:1px dashed #ccc; margin:15px 0 5px 0; padding-top:5px;"></div>
+      
+      <div class="modal-actions">
+        <button style="background:#e2e8f0; color:#4a5568;" onclick="closeConfig()">閉じる</button>
+        <button style="background:#1a365d; color:white;" onclick="saveConfig()">設定を保存</button>
+      </div>
     </div>
   </div>
 
@@ -1307,8 +1325,11 @@ fetchConditionList();
     function openConfig() {
       document.getElementById("cfgKeepa").value = AppStorage.get("sh_keepa", ""); 
       document.getElementById("cfgSsUrl").value = AppStorage.get("sh_ssurl", "");
-      // 🌟 追加：保存されているResearcherURLを枠に入れる
       document.getElementById("cfgResearcherUrl").value = AppStorage.get("sh_researcher_url", ""); 
+      // 💡 追加：WatcherとSniperのシートURLを読み込む
+      document.getElementById("cfgWatcherSheetUrl").value = AppStorage.get("sh_watcher_sheet_url", ""); 
+      document.getElementById("cfgSniperSheetUrl").value = AppStorage.get("sh_sniper_sheet_url", ""); 
+      
       document.getElementById("cfgSniperUrl").value = AppStorage.get("sh_sniper_url", ""); 
       document.getElementById("cfg10SiteUrl").value = AppStorage.get("sh_tensite_url", "");
       document.getElementById("configModal").style.display = "flex";
@@ -1319,8 +1340,11 @@ fetchConditionList();
     function saveConfig() {
       AppStorage.set("sh_keepa", document.getElementById("cfgKeepa").value.trim()); 
       AppStorage.set("sh_ssurl", document.getElementById("cfgSsUrl").value.trim());
-      // 🌟 追加：枠に入力されたResearcherURLを保存する
       AppStorage.set("sh_researcher_url", document.getElementById("cfgResearcherUrl").value.trim()); 
+      // 💡 追加：WatcherとSniperのシートURLを保存する
+      AppStorage.set("sh_watcher_sheet_url", document.getElementById("cfgWatcherSheetUrl").value.trim()); 
+      AppStorage.set("sh_sniper_sheet_url", document.getElementById("cfgSniperSheetUrl").value.trim()); 
+      
       AppStorage.set("sh_sniper_url", document.getElementById("cfgSniperUrl").value.trim()); 
       AppStorage.set("sh_tensite_url", document.getElementById("cfg10SiteUrl").value.trim());
       closeConfig(); syncPatrolData(); fetchDashboardData();
@@ -3309,6 +3333,26 @@ function saveInfoSettings() {
     btn.disabled = false;
   });
 }
+
+// ==========================================
+    // 💡 各種シートへ飛ぶメニューの操作用JS
+    // ==========================================
+    function openSheetLinksModal() {
+      document.getElementById('sheetLinksModal').style.display = 'flex';
+    }
+    function closeSheetLinksModal() {
+      document.getElementById('sheetLinksModal').style.display = 'none';
+    }
+    function openSheet(storageKey) {
+      const url = AppStorage.get(storageKey, "");
+      if (!url) {
+        alert("⚙️ まだ設定画面でこのシートのURLが登録されてへんで！");
+        closeSheetLinksModal();
+        openConfig(); // 親切に設定画面を開いてあげる
+        return;
+      }
+      window.open(url, '_blank');
+    }
   </script>
 
 <div id="infoModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
