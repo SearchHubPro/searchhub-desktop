@@ -1,3 +1,4 @@
+HTML
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -392,7 +393,6 @@
         </select>
       </div>
 
-      <!-- 💡 切替用CSS ＆ 余白削減・見出し固定のCSS -->
       <style>
         #ledgerTable .sales-data { display: none; }
         #ledgerTable.sales-mode .sales-data { display: block; }
@@ -453,6 +453,7 @@
       </div>
     </div>
   </div>
+  
  <div id="view-bulk-register" class="view">
     <div class="content">
       
@@ -460,11 +461,15 @@
         <button onclick="loadBulkRegisterData()" style="background:#1a365d; color:white; border:none; padding:8px 16px; border-radius:8px; font-weight:bold; font-size:12px; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
           <i class="fas fa-sync-alt"></i> データを取得
         </button>
-
         
-        <button id="bulkCompleteBtn" onclick="completeBulkRegistration()" style="background:#07A27B; color:white; border:none; padding:12px 24px; border-radius:8px; font-weight:bold; font-size:15px; box-shadow:0 4px 6px rgba(0,0,0,0.2); cursor:pointer;">
-          ✅ 登録完了（出品中へ変更）
-        </button>
+        <div style="display:flex; gap:8px;">
+          <a href="https://sellercentral.amazon.co.jp/product-search/bulk" target="_blank" style="background:#ff9900; color:white; border:none; padding:12px 24px; border-radius:8px; font-weight:bold; font-size:15px; text-decoration:none; display:flex; align-items:center; box-shadow:0 4px 6px rgba(0,0,0,0.2);">
+            <i class="fab fa-amazon" style="margin-right:6px;"></i> アップロードへ
+          </a>
+          <button id="bulkCompleteBtn" onclick="completeBulkRegistration()" style="background:#07A27B; color:white; border:none; padding:12px 24px; border-radius:8px; font-weight:bold; font-size:15px; box-shadow:0 4px 6px rgba(0,0,0,0.2); cursor:pointer;">
+            ✅ 登録完了（出品中へ変更）
+          </button>
+        </div>
       </div>
 
       <div id="bulkLoading" style="display:none; text-align:center; padding:20px; color:#2b6cb0; font-weight:bold; font-size:13px;">⌛ データを読み込み中...</div>
@@ -484,13 +489,14 @@
             </tr>
           </thead>
           <tbody id="bulkRegisterBody">
-            <tr><td colspan="8" style="text-align:center; padding:30px; color:#a0aec0;">「データを取得」ボタンを押してな！</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  <div id="view-purchase-list" class="view">
+            <tr><td colspan="8" style="text-align:center; padding:30px; color:#a0aec0;">「データを取得」ボタンを押してな！</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <div id="view-purchase-list" class="view">
     <div class="content">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <span style="font-size:12px; font-weight:bold; color:#4a5568;" id="purchaseListCount">待機中...</span>
