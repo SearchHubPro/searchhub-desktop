@@ -2232,16 +2232,19 @@ document.getElementById("regPurchaseUrl").value = "";
 
     // 3️⃣ チェックしたやつ（いらんやつ）をリストから消去！
     async function removeCheckedItems() {
-      const asinsToDelete = [];
+      const remainingItems = [];
+      let checkedCount = 0;
       
       globalResearcherData.forEach((item, index) => {
         const checkbox = document.getElementById(`check_${index}`);
         if (checkbox && checkbox.checked) {
-          asinsToDelete.push(item.asin); // 💡 行番号ではなく「ASIN」を収集！
+          checkedCount++; // 消すやつとしてカウント
+        } else {
+          remainingItems.push(item); // 💡 これが正解！「残す商品」のデータを丸ごと収集する！
         }
       });
       
-      if(asinsToDelete.length === 0) return alert("削除する項目にチェックを入れてな！");
+      if(checkedCount === 0) return alert("削除する項目にチェックを入れてな！");
 
       const btn = document.querySelector('button[onclick="removeCheckedItems()"]');
       const originalText = btn.innerHTML;
@@ -2251,19 +2254,26 @@ document.getElementById("regPurchaseUrl").value = "";
       const researcherUrl = AppStorage.get("sh_researcher_url", "");
       let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
       
-      if (researcherUrl) {
+      if (researcherUrl && targetGasUrl) {
         try {
           await fetch(targetGasUrl, { 
             method: 'POST', 
-            // 💡 子機GASの都合上、変数の名前は remainingItems のままやけど、中身は「消すASINのリスト」を送る！
-            body: JSON.stringify({ command: 'updateResearcherSheet', ssUrl: researcherUrl, remainingItems: asinsToDelete }) 
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // 💡 通信エラー防止ヘッダー
+            body: JSON.stringify({ 
+              command: 'updateResearcherSheet', 
+              ssUrl: researcherUrl, 
+              remainingItems: remainingItems // 💡 「残す商品データ」をそのままGASに送る！
+            }) 
           });
           // 削除完了後、GASから最新のリストを再取得
           await loadResearcherData();
         } catch (e) {
-          alert("通信エラー");
+          alert("通信エラー: " + e.message);
         }
+      } else {
+        alert("設定からResearcherのURLを登録してな！");
       }
+      
       btn.innerHTML = originalText;
       btn.disabled = false;
     }
