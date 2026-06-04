@@ -3334,25 +3334,8 @@ function saveInfoSettings() {
   });
 }
 
-// ==========================================
-    // 💡 各種シートへ飛ぶメニューの操作用JS
-    // ==========================================
-    function openSheetLinksModal() {
-      document.getElementById('sheetLinksModal').style.display = 'flex';
-    }
-    function closeSheetLinksModal() {
-      document.getElementById('sheetLinksModal').style.display = 'none';
-    }
-    function openSheet(storageKey) {
-      const url = AppStorage.get(storageKey, "");
-      if (!url) {
-        alert("⚙️ まだ設定画面でこのシートのURLが登録されてへんで！");
-        closeSheetLinksModal();
-        openConfig(); // 親切に設定画面を開いてあげる
-        return;
-      }
-      window.open(url, '_blank');
-    }
+
+
   </script>
 
 <div id="infoModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
@@ -3405,7 +3388,26 @@ function saveInfoSettings() {
       } catch (err) { alert("エラー\n" + err.message); btn.innerText = "🔔 通知許可する"; btn.disabled = false; }
     }
 
-   
+   // ==========================================
+    // 💡 各種シートへ飛ぶメニューの操作用JS
+    // ==========================================
+    function openSheetLinksModal() {
+      document.getElementById('sheetLinksModal').style.display = 'flex';
+    }
+    function closeSheetLinksModal() {
+      document.getElementById('sheetLinksModal').style.display = 'none';
+    }
+    function openSheet(storageKey) {
+      const url = AppStorage.get(storageKey, "");
+      if (!url) {
+        alert("⚙️ まだ設定画面でこのシートのURLが登録されてへんで！");
+        closeSheetLinksModal();
+        openConfig(); // 親切に設定画面を開いてあげる
+        return;
+      }
+      window.open(url, '_blank');
+    }
+
   </script>
 </body>
 </html>
