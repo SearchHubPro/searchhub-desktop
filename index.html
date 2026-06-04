@@ -29,15 +29,17 @@
   }
     
     .header-wrapper { position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .header { background-color: #6d9eeb; color: #333; padding: calc(14px + env(safe-area-inset-top)) 24px 14px 24px; display: flex; align-items: center; justify-content: space-between; position: relative; }
+    /* 💡 背景を白(#ffffff)にして、下に黒線(border-bottom)を追加！ */
+    .header { background-color: #ffffff; color: #333; padding: calc(14px + env(safe-area-inset-top)) 24px 14px 24px; display: flex; align-items: center; justify-content: space-between; position: relative; border-bottom: 2px solid #000000; }
     
     .header-left { display: flex; gap: 12px; align-items: center; z-index: 2; }
-    .header-center { position: absolute; left: 50%; transform: translateX(-50%); text-align: center; width: 40%; z-index: 1; }
+    /* 💡 ロゴが綺麗に収まるように幅を40%から60%に拡大！ */
+    .header-center { position: absolute; left: 50%; transform: translateX(-50%); text-align: center; width: 60%; z-index: 1; }
     .header h1 { margin: 0; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .header-right { display: flex; gap: 14px; align-items: center; z-index: 2; justify-content: flex-end; }
     
     .header-btn { background: none; border: none; color: #333; font-size: 18px; cursor: pointer; outline: none; padding: 5px; transition: transform 0.5s ease; display: flex; align-items: center; justify-content: center;}
-.last-update { font-size: 10px; color: #4a5568; margin-top: 2px; }    
+    .last-update { font-size: 10px; color: #4a5568; margin-top: 2px; }    
     .discord-btn { font-size: 20px; transition: color 0.3s, transform 0.1s; }
     .discord-btn:active { transform: scale(0.9); }
     .discord-on { color: #5865F2 !important; }
@@ -312,14 +314,18 @@
       <button class="header-btn discord-btn discord-off" id="dcToggleBtn" onclick="toggleDiscord()"><i class="fab fa-discord"></i></button>
     </div>
     <div class="header-center">
-      <h1 id="headerTitle">SearchHub Pro</h1>
-      <div class="last-update" id="lastUpdate">待機中...</div>
+      <img id="headerLogo" src="https://i.ibb.co/1f3CYVjV/2026-06-04-111628.png" style="height: 28px; display: block; margin: 0 auto; object-fit: contain;">
+      
+      <div id="headerTextWrapper" style="display: none;">
+        <h1 id="headerTitle">SearchHub Pro</h1>
+        <div class="last-update" id="lastUpdate">待機中...</div>
+      </div>
     </div>
     <div class="header-right"></div>
   </div>
 </div>
 
-  <div id="view-home" class="view active">
+  <div id="view-home" class="view active">
     <div class="graph-card">
       <div class="home-top-tabs">
         <button class="home-tab-btn active" onclick="switchHomeTab('turnover', this)">回転率</button>
@@ -1166,11 +1172,21 @@
       const titleEl = document.getElementById('headerTitle');
       const backBtn = document.getElementById('backBtn');
       
+      // 💡 画像とテキストの切り替え要素を取得
+      const logoEl = document.getElementById('headerLogo');
+      const textWrapperEl = document.getElementById('headerTextWrapper');
+      
       if(viewId === 'view-home') {
         backBtn.style.display = 'none';
-        titleEl.innerText = 'SearchHub Pro'; 
+        // 🚀 ホーム画面：画像を表示して、テキストを隠す
+        if(logoEl) logoEl.style.display = 'block';
+        if(textWrapperEl) textWrapperEl.style.display = 'none';
       } else {
         backBtn.style.display = 'flex';
+        // 🚀 その他の画面：テキストを表示して、画像を隠す
+        if(logoEl) logoEl.style.display = 'none';
+        if(textWrapperEl) textWrapperEl.style.display = 'block';
+
         if(viewId === 'view-sniper') titleEl.innerText = 'SearchHub Sniper';
         else if(viewId === 'view-watcher') titleEl.innerText = 'SearchHub Watcher';
         else if(viewId === 'view-amazon') titleEl.innerText = 'Amazon リサーチ';
@@ -1183,10 +1199,11 @@
         else if(viewId === 'view-bulk-register') titleEl.innerText = '一括商品登録';
         else if(viewId === 'view-info') titleEl.innerText = '各種情報';
         else if(viewId === 'view-purchase-list') titleEl.innerText = '仕入れリスト';
-        // 👇 追加：独立した月別データ画面のタイトル
         else if(viewId === 'view-monthly-purchase') titleEl.innerText = '月別仕入情報';
         else if(viewId === 'view-monthly-sales') titleEl.innerText = '月別販売情報';
       }
+      
+      // ーーー この下は元からあるコードそのまま ーーー
       if (viewId === 'view-bulk-register') {
         loadBulkRegisterData();
       }
