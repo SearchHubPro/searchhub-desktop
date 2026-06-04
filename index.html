@@ -57,7 +57,7 @@
     .file-btn { display: inline-block; background: #3182ce; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
     .file-btn:hover { background: #2b6cb0; }
     /* --- 新ホーム画面（グラフ＆ダッシュボード） --- */
-    .graph-card { background: #ffffff; border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin: 16px; border: 1px solid #d5d9d9; min-height: 290px; }
+    .graph-card { background: #ffffff; border-radius: 0 0 12px 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin: 0 16px 16px 16px; border: 1px solid #d5d9d9; border-top: none; min-height: 290px; }
     .home-top-tabs { display: flex; justify-content: flex-start; gap: 4px; margin-bottom: 12px; border-bottom: 1px solid #d5d9d9; }
     .home-tab-btn { padding: 8px 12px; border: none; font-size: 13px; font-weight: bold; background: transparent; color: #565959; cursor: pointer; border-bottom: 3px solid transparent; flex: 1; text-align: center; }
     .home-tab-btn.active { color: #008296; border-bottom: 3px solid #008296; }
@@ -105,8 +105,7 @@
     .tab-dot.active { display: block; animation: pop 0.3s ease; }
     @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
     
-    .content { padding: 12px; min-height: 80vh; transform: translate3d(0,0,0); }
-    .tab-content { display: none; }
+    .content { padding: 0 12px 12px 12px; min-height: 80vh; transform: translate3d(0,0,0); }    .tab-content { display: none; }
     .tab-content.active { display: block; }
     
     .card { background: white; border-radius: 8px; padding: 12px; margin-bottom: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.2s; }
@@ -169,19 +168,22 @@
       .header-left, .header-right { width: auto; }
       
       body {
-        max-width: 100%; /* 💡 1200px制限を解除して100%（全画面）にする */
+        max-width: 100%; 
         margin: 0; 
+        /* 💡 背景をグレーに戻す！ */
         background-color: #f2f4f8; 
       }
       .header-wrapper {
-        max-width: 100%; /* 💡 ここも100%にする */
+        max-width: 100%; 
         margin: 0;
       }
       .view {
-        background-color: #ffffff; /* アプリ部分は白 */
+        /* 💡 ここは一旦消すか透明にする（bodyのグレーを生かすため） */
+        background-color: transparent; 
       }
       .content {
-        padding: 24px; /* PC画面では余白をゆったり取る */
+        /* 💡 PC版も上の隙間を消す！ */
+        padding: 0 24px 24px 24px; 
       }
       
       /* ① ダッシュボードのボタンを1列じゃなく、横にズラッと並べる！ */
@@ -192,7 +194,7 @@
       }
       .dash-btn { padding: 24px 10px; font-size: 14px; }
       .dash-btn i { font-size: 32px; margin-bottom: 4px; }
-      .dash-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); background-color: #f8fafc; } /* マウスホバーで浮き上がる */
+      .dash-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); background-color: #f8fafc; }
 
       /* ② リストをAmazonの商品一覧のように「タイル状（多段グリッド）」に並べる！ */
       .tab-content.active, 
@@ -276,7 +278,7 @@
       }
 
       /* ④ グラフエリアの最適化 */
-      .graph-card { margin: 24px; }
+      .graph-card { margin: 0 24px 24px 24px; }
       .turnover-container { 
         grid-template-columns: 1fr 1fr; 
         max-width: 800px; 
