@@ -43,8 +43,8 @@
     .discord-on { color: #5865F2 !important; }
     .discord-off { color: #4a5568 !important; opacity: 0.4; }
 
-    /* 💡 魔法の overflow: hidden を追加！これでタブ上の謎の隙間が物理的に消滅する！ */
-    .view { display: none; margin: 0 !important; padding: 0 !important; overflow: hidden; }
+    /* 💡 各画面の親箱。余計な隙間を生ませない */
+    .view { display: none; padding-top: 0 !important; margin-top: 0 !important; }
     .view.active { display: block; animation: fadeIn 0.3s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     
@@ -56,7 +56,8 @@
     .file-btn { display: inline-block; background: #3182ce; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
     .file-btn:hover { background: #2b6cb0; }
     
-    .graph-card { background: #ffffff; border-radius: 0 0 12px 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin: 0 16px 16px 16px; border: 1px solid #d5d9d9; border-top: none; min-height: 290px; }
+    /* 💡 TOP画面のグラフ：ちゃんと上に隙間(16px)をあける */
+    .graph-card { background: #ffffff; border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin: 16px; border: 1px solid #d5d9d9; min-height: 290px; }
     .home-top-tabs { display: flex; justify-content: flex-start; gap: 4px; margin-bottom: 12px; border-bottom: 1px solid #d5d9d9; }
     .home-tab-btn { padding: 8px 12px; border: none; font-size: 13px; font-weight: bold; background: transparent; color: #565959; cursor: pointer; border-bottom: 3px solid transparent; flex: 1; text-align: center; }
     .home-tab-btn.active { color: #008296; border-bottom: 3px solid #008296; }
@@ -93,17 +94,17 @@
     .dash-dot { display: none; position: absolute; top: -6px; right: -6px; width: 16px; height: 16px; background-color: #e53e3e; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3); border: 2px solid white; }
     .dash-dot.active { display: block; animation: pop 0.3s ease; }
 
-    /* 💡 タブの部分は上にピタッとくっつけるために margin:0 と top:0 を設定！ */
-    .tabs-container { background-color: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 99; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 !important; padding: 0 !important; border-top: none !important; }
+    /* 💡 Sniper・Watcherのタブ：marginを完全に消して黒線にピタッと合体！ */
+    .tabs-container { background-color: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: calc(52px + env(safe-area-inset-top)); z-index: 99; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 !important; padding: 0 !important; }
     .tabs-container::-webkit-scrollbar { display: none; }
     .tabs { display: flex; white-space: nowrap; padding: 0 4px; margin: 0 !important; }
-    .tab-btn { position: relative; padding: 12px 14px; background: none; border: none; font-size: 12px; font-weight: bold; color: #718096; border-bottom: 3px solid transparent; outline: none; flex-shrink: 0; }
+    .tab-btn { position: relative; padding: 12px 14px; background: none; border: none; font-size: 12px; font-weight: bold; color: #718096; border-bottom: 3px solid transparent; outline: none; flex-shrink: 0; margin: 0; }
     .tab-btn.active { color: #2b6cb0; border-bottom-color: #2b6cb0; background-color: #ebf8ff; }
     .tab-dot { display: none; position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background-color: #e53e3e; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
     .tab-dot.active { display: block; animation: pop 0.3s ease; }
     @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
     
-    /* 💡 共通コンテンツ（スマホ版）：上に隙間（16px）を持たせる */
+    /* 💡 その他の画面コンテンツ：上に隙間（16px）をちゃんとあける！ */
     .content { padding: 16px 12px 12px 12px; min-height: 80vh; transform: translate3d(0,0,0); }   
     .tab-content { display: none; }
     .tab-content.active { display: block; }
@@ -181,7 +182,7 @@
         background-color: transparent; 
       }
       
-      /* 💡 PC版：ResearcherやManagerなど「その他」の画面は上にちゃんと隙間（24px）をあける！ */
+      /* 💡 PC版：Researcherなど「その他」の画面は上にちゃんと隙間（24px）をあける！ */
       .content {
         padding: 24px; 
       }
@@ -210,7 +211,6 @@
         gap: 12px;
         align-content: start;
       }
-
       #amazon-container { transition: all 0.3s ease; }
       #amazon-container.search-active {
         display: grid;
@@ -238,12 +238,14 @@
       .loading-spinner, .no-data { grid-column: 1 / -1; }
       #amazonResult > .card { max-width: 800px; margin: 0 auto !important; }
 
-      .graph-card { margin: 0 24px 24px 24px; }
+      /* 💡 PC版：TOP画面のグラフも上に隙間(24px)をあける！ */
+      .graph-card { margin: 24px; }
       .turnover-container { grid-template-columns: 1fr 1fr; max-width: 800px; margin: 0 auto; gap: 40px; }
       
-      /* 💡 PC版：タブの部分も強制的に隙間ゼロにして黒線にくっつける！ */
+      /* 💡 PC版：タブの部分はスクロール追従位置も含めて強制的に隙間ゼロで黒線にくっつける！ */
+      .tabs-container { top: 62px !important; margin: 0 !important; padding: 0 !important; border-top: none !important; }
       .tabs { justify-content: flex-start; padding: 0 24px; border-bottom: 2px solid #e2e8f0; margin: 0 !important; }
-      .tab-btn { padding: 16px 24px; font-size: 14px; cursor: pointer; }
+      .tab-btn { padding: 16px 24px; font-size: 14px; cursor: pointer; margin: 0; }
       .tab-btn:hover { background-color: #f8fafc; }
       
       .modal-content { max-width: 500px; }
