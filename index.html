@@ -308,7 +308,7 @@
       </button>
 
       <button class="dash-btn" onclick="openView('view-researcher-menu')">
-        <i class="fas fa-clipboard-check" style="color:#a855f7;"></i>SearchHub Researcher
+        <i class="fas fa-clipboard-check" style="color:#a855f7;"></i>SearchHub Researcher<span class="dash-dot" id="dash-dot-researcher"></span>
         <span style="font-size:10px; color:#718096; font-weight:normal; margin-top:4px;">Keepa一括解析・利益商品開拓</span>
       </button>
 
@@ -964,11 +964,15 @@
 
     async function fetchDashboardData() {
       const ssUrl = AppStorage.get("sh_ssurl", "");
+      // 💡 追加：スマホに保存されてるResearcherのURLも引っ張り出す
+      const resUrl = AppStorage.get("sh_researcher_url", ""); 
+      
       let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
       if (!ssUrl || !targetGasUrl) return;
 
       try {
-        const res = await fetch(targetGasUrl, { method: 'POST', body: JSON.stringify({ command: 'getDashboardData', ssUrl: ssUrl }) });
+        // 💡 追加：GASに送るデータの中に `researcherUrl: resUrl` を混ぜてあげる！
+        const res = await fetch(targetGasUrl, { method: 'POST', body: JSON.stringify({ command: 'getDashboardData', ssUrl: ssUrl, researcherUrl: resUrl }) });
         const json = await res.json();
         if (json.success && json.data) {
           homeData = json.data;
@@ -985,6 +989,16 @@
               monthArea.appendChild(btn);
             });
           }
+
+          const dashDotRes = document.getElementById('dash-dot-researcher');
+          if (dashDotRes) {
+            if (homeData.researcherActive === true) {
+              dashDotRes.classList.add('active'); // 赤丸点灯！
+            } else {
+              dashDotRes.classList.remove('active'); // 赤丸消灯！
+            }
+          }
+          
           updateHomeView();
         }
       } catch(err) {
