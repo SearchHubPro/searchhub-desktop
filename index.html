@@ -842,12 +842,13 @@
   <div id="ledgerEditModal" class="modal">
     <div class="modal-content" style="max-width: 400px; max-height: 85vh; overflow-y: auto;">
       <h3 style="margin-top:0; border-bottom:2px solid #e2e8f0; padding-bottom:8px;"><i class="fas fa-edit"></i> 帳簿データの編集</h3>
-      <input type="hidden" id="edit_no">
+      <input type="hidden" id="edit_asin">
       
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px;">
-      <div><label style="font-size:11px; font-weight:bold;">仕入日</label><input type="text" id="edit_buyDate" style="width:100%; padding:8px; box-sizing:border-box;"></div>
-      <div><label style="font-size:11px; font-weight:bold;">仕入先</label><select id="edit_supplier" style="width:100%; padding:8px; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; outline:none;"><option value="">読込中...</option></select></div>
-    </div>
+      <div style="display:grid; grid-template-columns:70px 1fr 1fr; gap:8px; margin-top:12px;">
+        <div><label style="font-size:11px; font-weight:bold; color:#e53e3e;">No</label><input type="text" id="edit_no" oninput="updateSkuAutomatically()" style="width:100%; padding:8px; box-sizing:border-box; background:#fff5f5; border:1px solid #feb2b2; border-radius:6px; font-weight:bold; color:#c53030; outline:none;"></div>
+        <div><label style="font-size:11px; font-weight:bold;">仕入日</label><input type="text" id="edit_buyDate" oninput="updateSkuAutomatically()" style="width:100%; padding:8px; box-sizing:border-box;"></div>
+        <div><label style="font-size:11px; font-weight:bold;">仕入先</label><select id="edit_supplier" style="width:100%; padding:8px; box-sizing:border-box; border:1px solid #ccc; border-radius:6px; outline:none;"><option value="">読込中...</option></select></div>
+      </div>
       
       <label style="font-size:11px; font-weight:bold; display:block; margin-top:8px;">商品名</label>
       <input type="text" id="edit_title" style="width:100%; padding:8px; box-sizing:border-box; background:#f8fafc;">
@@ -2742,6 +2743,7 @@ document.getElementById("regPurchaseUrl").value = "";
       }
       
       document.getElementById('ledgerEditModal').style.display = 'flex';
+      document.getElementById('edit_asin').value = item.asin || '';
 
       // 💡 もし仕入先リストがまだ空っぽなら、このタイミングでGASから取得する
       if (typeof window.globalSupplierData === 'undefined' || window.globalSupplierData.length === 0) {
@@ -3438,6 +3440,19 @@ function saveInfoSettings() {
     btn.disabled = false;
   });
 }
+
+// 💡 新規追加：No・日付・ASINを組み合わせてSKUを自動生成する関数
+    function updateSkuAutomatically() {
+      const no = document.getElementById('edit_no').value.trim();
+      const rawDate = document.getElementById('edit_buyDate').value.trim();
+      const asin = document.getElementById('edit_asin').value.trim();
+
+      // 日付からスラッシュやハイフンを消して数字8桁にする（例：2026/06/04 → 20260604）
+      const formattedDate = rawDate.replace(/[^0-9]/g, '');
+
+      // SKUの入力欄を自動上書き
+      document.getElementById('edit_sku').value = `${no}-${formattedDate}-${asin}`;
+    }
 
 
 
