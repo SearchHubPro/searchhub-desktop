@@ -696,7 +696,16 @@
     <div class="content">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding:0 4px;">
         <span style="font-size:12px; font-weight:bold; color:#4a5568;" id="inventoryCount">在庫を読み込み中...</span>
-        <button onclick="loadInventoryPrice()" style="background:#1a365d; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold;"><i class="fas fa-sync-alt"></i> 更新</button>
+        
+        <div style="display:flex; gap:8px;">
+          <button id="keepaBtn" onclick="updateKeepaInventory()" style="background:#07A27B; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer; transition:0.2s;">
+            <i class="fas fa-cloud-download-alt"></i> 在庫更新
+          </button>
+          
+          <button onclick="loadInventoryPrice()" style="background:#1a365d; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold;">
+            <i class="fas fa-sync-alt"></i> 更新
+          </button>
+        </div>
       </div>
       <input type="text" id="price-search-kw" class="search-bar-only" placeholder="ASINや商品名で一発検索..." oninput="invCurrentPage=1; renderInventoryList();">
       
@@ -825,6 +834,8 @@
       
       <div style="border-top:1px dashed #ccc; margin:15px 0 5px 0; padding-top:5px;"></div>
       
+      <label>AmazonセラーID</label>
+      <input type="text" id="cfgSellerId" placeholder="A1234567890XYZなど">
       <div class="modal-actions">
         <button style="background:#e2e8f0; color:#4a5568;" onclick="closeConfig()">閉じる</button>
         <button style="background:#1a365d; color:white;" onclick="saveConfig()">設定を保存</button>
@@ -1397,6 +1408,7 @@ fetchConditionList();
       
       document.getElementById("cfgSniperUrl").value = AppStorage.get("sh_sniper_url", ""); 
       document.getElementById("cfg10SiteUrl").value = AppStorage.get("sh_tensite_url", "");
+      document.getElementById("cfgSellerId").value = AppStorage.get("sh_seller_id", "");
       document.getElementById("configModal").style.display = "flex";
     }
 
@@ -1412,6 +1424,7 @@ fetchConditionList();
       
       AppStorage.set("sh_sniper_url", document.getElementById("cfgSniperUrl").value.trim()); 
       AppStorage.set("sh_tensite_url", document.getElementById("cfg10SiteUrl").value.trim());
+      AppStorage.set("sh_seller_id", document.getElementById("cfgSellerId").value.trim());
       closeConfig(); syncPatrolData(); fetchDashboardData();
     }
     
@@ -3558,6 +3571,41 @@ function saveInfoSettings() {
 
       // SKUの入力欄を自動上書き
       document.getElementById('edit_sku').value = `${no}-${formattedDate}-${asin}`;
+    } 
+   
+    async function updateKeepaInventory() {
+      const btn = document.getElementById('keepaBtn');
+      if(btn) { btn.disabled = true; btn.innerText = "更新中..."; }
+
+      const ssUrl = AppStorage.get("sh_ssurl", "");
+      const keepaKey = AppStorage.get("sh_keepa", ""); 
+      const sellerId = AppStorage.get("sh_seller_id", "");
+      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+
+      if (!ssUrl || !targetGasUrl || !keepaKey || !sellerId) {
+        alert("⚙️設定画面からURL、Keepaキー、セラーIDを登録してな！");
+        if(btn) { btn.disabled = false; btn.innerText = "在庫更新"; }
+        return;
+      }
+
+      try {
+        const res = await fetch(targetGasUrl, {
+          method: 'POST',
+          body: JSON.stringify({ command: 'startKeepaDirect', ssUrl: ssUrl, keepaKey: keepaKey, sellerId: sellerId })
+        });
+        const json = await res.json();
+
+        if (json.success) {
+          if(btn) { btn.innerText = "✅完了! 再読込中..."; }
+          await loadInventoryPrice(); // 成功したら画面を自動更新
+        } else {
+          alert("❌ エラー: " + json.message);
+        }
+      } catch(err) {
+        alert("❌ 通信エラーが発生しました");
+      } finally {
+        if(btn) { btn.disabled = false; btn.innerText = "在庫更新"; }
+      }
     }
 
 
@@ -3625,6 +3673,8 @@ function saveInfoSettings() {
         } else { alert("通知ブロック中。"); btn.innerText = "🔔 通知許可する"; btn.disabled = false; }
       } catch (err) { alert("エラー\n" + err.message); btn.innerText = "🔔 通知許可する"; btn.disabled = false; }
     }
+
+    
   </script>
 
   <script>
