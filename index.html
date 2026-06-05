@@ -991,13 +991,22 @@
             });
           }
 
+          // 💡 外側のTOPボタンと、内側のメニューボタンの両方を取得！
           const dashDotRes = document.getElementById('dash-dot-researcher');
+          const dashDotResInner = document.getElementById('dash-dot-researcher-inner');
+          
+          const isActive = (homeData.researcherActive === true);
+
+          // 外側のボタンの処理
           if (dashDotRes) {
-            if (homeData.researcherActive === true) {
-              dashDotRes.classList.add('active'); // 赤丸点灯！
-            } else {
-              dashDotRes.classList.remove('active'); // 赤丸消灯！
-            }
+            if (isActive) dashDotRes.classList.add('active');
+            else dashDotRes.classList.remove('active');
+          }
+          
+          // 💡 内側のボタンの処理（追加）
+          if (dashDotResInner) {
+            if (isActive) dashDotResInner.classList.add('active');
+            else dashDotResInner.classList.remove('active');
           }
           
           updateHomeView();
