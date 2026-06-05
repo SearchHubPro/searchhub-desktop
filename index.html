@@ -2498,6 +2498,9 @@ document.getElementById("regPurchaseUrl").value = "";
         let listToggleBtn = '';
         if (item.status === '納品待ち' || item.status === '出品中') {
            listToggleBtn = `<button onclick="toggleListing('${item.no}', '${item.status}', this)" style="background:${item.status === '納品待ち' ? '#f0fff4' : '#fff5f5'}; color:${item.status === '納品待ち' ? '#2f855a' : '#c53030'}; border:1px solid ${item.status === '納品待ち' ? '#c6f6d5' : '#feb2b2'}; padding:3px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer; width:100%;"><i class="fas ${item.status === '納品待ち' ? 'fa-arrow-up' : 'fa-arrow-down'}"></i> ${item.status === '納品待ち' ? '出品' : '取消'}</button>`;
+        }else if (item.status === '返金済み') {
+           // 💡 追加：返金済みの時だけ、下に「再出品」ボタンを出す！
+           listToggleBtn = `<button onclick="relistLedgerItem('${item.no}', this)" style="background:#ebf8ff; color:#2b6cb0; border:1px solid #bee3f8; padding:3px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer; width:100%; margin-top:4px;"><i class="fas fa-redo"></i> 再出品</button>`;
         }
 
         let urlIcon = item.url ? `<a href="${item.url}" target="_blank" style="color:#3182ce; margin-left:4px;"><i class="fas fa-external-link-alt"></i></a>` : '';
@@ -2734,6 +2737,37 @@ document.getElementById("regPurchaseUrl").value = "";
         btnElement.innerHTML = originalText; btnElement.disabled = false;
       }
     }
+
+    // 🔄 返金済み商品を「納品待ち」として複製する通信処理
+    async function relistLedgerItem(no, btnElement) {
+      if(!confirm(`No.${no} の商品を「納品待ち」として再出品リストに追加しますか？\n（コンディションと商品説明は引き継がれます）`)) return;
+      
+      const originalText = btnElement.innerHTML;
+      btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      btnElement.disabled = true;
+      
+      const ssUrl = AppStorage.get("sh_ssurl", "");
+      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+      
+      try {
+        const res = await fetch(targetGasUrl, {
+          method: 'POST',
+          body: JSON.stringify({ command: 'relistLedgerItem', ssUrl: ssUrl, no: no })
+        });
+        const json = await res.json();
+        if (json.success) {
+          alert("✅ 再出品データ（納品待ち）を帳簿の末尾に追加したで！");
+          loadLedgerData(); // 成功したら帳簿をリロードして画面更新
+        } else {
+          alert("❌ 再出品失敗: " + json.message);
+          btnElement.innerHTML = originalText; btnElement.disabled = false;
+        }
+      } catch(e) {
+        alert("❌ 通信エラーが発生しました");
+        btnElement.innerHTML = originalText; btnElement.disabled = false;
+      }
+    }
+
 
     // ✏️ 編集画面を開く処理（プルダウン対応版）
     async function openLedgerEdit(no) {
