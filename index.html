@@ -1887,20 +1887,30 @@ document.getElementById("regPurchaseUrl").value = "";
       if (!supplier) { return alert("仕入れ先を選択してください！"); }
 
       pendingRegData.supplier = supplier;
-
       pendingRegData.purchaseUrl = document.getElementById("regPurchaseUrl").value.trim();
       pendingRegData.purchaseId = document.getElementById("regPurchaseId").value.trim();
 
       const btn = document.getElementById("executeRegBtn");
+      
+      // 👇 変数を取得する部分
       const ssUrl = AppStorage.get("sh_ssurl", "");
+      const researcherUrl = AppStorage.get("sh_researcher_url", ""); // 🌟 追加：ResearcherのURLを取得
       let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
 
       btn.disabled = true; btn.innerHTML = "⌛ 登録中...";
+      
       try {
         const res = await fetch(targetGasUrl, { 
           method: 'POST', 
-          body: JSON.stringify({ command: 'register', ssUrl: ssUrl, data: pendingRegData }) 
+          // 👇 GASに送るボディ部分
+          body: JSON.stringify({ 
+            command: 'register', 
+            ssUrl: ssUrl, 
+            researcherUrl: researcherUrl, // 🌟 追加：GASへ送るデータに含める
+            data: pendingRegData 
+          }) 
         });
+        
         const resJson = await res.json();
         
         if (resJson.success) {
