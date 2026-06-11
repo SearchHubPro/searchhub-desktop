@@ -2581,7 +2581,8 @@ document.getElementById("regPurchaseUrl").value = "";
         const b_price = Number(item.buyPrice || 0);
         const b_exp = Number(item.expense || 0);
         const est_price = Number(item.estPrice || 0);
-        const expectedFee = Math.floor(est_price * 0.10) + 450;
+        // 👇 GASから送られてきた正確な手数料を使う！昔のデータ用（0円の時）に今までの計算も保険で残しとく
+        const expectedFee = (item.estFbaFee > 0 || item.estAmazonFee > 0) ? (item.estFbaFee + item.estAmazonFee) : (Math.floor(est_price * 0.10) + 450);
         const expectedProfit = est_price > 0 ? (est_price - b_price - b_exp - expectedFee) : 0;
         const estProfitColor = (expectedProfit >= 0) ? "#07A27B" : "#e53e3e";
         const actualProfitColor = (Number(item.profit || 0) >= 0) ? "#07A27B" : "#e53e3e";
