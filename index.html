@@ -1940,6 +1940,8 @@ document.getElementById("regPurchaseUrl").value = "";
       const actualFeePercent = feePercent || 10; 
       const priceInput = document.getElementById('sim_price_' + id); 
       const profitSpan = document.getElementById('sim_profit_' + id);
+      const commSpan = document.getElementById('sim_comm_' + id); // 👈 追加
+      
       if(!priceInput || !profitSpan) return;
       
       const price = Number(priceInput.value) || 0; 
@@ -1948,6 +1950,11 @@ document.getElementById("regPurchaseUrl").value = "";
       const margin = price > 0 ? Math.floor((profit / price) * 100) : 0;
       profitSpan.style.color = profit >= 0 ? '#07A27B' : '#e53e3e'; 
       profitSpan.innerText = '¥' + profit.toLocaleString() + ' (' + margin + '%)';
+
+      // 👇 追加（PC版は仕入とセットなので innerHTML で書き換え）
+      if (commSpan) {
+        commSpan.innerHTML = '仕入: ¥' + cost.toLocaleString() + '<br>手数料: ¥' + comm.toLocaleString() + ' / FBA: ¥' + fbaFee.toLocaleString();
+      }
     };
 
     async function loadInventoryPrice() {
@@ -2013,7 +2020,7 @@ document.getElementById("regPurchaseUrl").value = "";
           <td>${rivalsHtml}</td>
           <td>
             <div style="font-size:13px; font-weight:bold; color:#2d3748; margin-bottom:4px;">¥${Number(item.price).toLocaleString()}</div>
-            <div style="font-size:10px; color:#718096; line-height:1.4;">仕入: ¥${Number(item.cost).toLocaleString()}<br>FBA: ¥${Number(item.fbaFee).toLocaleString()}</div>
+            <div id="sim_comm_${uniqueId}" style="font-size:10px; color:#718096; line-height:1.4;">仕入: ¥${Number(item.cost).toLocaleString()}<br>手数料: ¥${Math.floor(Number(item.price || 0) * (Number(item.feePercent || 10) / 100)).toLocaleString()} / FBA: ¥${Number(item.fbaFee).toLocaleString()}</div>
           </td>
           <td style="text-align:center;">
             <div style="display:flex; align-items:center; justify-content:center;">
