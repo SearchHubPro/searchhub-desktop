@@ -792,13 +792,17 @@
   </div>
  <div id="view-expense" class="view">
     <div class="content">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <div style="display:flex; gap:12px; align-items:center;">
           <h2 style="font-size:18px; margin:0; color:#1a365d;"><i class="fas fa-file-invoice-dollar"></i> 経費一覧（鏡写し）</h2>
           <span style="font-size:12px; font-weight:bold; color:#718096;" id="expenseTotalCount">読み込み中...</span>
         </div>
         
-        <div style="display:flex; gap:10px;">
+        <div style="display:flex; gap:10px; align-items:center;">
+          <select id="expense-month-selector" onchange="renderExpenseTable()" style="padding:10px; border-radius:8px; border:1px solid #cbd5e0; font-weight:bold; font-size:14px; outline:none; background:#fff; color:#1a365d; cursor:pointer;">
+            <option value="ALL">すべて表示</option>
+          </select>
+
           <button onclick="openExpenseModal()" style="background:#e53e3e; color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; font-size:14px; cursor:pointer; box-shadow:0 4px 6px rgba(229,62,62,0.2); display:flex; align-items:center; gap:6px;">
             <i class="fas fa-plus-circle"></i> 経費を新規入力
           </button>
@@ -3717,6 +3721,31 @@ function saveInfoSettings() {
         
         if (json.success && json.data) {
           globalExpenseData = json.data;
+
+          // 💡 プルダウンに「存在する月」を自動セットする処理
+          const monthSet = new Set();
+          globalExpenseData.forEach(row => {
+            if(row[0]) monthSet.add(row[0]); // A列（発生月）を収集
+          });
+          // 新しい月が上に来るように並び替え
+          const monthArr = Array.from(monthSet).sort().reverse(); 
+          
+          const monthSelect = document.getElementById('expense-month-selector');
+          const currentVal = monthSelect.value; // リロード前の選択を記憶
+          
+          monthSelect.innerHTML = '<option value="ALL">すべて表示</option>';
+          monthArr.forEach(m => {
+            const opt = document.createElement('option');
+            opt.value = m;
+            opt.innerText = m;
+            monthSelect.appendChild(opt);
+          });
+          
+          // 前に選んでた月があれば復元する（親切設計）
+          if (Array.from(monthSelect.options).some(o => o.value === currentVal)) {
+            monthSelect.value = currentVal;
+          }
+
           renderExpenseTable();
         } else {
           tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#a0aec0;">データが見つかりませんでした。</td></tr>';
@@ -3726,15 +3755,23 @@ function saveInfoSettings() {
       }
     }
 
-    // 🚀 取得したデータを表に描画する（鏡写し）
+    // 🚀 取得したデータを表に描画する（鏡写し・月絞り込み対応版）
     function renderExpenseTable() {
       const tbody = document.getElementById('expenseResultBody');
       const countEl = document.getElementById('expenseTotalCount');
       const kw = document.getElementById('expense-search-kw').value.toLowerCase().trim();
+      const selMonth = document.getElementById('expense-month-selector').value; // 👈 選択された月を取得
 
       let filtered = globalExpenseData;
+      
+      // 💡 月で絞り込み
+      if (selMonth !== "ALL") {
+        filtered = filtered.filter(item => item[0] === selMonth);
+      }
+
+      // 💡 キーワード検索で絞り込み
       if (kw) {
-        filtered = globalExpenseData.filter(item => 
+        filtered = filtered.filter(item => 
           item.join(" ").toLowerCase().includes(kw)
         );
       }
@@ -3747,10 +3784,9 @@ function saveInfoSettings() {
       }
 
       let html = "";
-      // シートの並び順のまま（または逆順なら .reverse() をつける）
       filtered.slice().reverse().forEach(row => {
         const amount = Number(row[3]) || 0;
-        const color = amount >= 5000 ? "#e53e3e" : "#333"; // 5000円以上は赤字にするなどの遊び心
+        const color = amount >= 5000 ? "#e53e3e" : "#333"; 
         
         html += `<tr style="border-bottom: 1px solid #f1f5f9; background:#fff;">
           <td style="padding: 12px 16px; font-weight:bold; color:#4a5568;">${row[0] || '-'}</td>
@@ -3762,6 +3798,105 @@ function saveInfoSettings() {
         </tr>`;
       });
       tbody.innerHTML = html;
+    }
+
+   // ==========================================
+    // 💸 経費入力窓の操作用JS
+    // ==========================================
+    function openExpenseModal() {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = ("0" + (today.getMonth() + 1)).slice(-2);
+      const dd = ("0" + today.getDate()).slice(-2);
+      
+      document.getElementById('expMonth').value = `${yyyy}/${mm}`;
+      document.getElementById('expDate').value = `${yyyy}/${mm}/${dd}`;
+      document.getElementById('expAmount').value = "";
+      document.getElementById('expMemo').value = "";
+      
+      document.getElementById('expTypeSelect').value = "梱包資材";
+      toggleExpTypeInput(); 
+      
+      document.getElementById('expenseModal').style.display = "flex";
+    }
+
+    function closeExpenseModal() {
+      document.getElementById('expenseModal').style.display = "none";
+    }
+
+    function toggleExpTypeInput() {
+      const select = document.getElementById('expTypeSelect');
+      const customInput = document.getElementById('expTypeCustom');
+      if (select.value === "その他") {
+        customInput.style.display = "block";
+        customInput.focus();
+      } else {
+        customInput.style.display = "none";
+        customInput.value = "";
+      }
+    }
+
+    async function submitExpense() {
+      const month = document.getElementById('expMonth').value.trim();
+      const amount = document.getElementById('expAmount').value.trim();
+      if (!month || !amount) return alert("発生月と金額は絶対入れてな！");
+
+      const selectVal = document.getElementById('expTypeSelect').value;
+      let type = selectVal;
+      if (selectVal === "その他") {
+        type = document.getElementById('expTypeCustom').value.trim();
+        if (!type) return alert("経費の種類を入力してな！");
+      }
+
+      const date = document.getElementById('expDate').value.trim();
+      const memo = document.getElementById('expMemo').value.trim();
+
+      const btn = document.getElementById('expSubmitBtn');
+      btn.innerText = "⌛ 登録中...";
+      btn.disabled = true;
+
+      const ssUrl = AppStorage.get("sh_ssurl", "");
+      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+
+      try {
+        const res = await fetch(targetGasUrl, {
+          method: 'POST',
+          body: JSON.stringify({
+            command: 'registerExpense',
+            ssUrl: ssUrl,
+            data: { month: month, date: date, type: type, amount: amount, memo: memo }
+          })
+        });
+        const json = await res.json();
+        
+        if (json.success) {
+          btn.style.background = "#38a169";
+          btn.innerText = "✅ 登録完了！";
+          setTimeout(() => {
+            closeExpenseModal();
+            btn.style.background = "#e53e3e";
+            btn.innerText = "🚀 経費を登録";
+            btn.disabled = false;
+            
+            // 💡 PC版：登録が終わったら、今の画面の表を自動で最新に更新する！
+            if (currentActiveView === 'view-expense') {
+              loadExpenseListData();
+            } else if (currentActiveView === 'view-monthly-purchase' || currentActiveView === 'view-monthly-sales') {
+              loadMonthlyData();
+            } else if (currentActiveView === 'view-home') {
+              fetchDashboardData();
+            }
+          }, 1500);
+        } else {
+          alert("エラー: " + json.message);
+          btn.innerText = "🚀 経費を登録";
+          btn.disabled = false;
+        }
+      } catch(e) {
+        alert("通信エラーが発生しました");
+        btn.innerText = "🚀 経費を登録";
+        btn.disabled = false;
+      }
     }
 
 
