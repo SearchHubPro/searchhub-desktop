@@ -340,6 +340,7 @@
         <button class="dash-btn" onclick="openView('view-bulk-register')"><i class="fas fa-upload" style="color:#d69e2e;"></i>一括商品登録</button>
         
         <button class="dash-btn" onclick="openInfoModal()"><i class="fas fa-database" style="color:#805ad5;"></i>情報sheet</button>
+        <button class="dash-btn" onclick="openView('view-expense'); loadExpenseListData();"><i class="fas fa-file-invoice-dollar" style="color:#e53e3e;"></i>経費一覧</button>
       </div>
     </div>
   </div>
@@ -789,6 +790,48 @@
       </div>
     </div>
   </div>
+ <div id="view-expense" class="view">
+    <div class="content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div style="display:flex; gap:12px; align-items:center;">
+          <h2 style="font-size:18px; margin:0; color:#1a365d;"><i class="fas fa-file-invoice-dollar"></i> 経費一覧（鏡写し）</h2>
+          <span style="font-size:12px; font-weight:bold; color:#718096;" id="expenseTotalCount">読み込み中...</span>
+        </div>
+        
+        <div style="display:flex; gap:10px;">
+          <button onclick="openExpenseModal()" style="background:#e53e3e; color:white; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; font-size:14px; cursor:pointer; box-shadow:0 4px 6px rgba(229,62,62,0.2); display:flex; align-items:center; gap:6px;">
+            <i class="fas fa-plus-circle"></i> 経費を新規入力
+          </button>
+          
+          <button onclick="loadExpenseListData()" style="background:#1a365d; color:white; border:none; padding:10px 16px; border-radius:8px; font-weight:bold; font-size:14px; cursor:pointer;">
+            <i class="fas fa-sync-alt"></i> 更新
+          </button>
+        </div>
+      </div>
+
+      <div class="search-box" style="margin-bottom:16px;">
+        <input type="text" id="expense-search-kw" placeholder="日付・種類・メモで検索..." oninput="renderExpenseTable();" style="flex:1;">
+      </div>
+
+      <div style="overflow: auto; max-height: 70vh; background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <table id="expenseTable" style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; text-align: left; white-space: nowrap;">
+          <thead>
+            <tr style="background: #edf2f7; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 0 0 #cbd5e0;">
+              <th style="padding: 12px 16px; width: 100px;">発生月</th>
+              <th style="padding: 12px 16px; width: 120px;">日付</th>
+              <th style="padding: 12px 16px; width: 150px;">経費の種類</th>
+              <th style="padding: 12px 16px; width: 120px; text-align: right;">金額</th>
+              <th style="padding: 12px 16px; min-width: 250px;">摘要・メモ</th>
+              <th style="padding: 12px 16px; width: 130px;">登録元</th>
+            </tr>
+          </thead>
+          <tbody id="expenseResultBody">
+            <tr><td colspan="6" style="text-align:center; padding:40px; color:#a0aec0;">⌛ マネージャーシートから経費データを同期中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
   <div id="sheetLinksModal" class="modal">
     <div class="modal-content" style="max-width: 320px;">
@@ -1213,6 +1256,7 @@
         else if(viewId === 'view-purchase-list') titleEl.innerText = '仕入れリスト';
         else if(viewId === 'view-monthly-purchase') titleEl.innerText = '月別仕入情報';
         else if(viewId === 'view-monthly-sales') titleEl.innerText = '月別販売情報';
+        else if(viewId === 'view-expense') titleEl.innerText = '経費一覧';
       }
       
       // ーーー この下は元からあるコードそのまま ーーー
@@ -3651,6 +3695,74 @@ function saveInfoSettings() {
       }
     }
 
+    let globalExpenseData = [];
+
+    // 🚀 GASから経費一覧の生データを取得する
+    async function loadExpenseListData() {
+      const tbody = document.getElementById('expenseResultBody');
+      const countEl = document.getElementById('expenseTotalCount');
+      const ssUrl = AppStorage.get("sh_ssurl", "");
+      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+
+      if (!ssUrl || !targetGasUrl) return;
+
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#2b6cb0;">⌛ 鏡写しデータを生成中...</td></tr>';
+      
+      try {
+        const res = await fetch(targetGasUrl, {
+          method: 'POST',
+          body: JSON.stringify({ command: 'getExpenseListData', ssUrl: ssUrl })
+        });
+        const json = await res.json();
+        
+        if (json.success && json.data) {
+          globalExpenseData = json.data;
+          renderExpenseTable();
+        } else {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#a0aec0;">データが見つかりませんでした。</td></tr>';
+        }
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#e53e3e;">❌ 通信エラーが発生しました。</td></tr>';
+      }
+    }
+
+    // 🚀 取得したデータを表に描画する（鏡写し）
+    function renderExpenseTable() {
+      const tbody = document.getElementById('expenseResultBody');
+      const countEl = document.getElementById('expenseTotalCount');
+      const kw = document.getElementById('expense-search-kw').value.toLowerCase().trim();
+
+      let filtered = globalExpenseData;
+      if (kw) {
+        filtered = globalExpenseData.filter(item => 
+          item.join(" ").toLowerCase().includes(kw)
+        );
+      }
+
+      countEl.innerText = `全 ${filtered.length} 件を表示中`;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#a0aec0;">該当するデータはありません。</td></tr>';
+        return;
+      }
+
+      let html = "";
+      // シートの並び順のまま（または逆順なら .reverse() をつける）
+      filtered.slice().reverse().forEach(row => {
+        const amount = Number(row[3]) || 0;
+        const color = amount >= 5000 ? "#e53e3e" : "#333"; // 5000円以上は赤字にするなどの遊び心
+        
+        html += `<tr style="border-bottom: 1px solid #f1f5f9; background:#fff;">
+          <td style="padding: 12px 16px; font-weight:bold; color:#4a5568;">${row[0] || '-'}</td>
+          <td style="padding: 12px 16px;">${row[1] || '-'}</td>
+          <td style="padding: 12px 16px;"><span style="background:#edf2f7; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:bold;">${row[2] || '-'}</span></td>
+          <td style="padding: 12px 16px; text-align:right; font-weight:900; color:${color}; font-size:15px;">¥${amount.toLocaleString()}</td>
+          <td style="padding: 12px 16px; white-space:normal; font-size:12px; color:#666;">${row[4] || '-'}</td>
+          <td style="padding: 12px 16px; font-size:11px; color:#a0aec0;">${row[5] || '-'}</td>
+        </tr>`;
+      });
+      tbody.innerHTML = html;
+    }
 
 
   </script>
