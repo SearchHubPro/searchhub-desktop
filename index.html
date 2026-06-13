@@ -821,6 +821,7 @@
         <table id="expenseTable" style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; text-align: left; white-space: nowrap;">
           <thead>
             <tr style="background: #edf2f7; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 0 0 #cbd5e0;">
+              <th style="padding: 12px 8px; width: 40px; text-align: center;">操作</th>
               <th style="padding: 12px 16px; width: 100px;">発生月</th>
               <th style="padding: 12px 16px; width: 120px;">日付</th>
               <th style="padding: 12px 16px; width: 150px;">経費の種類</th>
@@ -3745,7 +3746,7 @@ function saveInfoSettings() {
 
       if (!ssUrl || !targetGasUrl) return;
 
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#2b6cb0;">⌛ 鏡写しデータを生成中...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px; color:#2b6cb0;">⌛ 鏡写しデータを生成中...</td></tr>';
       
       try {
         const res = await fetch(targetGasUrl, {
@@ -3755,18 +3756,20 @@ function saveInfoSettings() {
         const json = await res.json();
         
         if (json.success && json.data) {
-          globalExpenseData = json.data;
+          // 💡 【超重要】GASのデータに「シートの行番号(index + 2)」をこっそり持たせる！
+          globalExpenseData = json.data.map((row, index) => {
+            row.push(index + 2); // 1行目が見出しなのでデータは2行目から
+            return row;
+          });
 
-          // 💡 プルダウンに「存在する月」を自動セットする処理
           const monthSet = new Set();
           globalExpenseData.forEach(row => {
-            if(row[0]) monthSet.add(row[0]); // A列（発生月）を収集
+            if(row[0]) monthSet.add(row[0]); 
           });
-          // 新しい月が上に来るように並び替え
           const monthArr = Array.from(monthSet).sort().reverse(); 
           
           const monthSelect = document.getElementById('expense-month-selector');
-          const currentVal = monthSelect.value; // リロード前の選択を記憶
+          const currentVal = monthSelect.value; 
           
           monthSelect.innerHTML = '<option value="ALL">すべて表示</option>';
           monthArr.forEach(m => {
@@ -3776,45 +3779,40 @@ function saveInfoSettings() {
             monthSelect.appendChild(opt);
           });
           
-          // 前に選んでた月があれば復元する（親切設計）
           if (Array.from(monthSelect.options).some(o => o.value === currentVal)) {
             monthSelect.value = currentVal;
           }
 
           renderExpenseTable();
         } else {
-          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#a0aec0;">データが見つかりませんでした。</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px; color:#a0aec0;">データが見つかりませんでした。</td></tr>';
         }
       } catch (err) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#e53e3e;">❌ 通信エラーが発生しました。</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px; color:#e53e3e;">❌ 通信エラーが発生しました。</td></tr>';
       }
     }
 
-    // 🚀 取得したデータを表に描画する（鏡写し・月絞り込み対応版）
+    // 🚀 取得したデータを表に描画する
     function renderExpenseTable() {
       const tbody = document.getElementById('expenseResultBody');
       const countEl = document.getElementById('expenseTotalCount');
       const kw = document.getElementById('expense-search-kw').value.toLowerCase().trim();
-      const selMonth = document.getElementById('expense-month-selector').value; // 👈 選択された月を取得
+      const selMonth = document.getElementById('expense-month-selector').value; 
 
       let filtered = globalExpenseData;
       
-      // 💡 月で絞り込み
       if (selMonth !== "ALL") {
         filtered = filtered.filter(item => item[0] === selMonth);
       }
 
-      // 💡 キーワード検索で絞り込み
       if (kw) {
-        filtered = filtered.filter(item => 
-          item.join(" ").toLowerCase().includes(kw)
-        );
+        filtered = filtered.filter(item => item.join(" ").toLowerCase().includes(kw));
       }
 
       countEl.innerText = `全 ${filtered.length} 件を表示中`;
 
       if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#a0aec0;">該当するデータはありません。</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px; color:#a0aec0;">該当するデータはありません。</td></tr>';
         return;
       }
 
@@ -3822,8 +3820,17 @@ function saveInfoSettings() {
       filtered.slice().reverse().forEach(row => {
         const amount = Number(row[3]) || 0;
         const color = amount >= 5000 ? "#e53e3e" : "#333"; 
+        const source = String(row[5] || "");
+        const sheetRow = row[row.length - 1]; // さっき追加したシートの行番号
+
+        // 💡 登録元が「Amazon自動」じゃない時だけ、削除ボタン(ゴミ箱)を表示！
+        let deleteBtn = "";
+        if (!source.includes("Amazon自動")) {
+          deleteBtn = `<button onclick="deleteExpenseItem(${sheetRow})" style="background:#e53e3e; color:white; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; cursor:pointer; box-shadow:0 1px 2px rgba(0,0,0,0.1);"><i class="fas fa-trash-alt"></i></button>`;
+        }
         
         html += `<tr style="border-bottom: 1px solid #f1f5f9; background:#fff;">
+          <td style="padding: 12px 8px; text-align:center;">${deleteBtn}</td>
           <td style="padding: 12px 16px; font-weight:bold; color:#4a5568;">${row[0] || '-'}</td>
           <td style="padding: 12px 16px;">${row[1] || '-'}</td>
           <td style="padding: 12px 16px;"><span style="background:#edf2f7; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:bold;">${row[2] || '-'}</span></td>
@@ -3931,6 +3938,34 @@ function saveInfoSettings() {
         alert("通信エラーが発生しました");
         btn.innerText = "🚀 経費を登録";
         btn.disabled = false;
+      }
+    }
+
+    // 🗑️ 経費を削除する通信処理
+    async function deleteExpenseItem(sheetRow) {
+      if(!confirm("この経費データを削除してもよろしいですか？\n（※この操作は取り消せません）")) return;
+
+      const ssUrl = AppStorage.get("sh_ssurl", "");
+      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+
+      if (!ssUrl || !targetGasUrl) return alert("⚙️設定からManagerのURLとGAS URLを登録してな！");
+
+      // 画面のどこかをローディング表示にする（今回は雑にアラートの代わりに）
+      try {
+        const res = await fetch(targetGasUrl, {
+          method: 'POST',
+          body: JSON.stringify({ command: 'deleteExpense', ssUrl: ssUrl, row: sheetRow })
+        });
+        const json = await res.json();
+
+        if (json.success) {
+          alert("✅ 経費を削除しました！");
+          loadExpenseListData(); // 削除成功したらリストを自動で再読込！
+        } else {
+          alert("❌ 削除失敗: " + json.message);
+        }
+      } catch(e) {
+        alert("❌ 通信エラーが発生しました");
       }
     }
 
