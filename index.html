@@ -197,9 +197,7 @@
       .dash-btn i { font-size: 32px; margin-bottom: 4px; }
       .dash-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); background-color: #f8fafc; }
 
-      .tab-content.active, 
-      #monthly-purchase-list, 
-      #monthly-sales-list {
+      .tab-content.active {
         display: grid !important; 
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
         gap: 16px;
@@ -763,7 +761,21 @@
       </div>
       <div id="monthly-purchase-summary" style="margin-bottom:16px;"></div>
       <input type="text" id="monthly-purchase-search-kw" class="search-bar-only" placeholder="ASIN・商品名・注文番号で検索..." oninput="monthlyCurrentPage=1; renderMonthlyList();">
-      <div id="monthly-purchase-list" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;"></div>
+      <div style="overflow: auto; max-height: 60vh; background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <table style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 11px; text-align: left; white-space: nowrap; min-width: 800px;">
+          <thead>
+            <tr style="background: #edf2f7; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 0 0 #cbd5e0;">
+              <th style="padding: 10px 12px; width: 60px; text-align:center;">日付</th>
+              <th style="padding: 10px 12px; width: 100px;">ASIN</th>
+              <th style="padding: 10px 12px;">商品名</th>
+              <th style="padding: 10px 12px; text-align: right; width: 110px;">仕入原価</th>
+              <th style="padding: 10px 12px; text-align: right; width: 110px;">想定販売額</th>
+              <th style="padding: 10px 12px; text-align: right; width: 110px;">想定利益</th>
+            </tr>
+          </thead>
+          <tbody id="monthly-purchase-list"></tbody>
+        </table>
+      </div>
       <div id="monthly-purchase-pagination" class="pagination" style="display:none;">
         <button class="page-btn" id="monthly-purchase-btn-prev" onclick="monthlyCurrentPage--; renderMonthlyList();">◀ 戻る</button>
         <span class="page-info" id="monthly-purchase-page-info">1 / 1</span>
@@ -782,7 +794,21 @@
       </div>
       <div id="monthly-sales-summary" style="margin-bottom:16px;"></div>
       <input type="text" id="monthly-sales-search-kw" class="search-bar-only" placeholder="ASIN・商品名・注文番号で検索..." oninput="monthlyCurrentPage=1; renderMonthlyList();">
-      <div id="monthly-sales-list" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;"></div>
+      <div style="overflow: auto; max-height: 60vh; background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <table style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 11px; text-align: left; white-space: nowrap; min-width: 900px;">
+          <thead>
+            <tr style="background: #edf2f7; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 0 0 #cbd5e0;">
+              <th style="padding: 10px 12px; width: 60px; text-align:center;">日付</th>
+              <th style="padding: 10px 12px; width: 100px;">ASIN</th>
+              <th style="padding: 10px 12px;">商品名 / 注文番号</th>
+              <th style="padding: 10px 12px; text-align: right; width: 110px;">仕入原価</th>
+              <th style="padding: 10px 12px; text-align: right; width: 110px;">総販売額</th>
+              <th style="padding: 10px 12px; text-align: right; width: 110px;">確定利益</th>
+            </tr>
+          </thead>
+          <tbody id="monthly-sales-list"></tbody>
+        </table>
+      </div>
       <div id="monthly-sales-pagination" class="pagination" style="display:none;">
         <button class="page-btn" id="monthly-sales-btn-prev" onclick="monthlyCurrentPage--; renderMonthlyList();">◀ 戻る</button>
         <span class="page-info" id="monthly-sales-page-info">1 / 1</span>
@@ -2264,7 +2290,6 @@ document.getElementById("regPurchaseUrl").value = "";
       const isPurchase = (currentActiveView === 'view-monthly-purchase');
       const prefix = isPurchase ? 'monthly-purchase' : 'monthly-sales';
       const selMonth = document.getElementById(prefix + '-selector').value;
-      
       const targetArr = isPurchase ? globalMonthlyData.purchase : globalMonthlyData.sales;
       const monthData = targetArr.find(d => d.month === selMonth);
       const listDiv = document.getElementById(prefix + '-list');
@@ -2282,24 +2307,31 @@ document.getElementById("regPurchaseUrl").value = "";
       if (monthlyCurrentPage > totalPages) monthlyCurrentPage = totalPages; if (monthlyCurrentPage < 1) monthlyCurrentPage = 1;
       const start = (monthlyCurrentPage - 1) * ITEMS_PER_PAGE; const pageItems = filtered.slice(start, start + ITEMS_PER_PAGE);
       
-      if (pageItems.length === 0) { listDiv.innerHTML = '<div class="card" style="text-align:center; color:#a0aec0; padding:30px 10px; grid-column: 1 / -1;">見つかりませんでした。</div>'; pagiDiv.style.display = 'none'; return; }
+      if (pageItems.length === 0) { 
+        listDiv.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:#a0aec0; font-weight:bold;">見つかりませんでした。</td></tr>`; 
+        pagiDiv.style.display = 'none'; 
+        return; 
+      }
       
       let html = "";
       pageItems.forEach(item => {
-        let orderHtml = item.orderNum ? `<div style="font-size:10px; color:#a0aec0; margin-top:4px;">注文番号: ${item.orderNum}</div>` : "";
+        let nameAndOrder = escapeHtml(item.title);
+        if (item.orderNum) {
+          nameAndOrder += `<div style="font-size:10px; color:#718096; margin-top:2px; font-family:monospace; font-weight:bold;">注文番号: ${escapeHtml(item.orderNum)}</div>`;
+        }
+        
+        const borderLeftColor = isPurchase ? '#3182ce' : '#e53e3e';
+        const profitColor = item.profit >= 0 ? '#07A27B' : '#e53e3e';
+        
         html += `
-        <div class="card" style="padding:12px; border-left:4px solid ${isPurchase ? '#3182ce' : '#e53e3e'};">
-           <div style="display:flex; justify-content:space-between; margin-bottom:6px; align-items:center;">
-              <span style="font-size:11px; font-weight:bold; color:#718096;"><i class="far fa-calendar-alt"></i> ${item.date}</span>
-              <span style="background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:bold;">${item.asin}</span>
-           </div>
-           <div style="font-size:12px; font-weight:bold; color:#1a365d; margin-bottom:8px; line-height:1.4;">💎 ${escapeHtml(item.title)}</div>
-           ${orderHtml}
-           <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:8px; padding-top:8px; border-top:1px dashed #e2e8f0;">
-              <div style="font-size:11px; color:#718096; line-height:1.5;">仕入: <span style="color:#333; font-weight:bold;">¥${Number(item.cost).toLocaleString()}</span><br>販売: <span style="color:#333; font-weight:bold;">¥${Number(item.sales).toLocaleString()}</span></div>
-              <div style="text-align:right;"><div style="font-size:10px; color:#718096;">利益</div><div style="font-size:16px; font-weight:900; color:${item.profit >= 0 ? '#07A27B' : '#e53e3e'};">¥${Number(item.profit).toLocaleString()}</div></div>
-           </div>
-        </div>`;
+        <tr style="background:#fff; border-bottom:1px solid #f1f5f9;">
+          <td style="padding:10px 12px; text-align:center; border-left:4px solid ${borderLeftColor}; font-weight:bold; color:#4a5568;">${item.date}</td>
+          <td style="padding:10px 12px; font-family:monospace; font-weight:bold; color:#0369a1;">${escapeHtml(item.asin)}</td>
+          <td style="padding:10px 12px; white-space:normal; font-weight:bold; color:#2d3748; line-height:1.4;">${nameAndOrder}</td>
+          <td style="padding:10px 12px; text-align:right; font-weight:bold; color:#4a5568;">¥${Number(item.cost).toLocaleString()}</td>
+          <td style="padding:10px 12px; text-align:right; font-weight:bold; color:#1a365d;">¥${Number(item.sales).toLocaleString()}</td>
+          <td style="padding:10px 12px; text-align:right; font-weight:900; color:${profitColor}; font-size:13px;">¥${Number(item.profit).toLocaleString()}</td>
+        </tr>`;
       });
       listDiv.innerHTML = html;
       
