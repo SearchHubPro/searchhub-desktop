@@ -2839,25 +2839,35 @@ document.getElementById("regPurchaseUrl").value = "";
       if (files && files.length > 0) processFile(files[0]);
     }
 
+    // ==========================================
+    // 🚀 ドラッグ＆ドロップ ファイル取り込み機能（完全修正版）
+    // ==========================================
     function processFile(file) {
       const dropLabel = document.getElementById('mini-drop-zone');
       const originalText = dropLabel.innerHTML;
-      dropLabel.innerHTML = '⌛ 処理中...'; // ボタンの文字を変えて待機
+      dropLabel.innerHTML = '⌛ 処理中...'; 
 
       const reader = new FileReader();
       
       reader.onload = async function(e) {
         let text = e.target.result;
         
-        // CSVのカンマをタブに変換
+        // 💡 欠陥②を解消：カンマをタブに変換しつつ、不要な「"」を完全に消し去る！
         if (file.name.toLowerCase().endsWith('.csv')) {
           let tsv = "";
           let inQuote = false;
           for (let i = 0; i < text.length; i++) {
             let c = text[i];
-            if (c === '"') { inQuote = !inQuote; } 
-            else if (c === ',' && !inQuote) { tsv += '\t'; } 
-            else { tsv += c; }
+            if (c === '"') { 
+              inQuote = !inQuote; 
+              // 🚨 ダブルクォーテーション自体は残さず消去！
+            } 
+            else if (c === ',' && !inQuote) { 
+              tsv += '\t'; 
+            } 
+            else { 
+              tsv += c; 
+            }
           }
           text = tsv;
         }
@@ -2885,9 +2895,11 @@ document.getElementById("regPurchaseUrl").value = "";
           
           if (json.success) {
             alert('✅ 取り込み完了！マネージャーシートに反映されました！');
-            loadLedgerData(); // 成功したら帳簿を自動リロード
+            // 💡 帳簿をリロード
+            loadLedgerData(); 
+            // 💡 【追加】経費一覧のデータも裏側で最新にリロードしておく！
+            if (typeof loadExpenseListData === 'function') loadExpenseListData();
           } else {
-            // 🚨 ここでGASの真のエラー原因がアラートで出る！！
             alert('❌ GAS側でエラーが起きたで！\n\n' + json.message);
           }
         } catch(err) {
@@ -2896,17 +2908,8 @@ document.getElementById("regPurchaseUrl").value = "";
         dropLabel.innerHTML = originalText;
       };
       
-      reader.onerror = function() {
-        alert('❌ ファイルの読み込みに失敗しました。');
-        dropLabel.innerHTML = originalText;
-      };
-      
-      // 文字化け防止
-      if (file.name.toLowerCase().endsWith('.csv')) {
-        reader.readAsText(file, 'UTF-8');
-      } else {
-        reader.readAsText(file, 'Shift_JIS'); 
-      }
+      // 💡 欠陥①を解消：AmazonのレポートはCSVもTXTも「Shift_JIS」なので、強制的にShift_JISで読む！
+      reader.readAsText(file, 'Shift_JIS'); 
     }
 
     // --- 販売管理画面用の小型ドラッグ＆ドロップ処理 ---
