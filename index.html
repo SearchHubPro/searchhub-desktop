@@ -2225,7 +2225,6 @@ document.getElementById("regPurchaseUrl").value = "";
       let margin = monthData.sales > 0 ? Math.round((monthData.profit / monthData.sales) * 100) : 0;
       
       if (isPurchase) {
-        // 💡 PC版でも「仕入日数」の行を完全復活！
         sumDiv.innerHTML = `
         <div class="card" style="border-top:4px solid #3182ce;">
            <div style="font-size:13px; font-weight:bold; color:#4a5568; margin-bottom:12px; display:flex; justify-content:space-between;">
@@ -2251,12 +2250,15 @@ document.getElementById("regPurchaseUrl").value = "";
            </div>
         </div>`;
       } else {
-        // 🎯 諸経費と純利益の計算！
         const expense = monthData.expense || 0; 
         const netProfit = monthData.profit - expense; 
         const netMargin = monthData.sales > 0 ? Math.round((netProfit / monthData.sales) * 100) : 0;
 
-        // 💡 PC版でも「販売手数料」と「FBA手数料」を細かく分割表示してモバイルと完全統一！
+        // 💡 【超重要】経費がマイナス（補填等で黒字）なら緑色で「+¥」にする賢いロジック！
+        const expDisplay = expense < 0 
+          ? `<span style="font-size:14px; font-weight:bold; color:#07A27B;">+¥${Math.abs(expense).toLocaleString()} (補填等プラス)</span>`
+          : `<span style="font-size:14px; font-weight:bold; color:#e53e3e;">-¥${Number(expense).toLocaleString()}</span>`;
+
         sumDiv.innerHTML = `
         <div class="card" style="border-top:4px solid #e53e3e;">
            <div style="font-size:13px; font-weight:bold; color:#4a5568; margin-bottom:12px; display:flex; justify-content:space-between;">
@@ -2275,7 +2277,7 @@ document.getElementById("regPurchaseUrl").value = "";
              <span style="font-size:11px; color:#4a5568;">仕入原価合計</span><span style="font-size:14px; font-weight:bold; color:#2d3748;">¥${Number(monthData.cost).toLocaleString()}</span>
            </div>
            <div style="display:flex; justify-content:space-between; margin-bottom:12px; border-bottom:1px dashed #e2e8f0; padding-bottom:4px;">
-             <span style="font-size:11px; color:#4a5568;">諸経費合計</span><span style="font-size:14px; font-weight:bold; color:#e53e3e;">-¥${Number(expense).toLocaleString()}</span>
+             <span style="font-size:11px; color:#4a5568;">諸経費合計</span>${expDisplay}
            </div>
            
            <div style="background:${netProfit >= 0 ? '#f0fff4' : '#fff5f5'}; border:1px solid ${netProfit >= 0 ? '#c6f6d5' : '#fed7d7'}; padding:12px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
