@@ -239,7 +239,39 @@
 
       /* 💡 PC版：TOP画面のグラフも上に隙間(24px)をあける！ */
       .graph-card { margin: 24px; }
-      .turnover-container { grid-template-columns: 1fr 1fr; max-width: 800px; margin: 0 auto; gap: 40px; }
+      /* 👇 PC版の回転率パネルの空間をリッチに埋める魔法 👇 */
+      .turnover-container { 
+        grid-template-columns: 1.8fr 1fr; /* 左のデータエリアを広く取る */
+        max-width: 950px; 
+        margin: 0 auto; 
+        gap: 60px; 
+        padding: 10px 0;
+      }
+      .metrics-list {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr; /* 6つのデータを自動で2列に分割！ */
+        gap: 16px 32px; /* 縦横の隙間をゆったり取る */
+        background: #f8fafc; /* 薄い背景色をつけて独立したパネル風に */
+        padding: 24px;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+      }
+      .metrics-list > div:first-child {
+        grid-column: 1 / -1; /* タイトルは2列ぶち抜きで配置 */
+        font-size: 15px !important;
+        border-bottom: 2px solid #cbd5e0;
+        padding-bottom: 8px;
+        margin-bottom: 4px;
+      }
+      .metric-item {
+        font-size: 13px !important; /* PCでは文字を少し大きく */
+        border-bottom: 1px dashed #cbd5e0;
+      }
+      .circular-chart {
+        width: 180px !important; /* 円グラフも一回り大きくして迫力UP */
+        height: 180px !important;
+      }
+      /* 👆 ここまで 👆 */
       
       /* 💡 PC版：タブの部分はスクロール追従位置も含めて強制的に隙間ゼロで黒線にくっつける！ */
       .tabs-container { top: 55px !important; box-shadow: 0 -30px 0 #ffffff !important; margin: 0 !important; padding: 0 !important; }
