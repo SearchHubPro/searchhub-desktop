@@ -252,19 +252,22 @@
       button:hover { opacity: 0.9; }
     }
 
-    /* 🌟🌟 ここにペースト！！ 🌟🌟 */
-    /* 💡 スマホの時は完全に隠す（存在を消す） */
-    .pc-only-inventory-panel { display: none; }
+    /* 💡 スマホの時は完全に隠す */
+    .pc-dashboard-top-wrapper { display: none; }
 
-    /* 💡 PC版（画面幅768px以上）になった時だけ出現し、グラフと同じ幅で配置！ */
+    /* 💡 PC版：グリッドで左に支払予測、右に在庫パネルを並べる！ */
     @media (min-width: 768px) {
-      .pc-only-inventory-panel { 
-        display: block; 
-        margin: 0 24px 24px 24px; 
-        background: #ffffff; 
-        border-radius: 12px; 
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
-        overflow: hidden; 
+      .pc-dashboard-top-wrapper {
+        display: grid;
+        grid-template-columns: 320px 1fr; /* 左を320px固定、右を残り全部の幅にする */
+        gap: 24px;
+        margin: 0 24px 24px 24px;
+      }
+      .pc-forecast-panel, .pc-only-inventory-panel {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        overflow: hidden;
         border: 1px solid #d5d9d9;
       }
     }
@@ -312,49 +315,21 @@
       <div id="homeMonthTabsArea" style="display:none;"></div>
     </div>
     
-    <div class="pc-only-inventory-panel">
-      <div style="display: flex; border-bottom: 1px solid #e2e8f0; background: #f7fafc;">
-        <button id="tab-current-inv" onclick="switchInvTab('current')" style="flex: 1; padding: 16px; font-weight: bold; border: none; background: #fff; border-bottom: 3px solid #3182ce; color: #2b6cb0; cursor: pointer; transition: 0.3s; font-size:14px;">
-          <i class="fas fa-box-open" style="margin-right:6px;"></i> リアルタイム現在庫
-        </button>
-        <button id="tab-monthly-inv" onclick="switchInvTab('monthly')" style="flex: 1; padding: 16px; font-weight: bold; border: none; background: transparent; border-bottom: 3px solid transparent; color: #718096; cursor: pointer; transition: 0.3s; font-size:14px;">
-          <i class="fas fa-calendar-alt" style="margin-right:6px;"></i> 月別在庫（期首・期末）
-        </button>
-      </div>
+    <div class="pc-dashboard-top-wrapper">
       
-      <div id="content-current-inv" style="padding: 30px;">
-        <div style="display: flex; justify-content: space-around; align-items: center;">
-           <div style="text-align: center;">
-             <div style="font-size: 13px; color: #718096; margin-bottom: 6px; font-weight:bold;">現在の売れ残り個数</div>
-             <div style="font-size: 36px; font-weight: 900; color: #2d3748;" id="realtime-inv-count">-- <span style="font-size:16px;">個</span></div>
-           </div>
-           <div style="width: 1px; height: 60px; background: #e2e8f0;"></div>
-           <div style="text-align: center;">
-             <div style="font-size: 13px; color: #718096; margin-bottom: 6px; font-weight:bold;">現在庫の仕入原価総額（資産）</div>
-             <div style="font-size: 36px; font-weight: 900; color: #38a169;" id="realtime-inv-value">¥--</div>
-           </div>
+      <div class="pc-forecast-panel">
+        <div style="background: #f7fafc; border-bottom: 1px solid #e2e8f0; padding: 16px; font-weight: bold; color: #1a365d; font-size: 14px; display:flex; align-items:center; gap:8px;">
+          <i class="fas fa-credit-card" style="color:#3182ce;"></i> 次回カード支払予測
+        </div>
+        <div id="forecast-container" style="padding: 16px; display:flex; flex-direction:column; gap:12px; max-height: 250px; overflow-y: auto;">
+          <div style="text-align:center; color:#a0aec0; font-size:12px; padding:20px;">⌛ 同期中...</div>
         </div>
       </div>
-      
-      <div id="content-monthly-inv" style="padding: 30px; display: none;">
-        <div style="margin-bottom: 24px; text-align: center;">
-           <select id="monthly-inv-selector" onchange="renderMonthlyInventory()" style="padding: 10px 20px; border-radius: 6px; border: 1px solid #cbd5e0; font-size: 15px; font-weight: bold; color: #1a365d; outline:none; cursor:pointer; background:#fff; min-width: 180px;">
-              <option value="">月を選択...</option>
-           </select>
-        </div>
-        <div style="display: flex; justify-content: space-around; align-items: center; border-top: 1px dashed #e2e8f0; padding-top: 24px;">
-           <div style="text-align: center;">
-             <div style="font-size: 13px; color: #718096; margin-bottom: 6px; font-weight:bold;">期首在庫（月初め）</div>
-             <div style="font-size: 32px; font-weight: 900; color: #2b6cb0;" id="val-kishu">¥--</div>
-           </div>
-           <div style="font-size: 28px; color: #cbd5e0;"><i class="fas fa-chevron-right"></i></div>
-           <div style="text-align: center;">
-             <div style="font-size: 13px; color: #718096; margin-bottom: 6px; font-weight:bold;">期末在庫（月末）</div>
-             <div style="font-size: 32px; font-weight: 900; color: #e53e3e;" id="val-kimatsu">¥--</div>
-           </div>
-        </div>
-      </div>
-    </div>
+
+      <div class="pc-only-inventory-panel" style="margin:0 !important; border:none; box-shadow:none;">
+        <div style="display: flex; border-bottom: 1px solid #e2e8f0; background: #f7fafc;">
+          <button id="tab-current-inv" onclick="switchInvTab('current')" style="flex: 1; padding: 16px; font-weight: bold; border: none; background: #fff; border-bottom: 3px solid #3182ce; color: #2b6cb0; cursor: pointer; transition: 0.3s; font-size:14px;">
+            
 
     <script>
       // 💡 在庫パネルのタブ切り替えアニメーション
@@ -1223,6 +1198,31 @@
             // 現在庫の表示
             document.getElementById('realtime-inv-count').innerHTML = `${homeData.currentInventory.count} <span style="font-size:16px;">個</span>`;
             document.getElementById('realtime-inv-value').innerText = `¥${homeData.currentInventory.value.toLocaleString()}`;
+
+            // 💳 資金繰り予測の描画
+            if (homeData.forecast) {
+              const fContainer = document.getElementById('forecast-container');
+              if (homeData.forecast.length === 0) {
+                fContainer.innerHTML = '<div style="text-align:center; color:#a0aec0; font-size:12px; padding:20px;">次回の支払予定はありません</div>';
+              } else {
+                let fHtml = '';
+                homeData.forecast.forEach(f => {
+                  const dParts = f.date.split('/');
+                  const m = parseInt(dParts[1]);
+                  const d = parseInt(dParts[2]);
+                  fHtml += `
+                    <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                      <div style="font-size: 11px; color: #718096; font-weight: bold; margin-bottom: 4px;">💳 ${escapeHtml(f.name)}</div>
+                      <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="font-size: 15px; font-weight: 900; color: #e53e3e;">${m}月${d}日</div>
+                        <div style="font-size: 18px; font-weight: 900; color: #1a365d;">¥${Number(f.amount).toLocaleString()}</div>
+                      </div>
+                    </div>
+                  `;
+                });
+                fContainer.innerHTML = fHtml;
+              }
+            }
             
             // プルダウンに月をセット
             const monSel = document.getElementById('monthly-inv-selector');
