@@ -326,8 +326,8 @@
         </div>
       </div>
 
-      <div class="pc-only-inventory-panel" style="margin:0 !important; border:none; box-shadow:none;">
-        <div style="display: flex; border-bottom: 1px solid #e2e8f0; background: #f7fafc;">
+      <div class="pc-only-inventory-panel" style="margin:0 !important; border:none; box-shadow:none; display: flex; flex-direction: column; height: 100%;">
+        <div style="display: flex; border-bottom: 1px solid #e2e8f0; background: #f7fafc; flex-shrink: 0;">
           <button id="tab-current-inv" onclick="switchInvTab('current')" style="flex: 1; padding: 16px; font-weight: bold; border: none; background: #fff; border-bottom: 3px solid #3182ce; color: #2b6cb0; cursor: pointer; transition: 0.3s; font-size:14px;">
             <i class="fas fa-box-open" style="margin-right:6px;"></i> リアルタイム現在庫
           </button>
@@ -336,40 +336,46 @@
           </button>
         </div>
         
-        <div id="content-current-inv" style="padding: 30px;">
-          <div style="display: flex; justify-content: space-around; align-items: center;">
-             <div style="text-align: center;">
-               <div style="font-size: 13px; color: #718096; margin-bottom: 6px; font-weight:bold;">現在の売れ残り個数</div>
-               <div style="font-size: 36px; font-weight: 900; color: #2d3748;" id="realtime-inv-count">-- <span style="font-size:16px;">個</span></div>
-             </div>
-             <div style="width: 1px; height: 60px; background: #e2e8f0;"></div>
-             <div style="text-align: center;">
-               <div style="font-size: 13px; color: #718096; margin-bottom: 6px; font-weight:bold;">現在庫の仕入原価総額（資産）</div>
-               <div style="font-size: 36px; font-weight: 900; color: #38a169;" id="realtime-inv-value">¥--</div>
-             </div>
+        <div id="content-current-inv" style="flex: 1;">
+          <div style="display: flex; flex-direction: column; justify-content: center; height: 100%; min-height: 180px; padding: 20px; box-sizing: border-box;">
+            <div style="display: flex; justify-content: space-around; align-items: center;">
+               <div style="text-align: center;">
+                 <div style="font-size: 13px; color: #718096; margin-bottom: 6px; font-weight:bold;">現在の売れ残り個数</div>
+                 <div style="font-size: 36px; font-weight: 900; color: #2d3748;" id="realtime-inv-count">-- <span style="font-size:16px;">個</span></div>
+               </div>
+               <div style="width: 1px; height: 60px; background: #e2e8f0;"></div>
+               <div style="text-align: center;">
+                 <div style="font-size: 13px; color: #718096; margin-bottom: 6px; font-weight:bold;">現在庫の仕入原価総額（資産）</div>
+                 <div style="font-size: 36px; font-weight: 900; color: #38a169;" id="realtime-inv-value">¥--</div>
+               </div>
+            </div>
+            <div style="text-align:center; margin-top:24px; font-size:11px; color:#a0aec0; font-weight:bold;">
+              <i class="fas fa-info-circle"></i> 出品中・納品待ちの在庫データをリアルタイム集計しています
+            </div>
           </div>
         </div>
         
-        <div id="content-monthly-inv" style="padding: 30px; display: none;">
-          <div style="margin-bottom: 24px; text-align: center;">
-             <select id="monthly-inv-selector" onchange="renderMonthlyInventory()" style="padding: 10px 20px; border-radius: 6px; border: 1px solid #cbd5e0; font-size: 15px; font-weight: bold; color: #1a365d; outline:none; cursor:pointer; background:#fff; min-width: 180px;">
-                <option value="">月を選択...</option>
-             </select>
-          </div>
-          <div style="display: flex; justify-content: space-around; align-items: center; border-top: 1px dashed #e2e8f0; padding-top: 24px;">
-             <div style="text-align: center;">
-               <div style="font-size: 13px; color: #718096; margin-bottom: 6px; font-weight:bold;">期首在庫（月初め）</div>
-               <div style="font-size: 32px; font-weight: 900; color: #2b6cb0;" id="val-kishu">¥--</div>
-             </div>
-             <div style="font-size: 28px; color: #cbd5e0;"><i class="fas fa-chevron-right"></i></div>
-             <div style="text-align: center;">
-               <div style="font-size: 13px; color: #718096; margin-bottom: 6px; font-weight:bold;">期末在庫（月末）</div>
-               <div style="font-size: 32px; font-weight: 900; color: #e53e3e;" id="val-kimatsu">¥--</div>
-             </div>
+        <div id="content-monthly-inv" style="flex: 1; display: none;">
+          <div style="display: flex; flex-direction: column; justify-content: center; height: 100%; min-height: 180px; padding: 20px; box-sizing: border-box;">
+            <div style="margin-bottom: 24px; text-align: center;">
+               <select id="monthly-inv-selector" onchange="renderMonthlyInventory()" style="padding: 10px 20px; border-radius: 6px; border: 1px solid #cbd5e0; font-size: 15px; font-weight: bold; color: #1a365d; outline:none; cursor:pointer; background:#fff; min-width: 180px;">
+                  <option value="">月を選択...</option>
+               </select>
+            </div>
+            <div style="display: flex; justify-content: space-around; align-items: center; border-top: 1px dashed #e2e8f0; padding-top: 24px;">
+               <div style="text-align: center;">
+                 <div style="font-size: 13px; color: #718096; margin-bottom: 6px; font-weight:bold;">期首在庫（月初め）</div>
+                 <div style="font-size: 32px; font-weight: 900; color: #2b6cb0;" id="val-kishu">¥--</div>
+               </div>
+               <div style="font-size: 28px; color: #cbd5e0;"><i class="fas fa-chevron-right"></i></div>
+               <div style="text-align: center;">
+                 <div style="font-size: 13px; color: #718096; margin-bottom: 6px; font-weight:bold;">期末在庫（月末）</div>
+                 <div style="font-size: 32px; font-weight: 900; color: #e53e3e;" id="val-kimatsu">¥--</div>
+               </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
     <script>
       // 💡 在庫パネルのタブ切り替えアニメーション
