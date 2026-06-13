@@ -370,6 +370,24 @@
         </div>
       </div>
     </div>
+
+    <script>
+      // 💡 在庫パネルのタブ切り替えアニメーション
+      function switchInvTab(tab) {
+         document.getElementById('content-current-inv').style.display = (tab === 'current') ? 'block' : 'none';
+         document.getElementById('content-monthly-inv').style.display = (tab === 'monthly') ? 'block' : 'none';
+         
+         const curBtn = document.getElementById('tab-current-inv');
+         const monBtn = document.getElementById('tab-monthly-inv');
+
+         if (tab === 'current') {
+           curBtn.style.background = '#fff'; curBtn.style.borderBottomColor = '#3182ce'; curBtn.style.color = '#2b6cb0';
+           monBtn.style.background = 'transparent'; monBtn.style.borderBottomColor = 'transparent'; monBtn.style.color = '#718096';
+         } else {
+           monBtn.style.background = '#fff'; monBtn.style.borderBottomColor = '#3182ce'; monBtn.style.color = '#2b6cb0';
+           curBtn.style.background = 'transparent'; curBtn.style.borderBottomColor = 'transparent'; curBtn.style.color = '#718096';
+         }
+      }
     </script>
     
     <div class="dashboard-grid">
