@@ -432,7 +432,7 @@
         <button class="dash-btn" onclick="openView('view-monthly-sales')"><i class="fas fa-hand-holding-usd" style="color:#c53030;"></i>月別販売情報</button>
         <button class="dash-btn" onclick="openView('view-bulk-register')"><i class="fas fa-upload" style="color:#d69e2e;"></i>一括商品登録</button>
         
-        <button class="dash-btn" onclick="openInfoModal()"><i class="fas fa-database" style="color:#805ad5;"></i>情報sheet</button>
+        <button class="dash-btn" onclick="openView('view-info'); loadInfoSettingsView();"><i class="fas fa-database" style="color:#805ad5;"></i>情報sheet設定</button>
         <button class="dash-btn" onclick="openView('view-expense'); loadExpenseListData();"><i class="fas fa-file-invoice-dollar" style="color:#e53e3e;"></i>経費一覧</button>
       </div>
     </div>
@@ -4157,35 +4157,218 @@ function saveInfoSettings() {
       document.getElementById('val-kishu').innerText = `¥${inv.kishu.toLocaleString()}`;
       document.getElementById('val-kimatsu').innerText = `¥${inv.kimatsu.toLocaleString()}`;
     };
+
+
+    // 💳 情報sheet設定画面：クレジットカード5枚分の入力フォームを「いい感じ」に自動生成する
+function renderInfoCardInputs() {
+  const container = document.getElementById('info-cards-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  for (let i = 0; i < 5; i++) {
+    const cardBlock = document.createElement('div');
+    cardBlock.style.cssText = "border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; background: #f8fafc; display: flex; flex-direction: column; gap: 8px;";
+    cardBlock.innerHTML = `
+      <div style="font-size:12px; font-weight:bold; color:#1a365d; border-bottom:1px dashed #cbd5e0; padding-bottom:4px; display:flex; justify-content:space-between;">
+        <span>💳 カード枠 #${i + 1}</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 6px;">
+        <div>
+          <label style="font-size:10px; font-weight:bold; color:#4a5568;">カード名</label>
+          <input type="text" id="info-card-name-${i}" placeholder="例: イオンカード" style="width:100%; padding:6px; font-size:12px; border:1px solid #cbd5e0; border-radius:4px; box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="font-size:10px; font-weight:bold; color:#4a5568;">開始日</label>
+          <input type="number" id="info-card-start-${i}" placeholder="1" style="width:100%; padding:6px; font-size:12px; border:1px solid #cbd5e0; border-radius:4px; box-sizing:border-box; text-align:right;">
+        </div>
+        <div>
+          <label style="font-size:10px; font-weight:bold; color:#4a5568;">終了日</label>
+          <input type="number" id="info-card-end-${i}" placeholder="15" style="width:100%; padding:6px; font-size:12px; border:1px solid #cbd5e0; border-radius:4px; box-sizing:border-box; text-align:right;">
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+        <div>
+          <label style="font-size:10px; font-weight:bold; color:#4a5568;">締め日</label>
+          <input type="number" id="info-card-closing-${i}" placeholder="15" style="width:100%; padding:6px; font-size:12px; border:1px solid #cbd5e0; border-radius:4px; box-sizing:border-box; text-align:right;">
+        </div>
+        <div>
+          <label style="font-size:10px; font-weight:bold; color:#4a5568;">支払月(何ヶ月後)</label>
+          <input type="number" id="info-card-offset-${i}" placeholder="1" style="width:100%; padding:6px; font-size:12px; border:1px solid #cbd5e0; border-radius:4px; box-sizing:border-box; text-align:right;">
+        </div>
+        <div>
+          <label style="font-size:10px; font-weight:bold; color:#4a5568;">支払日</label>
+          <input type="number" id="info-card-day-${i}" placeholder="29" style="width:100%; padding:6px; font-size:12px; border:1px solid #cbd5e0; border-radius:4px; box-sizing:border-box; text-align:right;">
+        </div>
+      </div>
+    `;
+    container.appendChild(cardBlock);
+  }
+}
+
+// 🚀 新設定画面を開いた時にGASからデータを取ってくる関数
+async function loadInfoSettingsView() {
+  renderInfoCardInputs(); // まずフォームの枠を自動生成
+  
+  const ssUrl = AppStorage.get("sh_ssurl", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+  if (!ssUrl || !targetGasUrl) return alert("⚙️ 設定から販売管理シートのURLを登録してな！");
+
+  document.getElementById('info-suppliers').value = "⏳ シートから最新設定を同期中...";
+
+  try {
+    const res = await fetch(targetGasUrl, {
+      method: 'POST',
+      body: JSON.stringify({ command: 'getInfoSettings', ssUrl: ssUrl })
+    });
+    const data = await res.json();
+    if (data.success) {
+      // 既存の仕入先・コンディションをセット
+      document.getElementById('info-suppliers').value = data.suppliers.join('\n');
+      document.getElementById('info-cond-c').value = data.conditions.c || "";
+      document.getElementById('info-cond-d').value = data.conditions.d || "";
+      document.getElementById('info-cond-e').value = data.conditions.e || "";
+      document.getElementById('info-cond-f').value = data.conditions.f || "";
+
+      // 💳 クレジットカード情報の流し込み（GAS側が対応したらここが開通します！）
+      if (data.cards && data.cards.length > 0) {
+        data.cards.forEach((card, i) => {
+          if (i < 5) {
+            if(document.getElementById(`info-card-name-${i}`)) document.getElementById(`info-card-name-${i}`).value = card[0] || '';
+            if(document.getElementById(`info-card-start-${i}`)) document.getElementById(`info-card-start-${i}`).value = card[1] || '';
+            if(document.getElementById(`info-card-end-${i}`)) document.getElementById(`info-card-end-${i}`).value = card[2] || '';
+            if(document.getElementById(`info-card-closing-${i}`)) document.getElementById(`info-card-closing-${i}`).value = card[3] || '';
+            if(document.getElementById(`info-card-offset-${i}`)) document.getElementById(`info-card-offset-${i}`).value = card[4] || '';
+            if(document.getElementById(`info-card-day-${i}`)) document.getElementById(`info-card-day-${i}`).value = card[5] || '';
+          }
+        });
+      }
+    } else {
+      alert("データ同期失敗したわ: " + data.message);
+    }
+  } catch(err) {
+    document.getElementById('info-suppliers').value = "読込失敗";
+    alert("通信エラー: " + err);
+  }
+}
+
+// 💾 新設定画面からシートへ保存する関数
+async function saveInfoSettingsView() {
+  const ssUrl = AppStorage.get("sh_ssurl", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+
+  const btn = event.target;
+  const originalText = btn.innerHTML;
+  btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> 保存中...";
+  btn.disabled = true;
+
+  // クレジットカードの入力値データを集める
+  const cardDataArr = [];
+  for (let i = 0; i < 5; i++) {
+    const name = document.getElementById(`info-card-name-${i}`).value.trim();
+    if (name) {
+      cardDataArr.push([
+        name,
+        parseInt(document.getElementById(`info-card-start-${i}`).value) || 1,
+        parseInt(document.getElementById(`info-card-end-${i}`).value) || 31,
+        parseInt(document.getElementById(`info-card-closing-${i}`).value) || 31,
+        parseInt(document.getElementById(`info-card-offset-${i}`).value) || 1,
+        parseInt(document.getElementById(`info-card-day-${i}`).value) || 27
+      ]);
+    }
+  }
+
+  try {
+    const res = await fetch(targetGasUrl, {
+      method: 'POST',
+      body: JSON.stringify({ 
+        command: 'saveInfoSettings',
+        ssUrl: ssUrl,
+        suppliers: document.getElementById('info-suppliers').value,
+        condC: document.getElementById('info-cond-c').value,
+        condD: document.getElementById('info-cond-d').value,
+        condE: document.getElementById('info-cond-e').value,
+        condF: document.getElementById('info-cond-f').value,
+        cards: cardDataArr // 🌟 クレジットカード配列も一緒にGASに送るぜ！
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert("🎯 情報sheetの設定を100%全同期・更新したで！！");
+      openView('view-manager-menu'); // 保存できたらメニューに戻る親切設計
+    } else {
+      alert("保存エラーや: " + data.message);
+    }
+  } catch(err) {
+    alert("通信エラー: " + err);
+  } finally {
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }
+}
   </script>
 
-<div id="infoModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
-  <div style="background:#fff; width:90%; max-width:600px; padding:20px; border-radius:8px; max-height:90vh; overflow-y:auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-    <h2 style="margin-top:0; color:#2d3748; font-size:16px; border-bottom:2px solid #e2e8f0; padding-bottom:10px;"><i class="fas fa-cog"></i> 情報sheet の設定</h2>
-    
-    <h3 style="font-size:13px; color:#4a5568; margin-top:15px; margin-bottom:5px;">🏢 仕入先リスト (改行必要)</h3>
-    <textarea id="info-suppliers" rows="4" style="width:100%; padding:8px; border:1px solid #cbd5e0; border-radius:4px; font-size:12px; box-sizing:border-box;"></textarea>
+<div id="view-info" class="view">
+    <div class="content" style="max-width: 1200px; margin: 0 auto; padding-bottom: 40px;">
+      
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:#fff; padding:16px; border-radius:12px; border:1px solid #e2e8f0; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+        <h2 style="margin:0; font-size:18px; color:#1a365d; display:flex; align-items:center; gap:8px;">
+          <i class="fas fa-sliders-h" style="color:#805ad5;"></i> SearchHub システム基本設定
+        </h2>
+        <button onclick="saveInfoSettingsView()" style="background:#3182ce; color:white; border:none; padding:10px 24px; border-radius:8px; font-weight:bold; font-size:14px; cursor:pointer; box-shadow:0 4px 6px rgba(49,130,206,0.2); display:flex; align-items:center; gap:6px;">
+          <i class="fas fa-save"></i> 設定をシートに保存する
+        </button>
+      </div>
 
-    <h3 style="font-size:13px; color:#4a5568; margin-top:20px; margin-bottom:5px; border-top:1px solid #e2e8f0; padding-top:15px;">📝 商品説明テンプレート</h3>
-    
-    <label style="font-size:11px; font-weight:bold; color:#2d3748; display:block; margin-top:10px;">✨ ほぼ新品</label>
-    <textarea id="info-cond-c" rows="2" style="width:100%; padding:8px; border:1px solid #cbd5e0; border-radius:4px; font-size:12px; box-sizing:border-box;"></textarea>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+        
+        <div style="display:flex; flex-direction:column; gap:20px;">
+          
+          <div class="card" style="margin:0; padding:20px; border-top:4px solid #805ad5;">
+            <h3 style="margin-top:0; font-size:14px; color:#4a5568; display:flex; align-items:center; gap:6px; margin-bottom:12px;">
+              <i class="fas fa-building" style="color:#805ad5;"></i> 🏢 仕入先マスター管理（改行区切り）
+            </h3>
+            <textarea id="info-suppliers" rows="5" style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; font-size:13px; box-sizing:border-box; outline:none; font-weight:bold; line-height:1.5;" placeholder="メルカリ&#10;ヤフオク&#10;オフモール"></textarea>
+          </div>
 
-    <label style="font-size:11px; font-weight:bold; color:#2d3748; display:block; margin-top:10px;">👍 非常に良い</label>
-    <textarea id="info-cond-d" rows="2" style="width:100%; padding:8px; border:1px solid #cbd5e0; border-radius:4px; font-size:12px; box-sizing:border-box;"></textarea>
+          <div class="card" style="margin:0; padding:20px; border-top:4px solid #07A27B;">
+            <h3 style="margin-top:0; font-size:14px; color:#4a5568; display:flex; align-items:center; gap:6px; margin-bottom:12px;">
+              <i class="fas fa-file-alt" style="color:#07A27B;"></i> 📝 商品説明テンプレート設定
+            </h3>
+            
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <div>
+                <label style="font-size:11px; font-weight:bold; color:#2d3748; display:block; margin-bottom:4px;">✨ ほぼ新品</label>
+                <textarea id="info-cond-c" rows="2" style="width:100%; padding:8px; border:1px solid #cbd5e0; border-radius:6px; font-size:12px; box-sizing:border-box; outline:none;"></textarea>
+              </div>
+              <div>
+                <label style="font-size:11px; font-weight:bold; color:#2d3748; display:block; margin-bottom:4px;">👍 非常に良い</label>
+                <textarea id="info-cond-d" rows="2" style="width:100%; padding:8px; border:1px solid #cbd5e0; border-radius:6px; font-size:12px; box-sizing:border-box; outline:noneサ内容;"></textarea>
+              </div>
+              <div>
+                <label style="font-size:11px; font-weight:bold; color:#2d3748; display:block; margin-bottom:4px;">🙂 良い</label>
+                <textarea id="info-cond-e" rows="2" style="width:100%; padding:8px; border:1px solid #cbd5e0; border-radius:6px; font-size:12px; box-sizing:border-box; outline:none;"></textarea>
+              </div>
+              <div>
+                <label style="font-size:11px; font-weight:bold; color:#2d3748; display:block; margin-bottom:4px;">⚠️ 可</label>
+                <textarea id="info-cond-f" rows="2" style="width:100%; padding:8px; border:1px solid #cbd5e0; border-radius:6px; font-size:12px; box-sizing:border-box; outline:none;"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
 
-    <label style="font-size:11px; font-weight:bold; color:#2d3748; display:block; margin-top:10px;">🙂 良い</label>
-    <textarea id="info-cond-e" rows="2" style="width:100%; padding:8px; border:1px solid #cbd5e0; border-radius:4px; font-size:12px; box-sizing:border-box;"></textarea>
+        <div class="card" style="margin:0; padding:20px; border-top:4px solid #e53e3e; display:flex; flex-direction:column; gap:14px;">
+          <h3 style="margin-top:0; font-size:14px; color:#4a5568; display:flex; align-items:center; gap:6px; margin-bottom:2px;">
+            <i class="fas fa-credit-card" style="color:#e53e3e;"></i> 💳 クレジットカード決済・資金繰りルール設定
+          </h3>
+          <p style="font-size:11px; color:#718096; margin:0 0 10px 0; font-weight:bold;">※情報sheetの H列〜M列 に自動連動します（最大5枠）</p>
 
-    <label style="font-size:11px; font-weight:bold; color:#2d3748; display:block; margin-top:10px;">⚠️ 可</label>
-    <textarea id="info-cond-f" rows="2" style="width:100%; padding:8px; border:1px solid #cbd5e0; border-radius:4px; font-size:12px; box-sizing:border-box;"></textarea>
+          <div id="info-cards-container" style="display:flex; flex-direction:column; gap:16px;">
+            </div>
+        </div>
 
-    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
-      <button onclick="document.getElementById('infoModal').style.display='none'" style="padding:8px 16px; background:#e2e8f0; color:#4a5568; border:none; border-radius:4px; cursor:pointer; font-weight:bold; font-size:12px;">キャンセル</button>
-      <button onclick="saveInfoSettings()" style="padding:8px 16px; background:#3182ce; color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold; font-size:12px;"><i class="fas fa-save"></i> 保存する</button>
+      </div>
     </div>
   </div>
-</div>
 
  <div id="hazmatGuideModal" class="modal" onclick="closeHazmatGuide()">
     <div class="modal-content" style="max-width: 95%; width: 480px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 12px; border-radius: 12px;" onclick="event.stopPropagation()">
