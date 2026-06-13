@@ -4192,8 +4192,13 @@ function renderInfoCardInputs() {
           <input type="number" id="info-card-closing-${i}" placeholder="15" style="width:100%; padding:6px; font-size:12px; border:1px solid #cbd5e0; border-radius:4px; box-sizing:border-box; text-align:right;">
         </div>
         <div>
-          <label style="font-size:10px; font-weight:bold; color:#4a5568;">支払月(何ヶ月後)</label>
-          <input type="number" id="info-card-offset-${i}" placeholder="1" style="width:100%; padding:6px; font-size:12px; border:1px solid #cbd5e0; border-radius:4px; box-sizing:border-box; text-align:right;">
+          <label style="font-size:10px; font-weight:bold; color:#4a5568;">支払月</label>
+          <select id="info-card-offset-${i}" style="width:100%; padding:5px; font-size:12px; border:1px solid #cbd5e0; border-radius:4px; box-sizing:border-box; outline:none; background:#fff; cursor:pointer;">
+            <option value="0">当月</option>
+            <option value="1" selected>翌月</option>
+            <option value="2">翌々月</option>
+            <option value="3">3ヶ月後</option>
+          </select>
         </div>
         <div>
           <label style="font-size:10px; font-weight:bold; color:#4a5568;">支払日</label>
@@ -4222,14 +4227,13 @@ async function loadInfoSettingsView() {
     });
     const data = await res.json();
     if (data.success) {
-      // 既存の仕入先・コンディションをセット
       document.getElementById('info-suppliers').value = data.suppliers.join('\n');
       document.getElementById('info-cond-c').value = data.conditions.c || "";
       document.getElementById('info-cond-d').value = data.conditions.d || "";
       document.getElementById('info-cond-e').value = data.conditions.e || "";
       document.getElementById('info-cond-f').value = data.conditions.f || "";
 
-      // 💳 クレジットカード情報の流し込み（GAS側が対応したらここが開通します！）
+      // 💳 クレジットカード情報の流し込み
       if (data.cards && data.cards.length > 0) {
         data.cards.forEach((card, i) => {
           if (i < 5) {
@@ -4237,7 +4241,13 @@ async function loadInfoSettingsView() {
             if(document.getElementById(`info-card-start-${i}`)) document.getElementById(`info-card-start-${i}`).value = card[1] || '';
             if(document.getElementById(`info-card-end-${i}`)) document.getElementById(`info-card-end-${i}`).value = card[2] || '';
             if(document.getElementById(`info-card-closing-${i}`)) document.getElementById(`info-card-closing-${i}`).value = card[3] || '';
-            if(document.getElementById(`info-card-offset-${i}`)) document.getElementById(`info-card-offset-${i}`).value = card[4] || '';
+            
+            // プルダウン（支払月）の値を安全にセット
+            if(document.getElementById(`info-card-offset-${i}`)) {
+              let offsetVal = card[4] !== undefined && card[4] !== "" ? parseInt(card[4], 10) : 1;
+              document.getElementById(`info-card-offset-${i}`).value = offsetVal;
+            }
+            
             if(document.getElementById(`info-card-day-${i}`)) document.getElementById(`info-card-day-${i}`).value = card[5] || '';
           }
         });
@@ -4266,12 +4276,16 @@ async function saveInfoSettingsView() {
   for (let i = 0; i < 5; i++) {
     const name = document.getElementById(`info-card-name-${i}`).value.trim();
     if (name) {
+      // 「当月（0）」が無視されないように parseInt の挙動を安全に処理！
+      let offsetVal = parseInt(document.getElementById(`info-card-offset-${i}`).value, 10);
+      if (isNaN(offsetVal)) offsetVal = 1;
+
       cardDataArr.push([
         name,
         parseInt(document.getElementById(`info-card-start-${i}`).value) || 1,
         parseInt(document.getElementById(`info-card-end-${i}`).value) || 31,
         parseInt(document.getElementById(`info-card-closing-${i}`).value) || 31,
-        parseInt(document.getElementById(`info-card-offset-${i}`).value) || 1,
+        offsetVal, // 🌟 完璧なプルダウンの数値
         parseInt(document.getElementById(`info-card-day-${i}`).value) || 27
       ]);
     }
@@ -4288,13 +4302,13 @@ async function saveInfoSettingsView() {
         condD: document.getElementById('info-cond-d').value,
         condE: document.getElementById('info-cond-e').value,
         condF: document.getElementById('info-cond-f').value,
-        cards: cardDataArr // 🌟 クレジットカード配列も一緒にGASに送るぜ！
+        cards: cardDataArr 
       })
     });
     const data = await res.json();
     if (data.success) {
       alert("🎯 情報sheetの設定を100%全同期・更新したで！！");
-      openView('view-manager-menu'); // 保存できたらメニューに戻る親切設計
+      openView('view-manager-menu');
     } else {
       alert("保存エラーや: " + data.message);
     }
