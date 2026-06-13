@@ -4144,18 +4144,22 @@ function saveInfoSettings() {
       }
     }
 
-   // 💡 月別在庫のプルダウンが変更された時に数字を切り替える関数
+   // 💡 月別在庫のプルダウンが変更された時に数字と「個数」を切り替える関数
     window.renderMonthlyInventory = function() {
       const m = document.getElementById('monthly-inv-selector').value;
       if (!m || !homeData.monthly[m] || !homeData.monthly[m].inventory) {
-        document.getElementById('val-kishu').innerText = '¥--';
-        document.getElementById('val-kimatsu').innerText = '¥--';
+        document.getElementById('val-kishu').innerHTML = '¥--';
+        document.getElementById('val-kimatsu').innerHTML = '¥--';
         return;
       }
       
       const inv = homeData.monthly[m].inventory;
-      document.getElementById('val-kishu').innerText = `¥${inv.kishu.toLocaleString()}`;
-      document.getElementById('val-kimatsu').innerText = `¥${inv.kimatsu.toLocaleString()}`;
+      const kishuCount = inv.kishuCount !== undefined ? inv.kishuCount : 0;
+      const kimatsuCount = inv.kimatsuCount !== undefined ? inv.kimatsuCount : 0;
+      
+      // 🌟 innerText から innerHTML に変更し、金額の下に小さくグレーで個数を表示するプロ仕様デザイン！
+      document.getElementById('val-kishu').innerHTML = `¥${inv.kishu.toLocaleString()}<br><span style="font-size:13px; color:#718096; font-weight:bold;">(${kishuCount}個)</span>`;
+      document.getElementById('val-kimatsu').innerHTML = `¥${inv.kimatsu.toLocaleString()}<br><span style="font-size:13px; color:#718096; font-weight:bold;">(${kimatsuCount}個)</span>`;
     };
 
 
