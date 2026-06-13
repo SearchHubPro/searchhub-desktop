@@ -338,7 +338,7 @@
       
       <div id="content-monthly-inv" style="padding: 30px; display: none;">
         <div style="margin-bottom: 24px; text-align: center;">
-           <select id="monthly-inv-selector" onchange="/* 後でGAS連携時に処理を追加 */" style="padding: 10px 20px; border-radius: 6px; border: 1px solid #cbd5e0; font-size: 15px; font-weight: bold; color: #1a365d; outline:none; cursor:pointer; background:#fff; min-width: 180px;">
+           <select id="monthly-inv-selector" onchange="renderMonthlyInventory()" style="padding: 10px 20px; border-radius: 6px; border: 1px solid #cbd5e0; font-size: 15px; font-weight: bold; color: #1a365d; outline:none; cursor:pointer; background:#fff; min-width: 180px;">
               <option value="">月を選択...</option>
            </select>
         </div>
@@ -1218,6 +1218,24 @@
           }
           
           updateHomeView();
+          
+          if (document.getElementById('realtime-inv-count')) {
+            // 現在庫の表示
+            document.getElementById('realtime-inv-count').innerHTML = `${homeData.currentInventory.count} <span style="font-size:16px;">個</span>`;
+            document.getElementById('realtime-inv-value').innerText = `¥${homeData.currentInventory.value.toLocaleString()}`;
+            
+            // プルダウンに月をセット
+            const monSel = document.getElementById('monthly-inv-selector');
+            monSel.innerHTML = '<option value="">月を選択...</option>';
+            homeData.availableMonths.forEach(m => {
+              monSel.innerHTML += `<option value="${m}">${m}</option>`;
+            });
+            // 自動で最新月を選択して表示
+            if (homeData.availableMonths.length > 0) {
+              monSel.value = homeData.availableMonths[0];
+              renderMonthlyInventory(); // 下で作る関数を呼び出す
+            }
+          }
         }
       } catch(err) {
         console.error("Dashboard fetch error", err);
@@ -4086,7 +4104,19 @@ function saveInfoSettings() {
       }
     }
 
-
+   // 💡 月別在庫のプルダウンが変更された時に数字を切り替える関数
+    window.renderMonthlyInventory = function() {
+      const m = document.getElementById('monthly-inv-selector').value;
+      if (!m || !homeData.monthly[m] || !homeData.monthly[m].inventory) {
+        document.getElementById('val-kishu').innerText = '¥--';
+        document.getElementById('val-kimatsu').innerText = '¥--';
+        return;
+      }
+      
+      const inv = homeData.monthly[m].inventory;
+      document.getElementById('val-kishu').innerText = `¥${inv.kishu.toLocaleString()}`;
+      document.getElementById('val-kimatsu').innerText = `¥${inv.kimatsu.toLocaleString()}`;
+    };
   </script>
 
 <div id="infoModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
