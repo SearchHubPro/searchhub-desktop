@@ -480,19 +480,7 @@
   <div id="view-researcher-menu" class="view">
     <div class="content">
 
-      <div style="background:#f8fafc; border: 2px dashed #a855f7; border-radius:12px; padding:20px; margin-bottom:16px; text-align:center; transition: all 0.2s;" 
-           id="keepa-drop-zone-main"
-           ondragover="handleDragOverKeepa(event)" 
-           ondragleave="handleDragLeaveKeepa(event)" 
-           ondrop="handleDropKeepa(event)">
-        <i class="fas fa-file-csv" style="font-size:32px; color:#a855f7; margin-bottom:8px;"></i>
-        <div style="font-size:14px; font-weight:bold; color:#4a5568;">Keepa エクスポートCSVをここにドロップ</div>
-        <div style="font-size:11px; color:#718096; margin-top:4px;">ドロップされた瞬間、ASINを抽出して自動リサーチを開始します</div>
-        <input type="file" id="keepa-file-input-main" style="display:none;" accept=".csv" onchange="processKeepaCSV(event.target.files[0])">
-        <button onclick="document.getElementById('keepa-file-input-main').click()" style="margin-top:12px; background:#a855f7; color:white; border:none; padding:8px 16px; border-radius:8px; font-size:12px; font-weight:bold; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
-          ファイルを選択
-        </button>
-      </div>
+      
       <div class="dashboard-grid">
         <button class="dash-btn" onclick="openView('view-researcher'); loadResearcherData();"><i class="fas fa-search" style="color:#a855f7;"></i>リサーチリスト<span class="dash-dot" id="dash-dot-researcher-inner"></span></button>
         
@@ -829,11 +817,11 @@
         <div style="display:flex; gap:12px; align-items:center;">
           <span style="font-size:12px; font-weight:bold; color:#4a5568;" id="resCount">候補を読み込み中...</span>
           
-          <label id="mini-drop-zone-keepa" style="background:#f8fafc; border: 2px dashed #a855f7; color:#4a5568; padding:4px 12px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer; display:flex; align-items:center; transition: all 0.2s;" 
+          <label id="mini-drop-zone-keepa" style="background:#f8fafc; border: 2px dashed #cbd5e0; color:#4a5568; padding:4px 12px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer; display:flex; align-items:center; transition: all 0.2s;" 
                  ondragover="handleDragOverKeepaMini(event)" 
                  ondragleave="handleDragLeaveKeepaMini(event)" 
                  ondrop="handleDropKeepaMini(event)">
-            <i class="fas fa-file-csv" style="margin-right: 6px; color:#a855f7;"></i> KeepaCSVを追加
+            <i class="fas fa-file-upload" style="margin-right: 6px;"></i> KeepaCSVをドロップ
             <input type="file" style="display:none;" accept=".csv" onchange="processKeepaCSV(event.target.files[0])">
           </label>
         </div>
@@ -4537,24 +4525,24 @@ async function saveInfoSettingsView() {
     };
 
     // ==========================================
-    // 🚀 Keepa ミニドロップ枠の見た目制御
+    // 🚀 Keepa ミニドロップ枠の見た目制御（販売管理と完全一致）
     // ==========================================
     function handleDragOverKeepaMini(e) {
       e.preventDefault(); e.stopPropagation();
-      e.currentTarget.style.backgroundColor = '#faf5ff';
-      e.currentTarget.style.borderColor = '#9f7aea';
+      e.currentTarget.style.backgroundColor = '#ebf8ff';
+      e.currentTarget.style.borderColor = '#3182ce';
     }
 
     function handleDragLeaveKeepaMini(e) {
       e.preventDefault(); e.stopPropagation();
       e.currentTarget.style.backgroundColor = '#f8fafc';
-      e.currentTarget.style.borderColor = '#a855f7';
+      e.currentTarget.style.borderColor = '#cbd5e0';
     }
 
     function handleDropKeepaMini(e) {
       e.preventDefault(); e.stopPropagation();
       e.currentTarget.style.backgroundColor = '#f8fafc';
-      e.currentTarget.style.borderColor = '#a855f7';
+      e.currentTarget.style.borderColor = '#cbd5e0';
       
       const files = e.dataTransfer.files;
       if (files && files.length > 0) {
