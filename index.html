@@ -472,7 +472,7 @@
         <button class="dash-btn" onclick="openView('view-bulk-register')"><i class="fas fa-upload" style="color:#d69e2e;"></i>一括商品登録</button>
         
                 <button class="dash-btn" onclick="openView('view-expense'); loadExpenseListData();"><i class="fas fa-file-invoice-dollar" style="color:#e53e3e;"></i>経費一覧</button>
-<button class="dash-btn" onclick="openView('view-manager-settings'); switchSettingTab('info');"><i class="fas fa-cogs" style="color:#4a5568;"></i>各種設定</button>
+<button class="dash-btn" onclick="openView('view-manager-settings'); loadInfoSettingsView();"><i class="fas fa-table" style="color:#4a5568;"></i>情報設定</button>
       </div>
     </div>
   </div>
@@ -4514,17 +4514,11 @@ async function saveInfoSettingsView() {
 
 <div id="view-manager-settings" class="view" style="padding: 20px; max-width: 1200px; margin: 0 auto;">
     
-    <div style="display: flex; border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; gap: 4px;">
-      <button id="tab-btn-info" onclick="switchSettingTab('info')" style="flex: 1; padding: 12px; font-weight: bold; font-size: 14px; border: none; background: #1a365d; color: white; border-radius: 8px 8px 0 0; cursor: pointer; transition: 0.2s;"><i class="fas fa-table" style="margin-right: 6px;"></i>情報設定</button>
-      <button id="tab-btn-system" onclick="switchSettingTab('system')" style="flex: 1; padding: 12px; font-weight: bold; font-size: 14px; border: none; background: #edf2f7; color: #4a5568; border-radius: 8px 8px 0 0; cursor: pointer; transition: 0.2s;"><i class="fas fa-sliders-h" style="margin-right: 6px;"></i>各種設定</button>
-      <button id="tab-btn-trigger" onclick="switchSettingTab('trigger')" style="flex: 1; padding: 12px; font-weight: bold; font-size: 14px; border: none; background: #edf2f7; color: #4a5568; border-radius: 8px 8px 0 0; cursor: pointer; transition: 0.2s;"><i class="fas fa-clock" style="margin-right: 6px;"></i>実行予約</button>
-    </div>
-
-    <div id="panel-setting-info" class="setting-panel" style="display: block; background: #fff; border-radius: 0 0 8px 8px; border: 1px solid #e2e8f0; border-top: none; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    <div style="background: #fff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
       
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:#fff; padding:16px; border-radius:12px; border:1px solid #e2e8f0; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
         <h2 style="margin:0; font-size:18px; color:#1a365d; display:flex; align-items:center; gap:8px;">
-          <i class="fas fa-sliders-h" style="color:#805ad5;"></i> SearchHub システム基本設定
+          <i class="fas fa-table" style="color:#805ad5;"></i> 情報シート設定
         </h2>
         <button onclick="saveInfoSettingsView()" style="background:#3182ce; color:white; border:none; padding:10px 24px; border-radius:8px; font-weight:bold; font-size:14px; cursor:pointer; box-shadow:0 4px 6px rgba(49,130,206,0.2); display:flex; align-items:center; gap:6px;">
           <i class="fas fa-save"></i> 設定をシートに保存する
@@ -4558,64 +4552,6 @@ async function saveInfoSettingsView() {
           <p style="font-size:11px; color:#718096; margin:0 0 10px 0; font-weight:bold;">※情報sheetの H列〜M列 に自動連動します（最大5枠）</p>
           <div id="info-cards-container" style="display:flex; flex-direction:column; gap:16px;"></div>
         </div>
-      </div>
-    </div>
-
-    <div id="panel-setting-system" class="setting-panel" style="display: none; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-      <h3 style="margin-top:0; margin-bottom: 20px; color:#1a365d; font-size:16px; border-left: 4px solid #4a5568; padding-left: 10px;">システム初期設定（GAS連携・シリアル認証）</h3>
-      <div style="margin-bottom: 16px;">
-        <label style="font-size:12px; font-weight:bold; color:#4a5568; display:block; margin-bottom:6px;">Keepa APIキー</label>
-        <input type="password" id="gas-setting-apikey" placeholder="APIキーを貼り付け" style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing:border-box; font-family:monospace; outline: none;">
-      </div>
-      <div style="margin-bottom: 16px;">
-        <label style="font-size:12px; font-weight:bold; color:#4a5568; display:block; margin-bottom:6px;">自分のセラーID</label>
-        <input type="text" id="gas-setting-sellerid" placeholder="例: A1234567890XYZ" style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing:border-box; font-family:monospace; outline: none;">
-      </div>
-      <div style="margin-bottom: 16px;">
-        <label style="font-size:12px; font-weight:bold; color:#4a5568; display:block; margin-bottom:6px;">SearchHub:ResearcherのURL</label>
-        <input type="text" id="gas-setting-sheeturl" placeholder="スプレッドシートのURLを貼り付け" style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing:border-box; outline: none;">
-      </div>
-      <div style="margin-bottom: 24px;">
-        <label style="font-size:12px; font-weight:bold; color:#e53e3e; display:block; margin-bottom:6px;"><i class="fas fa-key"></i> シリアルコード（公式LINEで配布）</label>
-        <input type="text" id="gas-setting-serial" placeholder="合言葉を入力してな" style="width:100%; padding:10px; border:2px solid #fed7d7; background-color:#fff5f5; border-radius:6px; box-sizing:border-box; font-weight:bold; color:#c53030; outline: none;">
-      </div>
-      <div style="display:flex; gap:12px;">
-        <button onclick="loadGasSettings()" style="flex:1; padding:12px; background:#edf2f7; color:#4a5568; border:none; border-radius:6px; font-weight:bold; cursor:pointer; transition:0.2s;"><i class="fas fa-sync-alt"></i> 現在の設定を読込</button>
-        <button id="btn-save-gas-settings" onclick="saveGasSettings()" style="flex:2; padding:12px; background:#3182ce; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer; transition:0.2s; box-shadow:0 2px 4px rgba(49,130,206,0.3);"><i class="fas fa-save"></i> 設定を保存して適用</button>
-      </div>
-    </div>
-
-    <div id="panel-setting-trigger" class="setting-panel" style="display: none; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-      <h3 style="margin-top:0; margin-bottom: 20px; color:#1a365d; font-size:16px; border-left: 4px solid #38a169; padding-left: 10px;">自動実行の予約設定（トリガー管理）</h3>
-      <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 0; border-bottom:1px dashed #e2e8f0;">
-        <div style="font-weight:bold; font-size:14px; color:#2d3748;">🔍 価格改定を自動実行</div>
-        <div style="display:flex; align-items:center; gap:16px;">
-          <div style="display:flex; align-items:center; gap:4px;">
-            <input type="number" id="gas-trigger-h-research" min="0" max="23" placeholder="2" style="width:60px; padding:6px; text-align:center; font-size:15px; font-weight:bold; border:1px solid #cbd5e0; border-radius:6px; outline:none;">
-            <span style="font-size:13px; font-weight:bold; color:#718096;">時</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px; width:90px;">
-            <label class="sh-toggle"><input type="checkbox" id="gas-trigger-a-research" onchange="toggleTriggerTextUI('research')"><span class="sh-slider"></span></label>
-            <span id="text-trigger-research" style="font-size:13px; font-weight:bold; color:#a0aec0;">停止中</span>
-          </div>
-        </div>
-      </div>
-      <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 0; margin-bottom:16px;">
-        <div style="font-weight:bold; font-size:14px; color:#2d3748;">📊 仕入れ・販売同期</div>
-        <div style="display:flex; align-items:center; gap:16px;">
-          <div style="display:flex; align-items:center; gap:4px;">
-            <input type="number" id="gas-trigger-h-sync" min="0" max="23" placeholder="4" style="width:60px; padding:6px; text-align:center; font-size:15px; font-weight:bold; border:1px solid #cbd5e0; border-radius:6px; outline:none;">
-            <span style="font-size:13px; font-weight:bold; color:#718096;">時</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px; width:90px;">
-            <label class="sh-toggle"><input type="checkbox" id="gas-trigger-a-sync" onchange="toggleTriggerTextUI('sync')"><span class="sh-slider"></span></label>
-            <span id="text-trigger-sync" style="font-size:13px; font-weight:bold; color:#a0aec0;">停止中</span>
-          </div>
-        </div>
-      </div>
-      <div style="display:flex; gap:12px;">
-        <button onclick="loadGasTriggers()" style="flex:1; padding:12px; background:#edf2f7; color:#4a5568; border:none; border-radius:6px; font-weight:bold; cursor:pointer; transition:0.2s;"><i class="fas fa-sync-alt"></i> 現在の予約を読込</button>
-        <button id="btn-save-gas-triggers" onclick="saveGasTriggers()" style="flex:2; padding:12px; background:#38a169; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer; transition:0.2s; box-shadow:0 2px 4px rgba(56,161,105,0.3);"><i class="fas fa-calendar-check"></i> 予約設定を保存して稼働</button>
       </div>
     </div>
   </div>
