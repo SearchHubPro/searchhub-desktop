@@ -1740,6 +1740,7 @@ fetchConditionList();
       document.getElementById("cfgSsUrl").value = AppStorage.get("sh_ssurl", "");
       document.getElementById("cfgResearcherUrl").value = AppStorage.get("sh_researcher_url", ""); 
       // 💡 追加：WatcherとSniperのシートURLを読み込む
+      document.getElementById("cfgResearcherGasUrl").value = AppStorage.get("sh_researcher_gas_url", "");
       document.getElementById("cfgWatcherSheetUrl").value = AppStorage.get("sh_watcher_sheet_url", ""); 
       document.getElementById("cfgSniperSheetUrl").value = AppStorage.get("sh_sniper_sheet_url", ""); 
       
@@ -1756,6 +1757,7 @@ fetchConditionList();
       AppStorage.set("sh_ssurl", document.getElementById("cfgSsUrl").value.trim());
       AppStorage.set("sh_researcher_url", document.getElementById("cfgResearcherUrl").value.trim()); 
       // 💡 追加：WatcherとSniperのシートURLを保存する
+      AppStorage.set("sh_researcher_gas_url", document.getElementById("cfgResearcherGasUrl").value.trim());
       AppStorage.set("sh_watcher_sheet_url", document.getElementById("cfgWatcherSheetUrl").value.trim()); 
       AppStorage.set("sh_sniper_sheet_url", document.getElementById("cfgSniperSheetUrl").value.trim()); 
       
@@ -2238,13 +2240,18 @@ document.getElementById("regPurchaseUrl").value = "";
       
       // 👇 変数を取得する部分
       const ssUrl = AppStorage.get("sh_ssurl", "");
-      const researcherUrl = AppStorage.get("sh_researcher_url", ""); // 🌟 追加：ResearcherのURLを取得
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+      const researcherUrl = AppStorage.get("sh_researcher_url", "");
+        // 👇 宛先を「ResearcherのGAS URL」専用に変更！
+        const researcherGasUrl = AppStorage.get("sh_researcher_gas_url", "");
+        
+        if (!researcherUrl || !researcherGasUrl) {
+          alert("⚙️ 設定から『ResearcherのシートURL』と『ResearcherのGAS URL』を登録してな！");
+          dropLabel.innerHTML = originalText;
+          return;
+        }
 
-      btn.disabled = true; btn.innerHTML = "⌛ 登録中...";
-      
-      try {
-        const res = await fetch(targetGasUrl, { 
+        try {
+          const res = await fetch(researcherGasUrl, {  // 👈 ここも researcherGasUrl に変更！
           method: 'POST', 
           // 👇 GASに送るボディ部分
           body: JSON.stringify({ 
