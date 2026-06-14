@@ -1121,6 +1121,9 @@
       
       <label style="margin-top:0; margin-bottom:2px; padding:0;">SearchHub : WatcherのGASURL</label>
       <input type="url" id="cfg10SiteUrl" placeholder="https://script.google.com/macros/.../exec" style="margin-top:0;">
+
+      <label>SearchHub : ResearcherのGAS URL</label>
+      <input type="url" id="cfgResearcherGasUrl" placeholder="https://script.google.com/macros/.../exec">
       
       <div style="border-top:1px dashed #ccc; margin:15px 0 5px 0; padding-top:5px;"></div>
       
@@ -2577,16 +2580,17 @@ document.getElementById("regPurchaseUrl").value = "";
       document.getElementById('resCount').innerText = "同期中...";
       
       const researcherUrl = AppStorage.get("sh_researcher_url", "");
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-      
-      if (!researcherUrl || !targetGasUrl) { 
-        resDiv.innerHTML = '<div class="card" style="text-align:center; color:#e53e3e; font-weight:bold;">⚙️設定からResearcherのURLを登録してな！</div>'; 
-        return; 
-      }
+        // 💡 宛先を「ResearcherのGAS URL」専用に変更！
+        const researcherGasUrl = AppStorage.get("sh_researcher_gas_url", "");
+        
+        if (!researcherUrl || !researcherGasUrl) {
+          alert("⚙️ 設定から『ResearcherのシートURL』と『ResearcherのGAS URL』を登録してな！");
+          dropLabel.innerHTML = originalText;
+          return;
+        }
 
-      try {
-        // 💡 iOSのSafari通信弾き対策で headers を追加！
-        const res = await fetch(targetGasUrl, { 
+        try {
+          const res = await fetch(researcherGasUrl, {  // 👈 ここも researcherGasUrl に変更
           method: 'POST', 
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({ command: 'getResearcherData', ssUrl: researcherUrl }) 
