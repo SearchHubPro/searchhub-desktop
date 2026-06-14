@@ -475,7 +475,8 @@
       <button class="dash-btn" onclick="openView('view-manager-settings'); switchSettingTab('info');"><i class="fas fa-cogs" style="color:#4a5568;"></i>各種設定</button>
     </div>
   </div>
-</div> <div id="view-manager-settings" class="view" style="padding: 20px; max-width: 800px; margin: 0 auto;">
+</div>
+<div id="view-manager-settings" class="view" style="display: none; padding: 20px; max-width: 800px; margin: 0 auto;">
   
   <div style="display: flex; border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; gap: 4px;">
     <button id="tab-btn-info" onclick="switchSettingTab('info')" style="flex: 1; padding: 12px; font-weight: bold; font-size: 14px; border: none; background: #1a365d; color: white; border-radius: 8px 8px 0 0; cursor: pointer; transition: 0.2s;">
@@ -503,7 +504,6 @@
     <h3 style="margin-top:0; margin-bottom: 20px; color:#1a365d; font-size:16px; border-left: 4px solid #4a5568; padding-left: 10px;">
       システム初期設定（GAS連携・シリアル認証）
     </h3>
-    
     <div style="margin-bottom: 16px;">
       <label style="font-size:12px; font-weight:bold; color:#4a5568; display:block; margin-bottom:6px;">Keepa APIキー</label>
       <input type="password" id="gas-setting-apikey" placeholder="APIキーを貼り付け" style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; box-sizing:border-box; font-family:monospace; outline: none;">
@@ -530,7 +530,6 @@
     <h3 style="margin-top:0; margin-bottom: 20px; color:#1a365d; font-size:16px; border-left: 4px solid #38a169; padding-left: 10px;">
       自動実行の予約設定（トリガー管理）
     </h3>
-    
     <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 0; border-bottom:1px dashed #e2e8f0;">
       <div style="font-weight:bold; font-size:14px; color:#2d3748;">🔍 価格改定を自動実行</div>
       <div style="display:flex; align-items:center; gap:16px;">
@@ -547,7 +546,6 @@
         </div>
       </div>
     </div>
-
     <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 0; margin-bottom:16px;">
       <div style="font-weight:bold; font-size:14px; color:#2d3748;">📊 仕入れ・販売同期</div>
       <div style="display:flex; align-items:center; gap:16px;">
@@ -564,14 +562,14 @@
         </div>
       </div>
     </div>
-    
     <div style="display:flex; gap:12px;">
       <button onclick="loadGasTriggers()" style="flex:1; padding:12px; background:#edf2f7; color:#4a5568; border:none; border-radius:6px; font-weight:bold; cursor:pointer; transition:0.2s;"><i class="fas fa-sync-alt"></i> 現在の予約を読込</button>
       <button id="btn-save-gas-triggers" onclick="saveGasTriggers()" style="flex:2; padding:12px; background:#38a169; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer; transition:0.2s; box-shadow:0 2px 4px rgba(56,161,105,0.3);"><i class="fas fa-calendar-check"></i> 予約設定を保存して稼働</button>
     </div>
   </div>
 
-</div> <style>
+</div>
+<style>
   .sh-toggle { position: relative; display: inline-block; width: 44px; height: 24px; margin: 0; flex-shrink: 0; }
   .sh-toggle input { opacity: 0; width: 0; height: 0; }
   .sh-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e0; transition: .3s; border-radius: 24px; }
