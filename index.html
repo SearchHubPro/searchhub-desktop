@@ -2238,26 +2238,19 @@ document.getElementById("regPurchaseUrl").value = "";
 
       const btn = document.getElementById("executeRegBtn");
       
-      // 👇 変数を取得する部分
       const ssUrl = AppStorage.get("sh_ssurl", "");
       const researcherUrl = AppStorage.get("sh_researcher_url", "");
-        // 👇 宛先を「ResearcherのGAS URL」専用に変更！
-        const researcherGasUrl = AppStorage.get("sh_researcher_gas_url", "");
-        
-        if (!researcherUrl || !researcherGasUrl) {
-          alert("⚙️ 設定から『ResearcherのシートURL』と『ResearcherのGAS URL』を登録してな！");
-          dropLabel.innerHTML = originalText;
-          return;
-        }
+      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
 
-        try {
-          const res = await fetch(researcherGasUrl, {  // 👈 ここも researcherGasUrl に変更！
-          method: 'POST', 
-          // 👇 GASに送るボディ部分
+      btn.disabled = true; btn.innerHTML = "⌛ 登録中...";
+      
+      try {
+        const res = await fetch(targetGasUrl, {
+          method: 'POST',
           body: JSON.stringify({ 
             command: 'register', 
             ssUrl: ssUrl, 
-            researcherUrl: researcherUrl, // 🌟 追加：GASへ送るデータに含める
+            researcherUrl: researcherUrl,
             data: pendingRegData 
           }) 
         });
@@ -4562,7 +4555,7 @@ async function saveInfoSettingsView() {
     }
 
     // ==========================================
-    // 🚀 Keepa CSV解析 ＆ GASへ自動リサーチ命令
+    // 🚀 Keepa CSV解析 ＆ GASへ自動リサーチ命令 (完全最終版)
     // ==========================================
     function processKeepaCSV(file) {
       if (!file.name.toLowerCase().endsWith('.csv')) {
@@ -4575,13 +4568,12 @@ async function saveInfoSettingsView() {
       dropLabel.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 6px; color:#a855f7;"></i> 解析中...';
 
       const reader = new FileReader();
-      
+
       reader.onload = async function(e) {
         let text = e.target.result;
         const lines = text.split(/\r?\n/);
         const asins = [];
 
-        // 🧠 "ASIN"やダブルクォーテーションを綺麗に掃除して抽出
         lines.forEach(line => {
           const cleanLine = line.replace(/["']/g, '').trim();
           if (cleanLine && cleanLine !== 'ASIN' && cleanLine.length === 10) {
@@ -4603,38 +4595,49 @@ async function saveInfoSettingsView() {
         dropLabel.innerHTML = '<i class="fas fa-paper-plane" style="margin-right: 6px; color:#a855f7;"></i> 送信中...';
 
         const researcherUrl = AppStorage.get("sh_researcher_url", "");
-        let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-        
-        if (!researcherUrl || !targetGasUrl) {
-          alert("⚙️ 設定から『ResearcherのURL』と『GAS URL』を登録してな！");
+        // 💡 宛先を完全にResearcher専用のGAS URLに固定！
+        const researcherGasUrl = AppStorage.get("sh_researcher_gas_url", "");
+
+        if (!researcherUrl || !researcherGasUrl) {
+          alert("⚙️ 設定画面を開いて『ResearcherのシートURL』と『ResearcherのGAS URL』を両方入れて保存してな！");
           dropLabel.innerHTML = originalText;
           return;
         }
 
         try {
-          const res = await fetch(targetGasUrl, {
+          const res = await fetch(researcherGasUrl, {
             method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // 🛡️ 通信を確実に通すための呪文
             body: JSON.stringify({
               command: 'startKeepaAutoResearch',
               ssUrl: researcherUrl,
               asins: asins
             })
           });
-          
-          const json = await res.json();
+
+          // エラーの正体を正確に掴むために、まずは文字として受け取る
+          const responseText = await res.text();
+          let json;
+          try {
+            json = JSON.parse(responseText);
+          } catch(e) {
+            // JSONじゃなかった場合（No Target Keyword等）は、ここでエラーを投げる
+            throw new Error(responseText.substring(0, 50)); 
+          }
+
           if (json.success) {
             alert(`✅ ${asins.length}件のASINをセットして、自動リサーチをスタートしたで！！\n（裏側で現場監督が走り出しました！）`);
+            if (typeof loadResearcherData === 'function') loadResearcherData();
           } else {
-            // 🚨 ここでGAS側からの「安全装置（すでに稼働中やで！）」のエラーを受け取って表示
             alert(`❌ 自動リサーチ開始エラー:\n${json.message}`);
           }
         } catch (error) {
-          alert("❌ 通信エラーが発生したわ。");
+          alert("❌ 通信エラーの正体:\nGASエラー発生中: " + error.message);
         } finally {
           dropLabel.innerHTML = originalText;
         }
       };
-      
+
       reader.readAsText(file);
     }
     
