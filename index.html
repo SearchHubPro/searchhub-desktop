@@ -576,23 +576,7 @@
   .sh-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
   .sh-toggle input:checked + .sh-slider { background-color: #38a169; }
   .sh-toggle input:checked + .sh-slider:before { transform: translateX(20px); }
-</style>
-    <div class="content">
-      <div class="dashboard-grid">
-        <button class="dash-btn" onclick="openView('view-ledger')"><i class="fas fa-book" style="color:#2b6cb0;"></i>販売管理</button>
-        <button class="dash-btn" onclick="openView('view-price')"><i class="fas fa-yen-sign" style="color:#1a365d;"></i>価格改定</button>
-        <button class="dash-btn" onclick="openView('view-monthly-purchase')"><i class="fas fa-box-open" style="color:#2f855a;"></i>月別仕入情報</button>
-        <button class="dash-btn" onclick="openView('view-monthly-sales')"><i class="fas fa-hand-holding-usd" style="color:#c53030;"></i>月別販売情報</button>
-        <button class="dash-btn" onclick="openView('view-bulk-register')"><i class="fas fa-upload" style="color:#d69e2e;"></i>一括商品登録</button>
-        
-        <button class="dash-btn" onclick="openView('view-expense'); loadExpenseListData();"><i class="fas fa-file-invoice-dollar" style="color:#e53e3e;"></i>経費一覧</button>
-        
-        <button class="dash-btn" onclick="openView('view-manager-settings'); switchSettingTab('info');"><i class="fas fa-cogs" style="color:#4a5568;"></i>各種設定</button>
-      </div>
-    </div>
-  </div>
 
-  <div id="view-researcher-menu" class="view">
     <div class="content">
       <div class="dashboard-grid">
         <button class="dash-btn" onclick="openView('view-researcher'); loadResearcherData();"><i class="fas fa-search" style="color:#a855f7;"></i>リサーチリスト<span class="dash-dot" id="dash-dot-researcher-inner"></span></button>
