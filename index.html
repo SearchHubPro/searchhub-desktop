@@ -3432,7 +3432,7 @@ document.getElementById("regPurchaseUrl").value = "";
       }
     }
 
-    /// ② テーブルを描画（シートのA列〜G列をそのまま表示！）
+    // ② テーブルを描画（シートのA列〜G列をそのまま表示！）
     function renderBulkRegisterTable() {
       const tbody = document.getElementById('bulkRegisterBody');
       let html = '';
@@ -3440,17 +3440,25 @@ document.getElementById("regPurchaseUrl").value = "";
       globalBulkData.forEach(item => {
         html += `
         <tr id="bulk_row_${item.sku}" style="border-bottom: 1px solid #e2e8f0; background: #fff;">
-          <td style="padding: 10px; max-width: 200px; white-space: normal; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(item.title)}</td>
-          <td style="padding: 10px; font-weight: bold;">${escapeHtml(item.asin)}</td>
-          <td style="padding: 10px; font-family: monospace;">${escapeHtml(item.sku)}</td>
-          <td style="padding: 10px;">${escapeHtml(item.condition)}</td>
+          
+          <td style="padding: 12px 10px; max-width: 200px; white-space: normal; overflow: hidden; text-overflow: ellipsis; line-height: 1.4;">${escapeHtml(item.title)}</td>
+          
+          <td style="padding: 12px 10px; font-weight: bold; text-align: center; color: #1a365d;">${escapeHtml(item.asin)}</td>
+          
+          <td style="padding: 12px 10px; font-family: monospace; text-align: center; color: #4a5568;">${escapeHtml(item.sku)}</td>
+          
+          <td style="padding: 12px 10px; text-align: center; font-weight: bold; color: #2d3748;">${escapeHtml(item.condition)}</td>
+          
           <td style="padding: 10px; cursor: pointer; background: #ebf8ff; border: 1px dashed #90cdf4; max-width: 250px; white-space: normal;" onclick="openBulkDescModal('${item.sku}')">
-            <div id="bulk_desc_${item.sku}" style="font-size:11px;">${escapeHtml(item.desc)}</div>
+            <div id="bulk_desc_${item.sku}" style="font-size:11px; line-height: 1.4; color: #4a5568;">${escapeHtml(item.desc)}</div>
           </td>
-          <td style="padding: 10px; text-align: right; font-weight: bold;">${item.price}</td>
-          <td style="padding: 10px; max-width: 150px; white-space: normal;">${escapeHtml(item.ao)}</td>
-          <td style="padding: 10px; text-align: center;">
-            <button onclick="excludeBulkItem('${item.sku}')" style="background: #e53e3e; color: white; border: none; padding: 12px 16px; border-radius: 6px; font-weight: bold; cursor: pointer;">
+          
+          <td style="padding: 12px 10px; text-align: center; font-weight: bold; color: #4a5568;">${escapeHtml(item.price)}</td>
+          
+          <td style="padding: 12px 10px; text-align: center; font-weight: 900; font-size: 15px; color: #1a365d;">${escapeHtml(item.ao)}</td>
+          
+          <td style="padding: 12px 10px; text-align: center;">
+            <button onclick="excludeBulkItem('${item.sku}')" style="background: #e53e3e; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
               除外
             </button>
           </td>
