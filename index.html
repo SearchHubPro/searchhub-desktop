@@ -1119,8 +1119,8 @@
       <label>SearchHub Sniper 極のGASURL</label>
       <input type="url" id="cfgSniperUrl" placeholder="https://script.google.com/macros/.../exec">
       
-      <label style="margin-top:0; margin-bottom:2px; padding:0;">SearchHub : WatcherのGASURL</label>
-      <input type="url" id="cfg10SiteUrl" placeholder="https://script.google.com/macros/.../exec" style="margin-top:0;">
+      <label>SearchHub : WatcherのGASURL</label>
+      <input type="url" id="cfg10SiteUrl" placeholder="https://script.google.com/macros/.../exec">
 
       <label>SearchHub : ResearcherのGAS URL</label>
       <input type="url" id="cfgResearcherGasUrl" placeholder="https://script.google.com/macros/.../exec">
@@ -1129,6 +1129,7 @@
       
       <label>AmazonセラーID</label>
       <input type="text" id="cfgSellerId" placeholder="A1234567890XYZなど">
+      
       <div class="modal-actions">
         <button style="background:#e2e8f0; color:#4a5568;" onclick="closeConfig()">閉じる</button>
         <button style="background:#1a365d; color:white;" onclick="saveConfig()">設定を保存</button>
@@ -2240,12 +2241,13 @@ document.getElementById("regPurchaseUrl").value = "";
       
       const ssUrl = AppStorage.get("sh_ssurl", "");
       const researcherUrl = AppStorage.get("sh_researcher_url", "");
+      // 💡 ここも本来のウォッチャー（targetGasUrl）に戻す！
       let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
 
       btn.disabled = true; btn.innerHTML = "⌛ 登録中...";
       
       try {
-        const res = await fetch(targetGasUrl, {
+        const res = await fetch(targetGasUrl, { // 👈 targetGasUrl に戻した！
           method: 'POST',
           body: JSON.stringify({ 
             command: 'register', 
@@ -2574,29 +2576,29 @@ document.getElementById("regPurchaseUrl").value = "";
     let asinCopyIndex = 0; // コピーした件数を記憶
 
     // 1️⃣ GASから未精査データを取得
+   // 1️⃣ GASから未精査データを取得
     async function loadResearcherData() {
       const resDiv = document.getElementById('researcherResult');
       resDiv.innerHTML = '<div class="loading-spinner">⌛ リサーチsheetから候補を取得中...</div>';
       document.getElementById('resCount').innerText = "同期中...";
-      
-      const researcherUrl = AppStorage.get("sh_researcher_url", "");
-        // 💡 宛先を「ResearcherのGAS URL」専用に変更！
-        const researcherGasUrl = AppStorage.get("sh_researcher_gas_url", "");
-        
-        if (!researcherUrl || !researcherGasUrl) {
-          alert("⚙️ 設定から『ResearcherのシートURL』と『ResearcherのGAS URL』を登録してな！");
-          dropLabel.innerHTML = originalText;
-          return;
-        }
 
-        try {
-          const res = await fetch(researcherGasUrl, {  // 👈 ここも researcherGasUrl に変更
-          method: 'POST', 
+      const researcherUrl = AppStorage.get("sh_researcher_url", "");
+      // 💡 宛先を本来のウォッチャー（targetGasUrl）に戻す！
+      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+
+      if (!researcherUrl || !targetGasUrl) {
+        alert("⚙️ 設定から『ResearcherのシートURL』と『GAS URL』を登録してな！");
+        return;
+      }
+
+      try {
+        const res = await fetch(targetGasUrl, { // 👈 targetGasUrl に戻した！
+          method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ command: 'getResearcherData', ssUrl: researcherUrl }) 
+          body: JSON.stringify({ command: 'getResearcherData', ssUrl: researcherUrl })
         });
-        
-        // 💡 GASがエラー画面（HTML）を返してないかチェック！
+
+        // GASがエラー画面（HTML）を返してないかチェック！
         const text = await res.text();
         let json;
         try {
@@ -2613,7 +2615,6 @@ document.getElementById("regPurchaseUrl").value = "";
           resDiv.innerHTML = '<div class="card" style="color:#e53e3e; text-align:center;">❌ 取得失敗: ' + json.message + '</div>';
         }
       } catch(err) {
-        // 💡 エラーの「本当の理由」を画面に晒し上げる！！
         resDiv.innerHTML = `<div class="card" style="text-align:center;">
           <div style="color:#e53e3e; font-weight:bold; margin-bottom:8px;">❌ 通信エラーの正体</div>
           <div style="font-size:11px; color:#4a5568; background:#f8fafc; padding:8px; border-radius:6px; word-break:break-all;">${err.message}</div>
