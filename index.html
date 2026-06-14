@@ -825,7 +825,18 @@
   <div id="view-researcher" class="view">
     <div class="content">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <span style="font-size:12px; font-weight:bold; color:#4a5568;" id="resCount">候補を読み込み中...</span>
+        
+        <div style="display:flex; gap:12px; align-items:center;">
+          <span style="font-size:12px; font-weight:bold; color:#4a5568;" id="resCount">候補を読み込み中...</span>
+          
+          <label id="mini-drop-zone-keepa" style="background:#f8fafc; border: 2px dashed #a855f7; color:#4a5568; padding:4px 12px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer; display:flex; align-items:center; transition: all 0.2s;" 
+                 ondragover="handleDragOverKeepaMini(event)" 
+                 ondragleave="handleDragLeaveKeepaMini(event)" 
+                 ondrop="handleDropKeepaMini(event)">
+            <i class="fas fa-file-csv" style="margin-right: 6px; color:#a855f7;"></i> KeepaCSVを追加
+            <input type="file" style="display:none;" accept=".csv" onchange="processKeepaCSV(event.target.files[0])">
+          </label>
+        </div>
         <div style="display:flex; gap:4px;">
           <button onclick="copyAsins20()" style="background:#f7941d; color:white; border:none; padding:8px 12px; border-radius:6px; font-size:11px; font-weight:bold; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><i class="fas fa-copy"></i> ASIN20件コピー</button>
           <button onclick="removeCheckedItems()" style="background:#e53e3e; color:white; border:none; padding:8px 12px; border-radius:6px; font-size:11px; font-weight:bold; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><i class="fas fa-trash-alt"></i> チェック削除</button>
@@ -4526,37 +4537,30 @@ async function saveInfoSettingsView() {
     };
 
     // ==========================================
-    // 🚀 Keepa ドラッグ＆ドロップ 見た目制御
+    // 🚀 Keepa ミニドロップ枠の見た目制御
     // ==========================================
-    function handleDragOverKeepa(e) {
+    function handleDragOverKeepaMini(e) {
       e.preventDefault(); e.stopPropagation();
-      const zone = e.currentTarget;
-      zone.style.backgroundColor = '#faf5ff';
-      zone.style.borderColor = '#9f7aea';
-      zone.style.transform = 'scale(1.02)';
+      e.currentTarget.style.backgroundColor = '#faf5ff';
+      e.currentTarget.style.borderColor = '#9f7aea';
     }
 
-    function handleDragLeaveKeepa(e) {
+    function handleDragLeaveKeepaMini(e) {
       e.preventDefault(); e.stopPropagation();
-      const zone = e.currentTarget;
-      zone.style.backgroundColor = '#f8fafc';
-      zone.style.borderColor = '#a855f7';
-      zone.style.transform = 'scale(1)';
+      e.currentTarget.style.backgroundColor = '#f8fafc';
+      e.currentTarget.style.borderColor = '#a855f7';
     }
 
-    function handleDropKeepa(e) {
+    function handleDropKeepaMini(e) {
       e.preventDefault(); e.stopPropagation();
-      const zone = e.currentTarget;
-      zone.style.backgroundColor = '#f8fafc';
-      zone.style.borderColor = '#a855f7';
-      zone.style.transform = 'scale(1)';
+      e.currentTarget.style.backgroundColor = '#f8fafc';
+      e.currentTarget.style.borderColor = '#a855f7';
       
       const files = e.dataTransfer.files;
       if (files && files.length > 0) {
-        processKeepaCSV(files[0]); // 先ほど追加した抽出関数へ渡す！
+        processKeepaCSV(files[0]);
       }
     }
-
 
     // ==========================================
     // 🚀 Keepa CSV解析 ＆ GASへ自動リサーチ命令
@@ -4567,11 +4571,9 @@ async function saveInfoSettingsView() {
         return;
       }
 
-      const dropZone = document.getElementById('keepa-drop-zone-main');
-      const originalHtml = dropZone.innerHTML;
-      
-      // 処理中はドロップ枠の見た目を「解析中」に変える
-      dropZone.innerHTML = '<div style="padding:20px; font-weight:bold; color:#a855f7; text-align:center;"><i class="fas fa-spinner fa-spin" style="margin-right:8px;"></i>CSVを解析中...</div>';
+      const dropLabel = document.getElementById('mini-drop-zone-keepa');
+      const originalText = dropLabel.innerHTML;
+      dropLabel.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 6px; color:#a855f7;"></i> 解析中...';
 
       const reader = new FileReader();
       
@@ -4583,7 +4585,6 @@ async function saveInfoSettingsView() {
         // 🧠 "ASIN"やダブルクォーテーションを綺麗に掃除して抽出
         lines.forEach(line => {
           const cleanLine = line.replace(/["']/g, '').trim();
-          // ASINの基本ルール（10桁）に合致するものだけを拾い上げる
           if (cleanLine && cleanLine !== 'ASIN' && cleanLine.length === 10) {
             asins.push(cleanLine);
           }
@@ -4591,26 +4592,23 @@ async function saveInfoSettingsView() {
 
         if (asins.length === 0) {
           alert("⚠️ 有効なASINが見つからんかったで！");
-          dropZone.innerHTML = originalHtml;
+          dropLabel.innerHTML = originalText;
           return;
         }
 
-        // 最終確認
         if(!confirm(`📦 ${asins.length}件のASINを抽出したで！\nASIN検索sheetにセットして、自動リサーチを開始してもええか？`)) {
-          dropZone.innerHTML = originalHtml;
+          dropLabel.innerHTML = originalText;
           return;
         }
 
-        // GASへ送信中の見た目に変更
-        dropZone.innerHTML = '<div style="padding:20px; font-weight:bold; color:#a855f7; text-align:center;"><i class="fas fa-paper-plane" style="margin-right:8px;"></i>GASへ送信中...<br><span style="font-size:11px; color:#718096;">（安全装置チェック中）</span></div>';
+        dropLabel.innerHTML = '<i class="fas fa-paper-plane" style="margin-right: 6px; color:#a855f7;"></i> 送信中...';
 
-        // 宛先のURLを取得（ResearcherのシートURL と Watcher/SniperのGASURL）
         const researcherUrl = AppStorage.get("sh_researcher_url", "");
         let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
         
         if (!researcherUrl || !targetGasUrl) {
           alert("⚙️ 設定から『ResearcherのURL』と『GAS URL』を登録してな！");
-          dropZone.innerHTML = originalHtml;
+          dropLabel.innerHTML = originalText;
           return;
         }
 
@@ -4618,7 +4616,7 @@ async function saveInfoSettingsView() {
           const res = await fetch(targetGasUrl, {
             method: 'POST',
             body: JSON.stringify({
-              command: 'startKeepaAutoResearch', // 👈 GAS側で受け取るための合言葉
+              command: 'startKeepaAutoResearch',
               ssUrl: researcherUrl,
               asins: asins
             })
@@ -4627,17 +4625,14 @@ async function saveInfoSettingsView() {
           const json = await res.json();
           if (json.success) {
             alert(`✅ ${asins.length}件のASINをセットして、自動リサーチをスタートしたで！！\n（裏側で現場監督が走り出しました！）`);
-            // リストを最新状態に更新する
-            if (typeof loadResearcherData === 'function') loadResearcherData();
           } else {
-            // 🚨 ここでGAS側からの「安全装置（すでに稼働中やで！）」のエラーを受け取って表示！
+            // 🚨 ここでGAS側からの「安全装置（すでに稼働中やで！）」のエラーを受け取って表示
             alert(`❌ 自動リサーチ開始エラー:\n${json.message}`);
           }
         } catch (error) {
           alert("❌ 通信エラーが発生したわ。");
         } finally {
-          // 終わったらドロップ枠の見た目を元に戻す
-          dropZone.innerHTML = originalHtml;
+          dropLabel.innerHTML = originalText;
         }
       };
       
