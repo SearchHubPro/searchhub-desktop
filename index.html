@@ -617,14 +617,26 @@
         <table style="width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; white-space: nowrap; min-width: 800px;">
           <thead>
             <tr style="background: #edf2f7; border-bottom: 2px solid #cbd5e0;">
-              <th style="padding: 10px;">商品名</th>
-              <th style="padding: 10px;"><button onclick="copyBulkColumn('asin')" style="background:#4a5568; color:white; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; cursor:pointer; margin-bottom:4px;">ASINコピー</button><br>ASIN</th>
-              <th style="padding: 10px;"><button onclick="copyBulkColumn('sku')" style="background:#4a5568; color:white; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; cursor:pointer; margin-bottom:4px;">E列コピー</button><br>E列</th>
-              <th style="padding: 10px;"><button onclick="copyBulkColumn('condition')" style="background:#4a5568; color:white; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; cursor:pointer; margin-bottom:4px;">K列コピー</button><br>K列</th>
-              <th style="padding: 10px;"><button onclick="copyBulkColumn('desc')" style="background:#dd6b20; color:white; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; cursor:pointer; margin-bottom:4px;">L列コピー</button><br>L列 (クリックで編集)</th>
-              <th style="padding: 10px;"><button onclick="copyBulkColumn('price')" style="background:#4a5568; color:white; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; cursor:pointer; margin-bottom:4px;">AJ列コピー</button><br>AJ列</th>
-              <th style="padding: 10px;"><button onclick="copyBulkColumn('ao')" style="background:#4a5568; color:white; border:none; padding:4px 8px; border-radius:4px; font-weight:bold; cursor:pointer; margin-bottom:4px;">AO列コピー</button><br>AO列</th>
-              <th style="padding: 10px; text-align: center;">操作</th>
+              <th style="padding: 10px; color:#4a5568;">商品名</th>
+              <th style="padding: 8px;">
+                <button onclick="copyBulkColumn('asin')" style="background:#4a5568; color:white; border:none; padding:10px 8px; border-radius:6px; font-weight:bold; cursor:pointer; width:100%; font-size:12px; box-shadow:0 1px 2px rgba(0,0,0,0.1); transition:0.2s;">ASIN</button>
+              </th>
+              <th style="padding: 8px;">
+                <button onclick="copyBulkColumn('sku')" style="background:#4a5568; color:white; border:none; padding:10px 8px; border-radius:6px; font-weight:bold; cursor:pointer; width:100%; font-size:12px; box-shadow:0 1px 2px rgba(0,0,0,0.1); transition:0.2s;">SKU</button>
+              </th>
+              <th style="padding: 8px;">
+                <button onclick="copyBulkColumn('condition')" style="background:#4a5568; color:white; border:none; padding:10px 8px; border-radius:6px; font-weight:bold; cursor:pointer; width:100%; font-size:12px; box-shadow:0 1px 2px rgba(0,0,0,0.1); transition:0.2s;">商品の状態</button>
+              </th>
+              <th style="padding: 8px;">
+                <button onclick="copyBulkColumn('desc')" style="background:#dd6b20; color:white; border:none; padding:8px; border-radius:6px; font-weight:bold; cursor:pointer; width:100%; font-size:11px; box-shadow:0 1px 2px rgba(0,0,0,0.1); transition:0.2s;">提供条件に関する注記<br><span style="font-size:9px; font-weight:normal;">(セル押下で編集)</span></button>
+              </th>
+              <th style="padding: 8px;">
+                <button onclick="copyBulkColumn('price')" style="background:#4a5568; color:white; border:none; padding:8px; border-radius:6px; font-weight:bold; cursor:pointer; width:100%; font-size:11px; box-shadow:0 1px 2px rgba(0,0,0,0.1); transition:0.2s;">フルフィルメント<br>チャネルコード</button>
+              </th>
+              <th style="padding: 8px;">
+                <button onclick="copyBulkColumn('ao')" style="background:#4a5568; color:white; border:none; padding:10px 8px; border-radius:6px; font-weight:bold; cursor:pointer; width:100%; font-size:11px; box-shadow:0 1px 2px rgba(0,0,0,0.1); transition:0.2s;">商品の販売価格 JPY</button>
+              </th>
+              <th style="padding: 10px; text-align: center; color:#4a5568;">操作</th>
             </tr>
           </thead>
           <tbody id="bulkRegisterBody">
@@ -3429,9 +3441,23 @@ document.getElementById("regPurchaseUrl").value = "";
       tbody.innerHTML = html;
     }
 
-    // ③ 指定列のデータをエクセル用に縦にコピー（\n区切り）
-    function copyBulkColumn(colKey) {
-      if(globalBulkData.length === 0) return alert('データがありません！');
+    // 🔔 新機能：画面下にフワッと出て、自動で消えるスマートな通知（トースト）
+    window.showToast = function(msg) {
+      let toast = document.getElementById('sh-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'sh-toast';
+        toast.style.cssText = "position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:rgba(26,54,93,0.95); color:white; padding:12px 24px; border-radius:8px; font-weight:bold; font-size:14px; box-shadow:0 4px 10px rgba(0,0,0,0.3); z-index:10000; transition:opacity 0.3s; opacity:0; pointer-events:none; white-space:nowrap; text-align:center;";
+        document.body.appendChild(toast);
+      }
+      toast.innerText = msg;
+      toast.style.opacity = '1';
+      setTimeout(() => { toast.style.opacity = '0'; }, 2000); // 2秒で勝手に消える！
+    };
+
+    // ③ 指定列のデータをエクセル用に縦にコピー（\n区切り）アラート撤廃版！
+    window.copyBulkColumn = function(colKey) {
+      if(globalBulkData.length === 0) return showToast('❌ データがありません！');
 
       const rows = document.querySelectorAll('#bulkRegisterBody tr');
       let copyTextArr = [];
@@ -3452,11 +3478,12 @@ document.getElementById("regPurchaseUrl").value = "";
         }
       });
       
-      if(copyTextArr.length === 0) return alert('コピーする行がありません！');
+      if(copyTextArr.length === 0) return showToast('❌ コピーする行がありません！');
 
       const copyString = copyTextArr.join('\n'); // エクセルの縦列に貼れるように改行区切り
       navigator.clipboard.writeText(copyString).then(() => {
-        alert(`表示中の ${copyTextArr.length} 件のデータをコピーしました！\n空の在庫ファイルにペーストしてな！`);
+        // 💡 うっとうしい alert() を廃止して、スマート通知を呼び出す！
+        showToast(`✅ ${copyTextArr.length} 件のデータをコピーしました！`);
       });
     }
 
