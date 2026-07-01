@@ -2959,8 +2959,8 @@ document.getElementById("regPurchaseUrl").value = "";
         let listToggleBtn = '';
         if (item.status === '納品待ち' || item.status === '出品中') {
            listToggleBtn = `<button onclick="toggleListing('${item.no}', '${item.status}', this)" style="background:${item.status === '納品待ち' ? '#f0fff4' : '#fff5f5'}; color:${item.status === '納品待ち' ? '#2f855a' : '#c53030'}; border:1px solid ${item.status === '納品待ち' ? '#c6f6d5' : '#feb2b2'}; padding:3px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer; width:100%;"><i class="fas ${item.status === '納品待ち' ? 'fa-arrow-up' : 'fa-arrow-down'}"></i> ${item.status === '納品待ち' ? '出品' : '取消'}</button>`;
-        }else if (item.status === '返金済み') {
-           // 💡 追加：返金済みの時だけ、下に「再出品」ボタンを出す！
+        }else if (item.status === '返金済み' || item.status === '補填済み') {
+           // 💡 修正：返金済みと「補填済み」の時に「再出品」ボタンを出す！
            listToggleBtn = `<button onclick="relistLedgerItem('${item.no}', this)" style="background:#ebf8ff; color:#2b6cb0; border:1px solid #bee3f8; padding:3px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer; width:100%; margin-top:4px;"><i class="fas fa-redo"></i> 再出品</button>`;
         }
 
