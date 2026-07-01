@@ -1258,6 +1258,29 @@
     let monthlyCurrentPage = 1;
     let currentMonthlyTab = 'monthly-purchase';
 
+    let globalAllOwnInventory = {}; // 💡 アプリが在庫を記憶する箱
+
+    // 💡 アプリの裏側でこっそり全在庫リストを取得する関数
+    async function loadOwnInventoryBackground() {
+      const ssUrl = AppStorage.get("sh_ssurl", "");
+      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+      if (!ssUrl || !targetGasUrl) return;
+      
+      try {
+        const res = await fetch(targetGasUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ command: 'getAllOwnInventoryCounts', ssUrl: ssUrl })
+        });
+        const json = await res.json();
+        if (json.success) {
+          globalAllOwnInventory = json.counts; // 🚀 取得したリストを箱にぶち込む！
+        }
+      } catch(e) {
+        console.log("裏側での在庫データ取得に失敗しました", e);
+      }
+    }
+
     let homeChartInstance = null;
     let currentHomeMode = 'turnover';
     let currentHomeMonth = '';
@@ -1659,6 +1682,8 @@ fetchConditionList();
       
       if(urlSniper || url10) { fetchDashboardData(); }
 
+      loadOwnInventoryBackground(); // 👈 💡 これを追加！起動時に裏で在庫を取得！
+
       setTimeout(() => { hideLoader(); }, 8000);
       if(!urlSniper && !url10) {
         setTimeout(() => { hideLoader(); document.getElementById("lastUpdate").innerText = "設定未完了"; openConfig(); }, 1500);
@@ -2046,35 +2071,13 @@ fetchConditionList();
         let imgHtml = '<div style="width:160px; height:160px; background:#f8fafc; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:14px; color:#999; border:1px solid #e2e8f0; flex-shrink:0;">No Img</div>';
         if (imageUrl) imgHtml = `<div style="width:160px; height:160px; background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:8px; flex-shrink:0; box-shadow:0 2px 4px rgba(0,0,0,0.05);"><img src="${imageUrl}" style="width:100%; height:100%; object-fit:contain;"></div>`;
 
-        // 🚀 【完全謝罪＆最強ハイブリッド版】自在庫（現在庫）の個数を計算するロジック
+        // 🚀 【通信待ちゼロ！完全爆速版】自在庫（現在庫）の個数を計算するロジック
         let ownInventoryCount = 0;
-
-        // ① まず、あんたの言う通り「出品中」がちゃんと取れてた元の仕組み（A案）を復活！
-        if (typeof globalInventoryData !== 'undefined' && globalInventoryData.length > 0) {
-          ownInventoryCount = globalInventoryData.filter(item => item.asin === asin).length;
-        }
-
-        // ② その上で、納品待ちも含めた「完全な数」を裏側から確実に取りに行く（B案）
-        const ssUrl = AppStorage.get("sh_ssurl", "");
-        let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+        let targetAsin = String(asin).trim().toUpperCase();
         
-        if (ssUrl && targetGasUrl) {
-          try {
-            const countRes = await fetch(targetGasUrl, {
-              method: 'POST',
-              headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // 🛡️ 通信エラーを絶対防ぐ呪文
-              body: JSON.stringify({ command: 'checkOwnInventoryCount', ssUrl: ssUrl, asin: asin })
-            });
-            const countJson = await countRes.json();
-            
-            // 💡 GASからの取得に成功した場合のみ、納品待ちも含めた「正確な数」で上書きする！
-            if (countJson.success) {
-              ownInventoryCount = countJson.count;
-            }
-          } catch(e) {
-            console.log("GAS通信エラー: ", e);
-            // エラーになっても、①で取得した「出品中の数」は最低限表示される！
-          }
+        // 💡 アプリ起動時に裏で読み込んでおいたリストの箱から、一瞬で取り出すだけ！
+        if (globalAllOwnInventory && globalAllOwnInventory[targetAsin]) {
+          ownInventoryCount = globalAllOwnInventory[targetAsin];
         }
 
         // 💡 2. 左・中・右 の完璧な横並びレイアウト！（PC版最適化）
