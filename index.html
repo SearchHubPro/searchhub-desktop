@@ -43,7 +43,6 @@
     .discord-on { color: #5865F2 !important; }
     .discord-off { color: #4a5568 !important; opacity: 0.4; }
 
-    /* 💡 各画面の親箱。余計な隙間を生ませない */
     .view { display: none; padding-top: 0 !important; margin-top: 0 !important; }
     .view.active { display: block; animation: fadeIn 0.3s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -56,7 +55,6 @@
     .file-btn { display: inline-block; background: #3182ce; color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
     .file-btn:hover { background: #2b6cb0; }
     
-    /* 💡 TOP画面のグラフ：ちゃんと上に隙間(16px)をあける */
     .graph-card { background: #ffffff; border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin: 16px; border: 1px solid #d5d9d9; min-height: 290px; }
     .home-top-tabs { display: flex; justify-content: flex-start; gap: 4px; margin-bottom: 12px; border-bottom: 1px solid #d5d9d9; }
     .home-tab-btn { padding: 8px 12px; border: none; font-size: 13px; font-weight: bold; background: transparent; color: #565959; cursor: pointer; border-bottom: 3px solid transparent; flex: 1; text-align: center; }
@@ -74,18 +72,21 @@
     .home-month-btn { padding: 6px 16px; border: 1px solid #d5d9d9; border-radius: 20px; background: #ffffff; color: #0f1111; font-size: 12px; white-space: nowrap; cursor: pointer; }
     .home-month-btn.active { background: #f3fbfd; border-color: #008296; color: #008296; font-weight: bold; }
 
-    .turnover-container { display: grid; grid-template-columns: 1.2fr 1fr; gap: 10px; align-items: center; height: 210px; }
-    .metrics-list { display: flex; flex-direction: column; gap: 6px; }
+    .turnover-container { display: block; padding-bottom: 16px; }
+    .turnover-row-1 { display: flex; flex-direction: column; gap: 16px; width: 100%; align-items: center; }
+    .keepa-token-panel { width: 100%; box-sizing: border-box; }
+
+    .metrics-list { display: flex; flex-direction: column; gap: 6px; justify-content: center; }
     .metric-item { display: flex; justify-content: space-between; font-size: 11px; color: #565959; border-bottom: 1px dashed #eee; padding-bottom: 2px; }
     .metric-value { font-weight: bold; color: #0f1111; }
     .metric-value.profit { color: #E47911; }
     .chart-box { position: relative; display: flex; justify-content: center; align-items: center; }
-    .circular-chart { width: 140px; height: 140px; }
+    .circular-chart { width: 120px; height: 120px; }
     .circle-bg { fill: none; stroke: #e6e6e6; stroke-width: 3.8; }
     .circle-base { fill: none; stroke: #008296; stroke-width: 3.8; stroke-linecap: round; transition: stroke-dasharray 1s ease-out; }
     .circle-over { fill: none; stroke: #E47911; stroke-width: 3.8; stroke-linecap: round; transition: stroke-dasharray 1s ease-out 0.5s; }
-    .percentage { position: absolute; font-family: 'Roboto', sans-serif; font-size: 28px; font-weight: 900; color: #0f1111; display: flex; flex-direction: column; align-items: center; }
-    .percentage span { font-size: 10px; color: #565959; margin-top: -5px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+    .percentage { position: absolute; font-family: 'Roboto', sans-serif; font-size: 24px; font-weight: 900; color: #0f1111; display: flex; flex-direction: column; align-items: center; }
+    .percentage span { font-size: 9px; color: #565959; margin-top: -3px; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
 
     .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px 20px 16px; }
     .dash-btn { position: relative; background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 10px; text-align: center; color: #1a365d; font-weight: bold; font-size: 13px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: transform 0.1s; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; white-space: nowrap;}
@@ -94,7 +95,6 @@
     .dash-dot { display: none; position: absolute; top: -6px; right: -6px; width: 16px; height: 16px; background-color: #e53e3e; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3); border: 2px solid white; }
     .dash-dot.active { display: block; animation: pop 0.3s ease; }
 
-    /* 💡 Sniper・Watcherのタブ：marginを完全に消して黒線にピタッと合体！ */
     .tabs-container { background-color: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: calc(52px + env(safe-area-inset-top)); z-index: 99; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 !important; padding: 0 !important; }
     .tabs-container::-webkit-scrollbar { display: none; }
     .tabs { display: flex; white-space: nowrap; padding: 0 4px; margin: 0 !important; }
@@ -104,7 +104,6 @@
     .tab-dot.active { display: block; animation: pop 0.3s ease; }
     @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
     
-    /* 💡 その他の画面コンテンツ：上に隙間（16px）をちゃんとあける！ */
     .content { padding: 16px 12px 12px 12px; min-height: 80vh; transform: translate3d(0,0,0); }   
     .tab-content { display: none; }
     .tab-content.active { display: block; }
@@ -178,12 +177,11 @@
         margin: 0 !important;
         padding: 0 !important;
       }
-      .header h1 { font-size: 22px; } /* 💡 追加：PC版ではタイトルをさらに大きく！ */
+      .header h1 { font-size: 22px; }
       .view {
         background-color: transparent; 
       }
       
-      /* 💡 PC版：Researcherなど「その他」の画面は上にちゃんと隙間（24px）をあける！ */
       .content {
         padding: 24px; 
       }
@@ -237,43 +235,47 @@
       .loading-spinner, .no-data { grid-column: 1 / -1; }
       #amazonResult > .card { max-width: 800px; margin: 0 auto !important; }
 
-      /* 💡 PC版：TOP画面のグラフも上に隙間(24px)をあける！ */
       .graph-card { margin: 24px; }
-      /* 👇 PC版の回転率パネルの空間をリッチに埋める魔法 👇 */
       .turnover-container { 
-        grid-template-columns: 1.8fr 1fr; /* 左のデータエリアを広く取る */
-        max-width: 950px; 
+        display: block; /* 悪さをしていた2カラム分割を解除！ */
+        max-width: 1050px; 
         margin: 0 auto; 
-        gap: 60px; 
         padding: 10px 0;
+      }
+      .turnover-row-1 {
+        display: grid !important;
+        /* トークン(160px)とグラフ(220px)の幅を固定し、残りの広い空間をデータに全振り！ */
+        grid-template-columns: 160px 1fr 220px !important; 
+        gap: 32px; 
+        width: 100%;
+        align-items: stretch;
       }
       .metrics-list {
         display: grid !important;
-        grid-template-columns: 1fr 1fr; /* 6つのデータを自動で2列に分割！ */
-        gap: 16px 32px; /* 縦横の隙間をゆったり取る */
-        background: #f8fafc; /* 薄い背景色をつけて独立したパネル風に */
-        padding: 24px;
+        grid-template-columns: 1fr 1fr; 
+        gap: 12px 24px; 
+        background: #f8fafc; 
+        padding: 20px 30px;
         border-radius: 12px;
         border: 1px solid #e2e8f0;
+        align-content: center;
       }
       .metrics-list > div:first-child {
-        grid-column: 1 / -1; /* タイトルは2列ぶち抜きで配置 */
+        grid-column: 1 / -1; 
         font-size: 15px !important;
         border-bottom: 2px solid #cbd5e0;
         padding-bottom: 8px;
         margin-bottom: 4px;
       }
       .metric-item {
-        font-size: 13px !important; /* PCでは文字を少し大きく */
+        font-size: 13px !important; 
         border-bottom: 1px dashed #cbd5e0;
       }
       .circular-chart {
-        width: 180px !important; /* 円グラフも一回り大きくして迫力UP */
+        width: 180px !important; 
         height: 180px !important;
       }
-      /* 👆 ここまで 👆 */
       
-      /* 💡 PC版：タブの部分はスクロール追従位置も含めて強制的に隙間ゼロで黒線にくっつける！ */
       .tabs-container { top: 55px !important; box-shadow: 0 -30px 0 #ffffff !important; margin: 0 !important; padding: 0 !important; }
       .tabs { justify-content: flex-start; padding: 0 24px; border-bottom: 2px solid #e2e8f0; margin: 0 !important; }
       .tab-btn { padding: 16px 24px; font-size: 14px; cursor: pointer; margin: 0; }
@@ -284,14 +286,12 @@
       button:hover { opacity: 0.9; }
     }
 
-    /* 💡 スマホの時は完全に隠す */
     .pc-dashboard-top-wrapper { display: none; }
 
-    /* 💡 PC版：グリッドで左に支払予測、右に在庫パネルを並べる！ */
     @media (min-width: 768px) {
       .pc-dashboard-top-wrapper {
         display: grid;
-        grid-template-columns: 320px 1fr; /* 左を320px固定、右を残り全部の幅にする */
+        grid-template-columns: 320px 1fr; 
         gap: 24px;
         margin: 0 24px 24px 24px;
       }
@@ -335,7 +335,7 @@
   <div id="view-home" class="view active">
     <div class="graph-card">
       <div class="home-top-tabs">
-        <button class="home-tab-btn active" onclick="switchHomeTab('turnover', this)">回転率</button>
+        <button class="home-tab-btn active" onclick="switchHomeTab('turnover', this)">ダッシュボード</button>
         <button class="home-tab-btn" onclick="switchHomeTab('purchase', this)">仕入</button>
         <button class="home-tab-btn" onclick="switchHomeTab('sales', this)">販売</button>
       </div>
@@ -485,6 +485,10 @@
         <button class="dash-btn" onclick="openView('view-researcher'); loadResearcherData();"><i class="fas fa-search" style="color:#a855f7;"></i>リサーチリスト<span class="dash-dot" id="dash-dot-researcher-inner"></span></button>
         
         <button class="dash-btn" onclick="openView('view-purchase-list')"><i class="fas fa-shopping-cart" style="color:#dd6b20;"></i>仕入れリスト</button>
+
+        <button class="dash-btn" onclick="downloadYahooCsv()">
+          <i class="fas fa-download" style="color:#3182ce;"></i>ヤフオクチェッカー<span class="dash-dot" id="dash-dot-yahoo"></span>
+        </button>
       </div>
     </div>
   </div>
@@ -529,7 +533,6 @@
         </select>
       </div>
 
-      <!-- 💡 切替用CSS ＆ 余白削減・見出し固定のCSS -->
       <style>
         #ledgerTable .sales-data { display: none; }
         #ledgerTable.sales-mode .sales-data { display: block; }
@@ -661,13 +664,13 @@
             </tr>
           </thead>
           <tbody id="bulkRegisterBody">
-            <tr><td colspan="8" style="text-align:center; padding:30px; color:#a0aec0;">「データを取得」ボタンを押してな！</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  <div id="view-purchase-list" class="view">
+            <tr><td colspan="8" style="text-align:center; padding:30px; color:#a0aec0;">「データを取得」ボタンを押してな！</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div id="view-purchase-list" class="view">
     <div class="content">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <span style="font-size:12px; font-weight:bold; color:#4a5568;" id="purchaseListCount">待機中...</span>
@@ -1113,6 +1116,9 @@
 
       <label>SearchHub Sniper 極のURL</label>
       <input type="url" id="cfgSniperSheetUrl" placeholder="https://docs.google.com/spreadsheets/...">
+
+      <label>ヤフオクチェッカーのシートURL</label>
+      <input type="url" id="cfgYahooUrl" placeholder="https://docs.google.com/spreadsheets/...">
       
       <div style="border-top:1px dashed #ccc; margin:15px 0 5px 0; padding-top:5px;"></div>
       
@@ -1296,6 +1302,119 @@
       sales: { labelBar: '日別 販売額', labelLine: '累計 確定利益', barColor: '#008296', lineColor: '#38a169' }
     };
 
+    // 💡 追加：Keepaトークン確認ロジック
+    window.checkKeepaToken = async function() {
+      const btn = document.getElementById('keepa-token-refresh-btn');
+      const valEl = document.getElementById('keepa-token-val');
+      const apiKey = AppStorage.get("sh_keepa", "");
+      
+      if (!apiKey) {
+        if(valEl) valEl.innerText = "未設定";
+        return;
+      }
+      
+      if(btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; btn.disabled = true; }
+      if(valEl) valEl.innerText = "...";
+      
+      try {
+        // 1トークン消費する裏技（ダミーのASINを叩く）
+        const res = await fetch(`https://api.keepa.com/product?key=${apiKey}&domain=5&asin=B000000000&stats=1`);
+        const json = await res.json();
+        if (json.tokensLeft !== undefined) {
+          if(valEl) valEl.innerText = json.tokensLeft;
+        } else {
+          if(valEl) valEl.innerText = "ｴﾗｰ";
+        }
+      } catch(e) {
+        if(valEl) valEl.innerText = "通信❌";
+      } finally {
+        if(btn) { btn.innerHTML = '<i class="fas fa-sync-alt"></i> 更新'; btn.disabled = false; }
+      }
+    };
+
+    // 💡 追加：ヤフオクチェッカー（赤バッチ点灯）ロジック
+    let globalYahooAsins = [];
+
+    window.checkYahooStatus = async function() {
+      const targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+      
+      // 🚨 ここをResearcherではなく、ヤフオク専用のURLを呼び出すように変更！
+      const yahooSsUrl = AppStorage.get("sh_yahoo_sheet_url", ""); 
+      
+      if (!targetGasUrl || !yahooSsUrl) return;
+
+      try {
+        const res = await fetch(targetGasUrl, {
+          method: 'POST',
+          // 💡 これで正しいヤフオクのURLがGAS（ウォッチャー）に飛ぶ！
+          body: JSON.stringify({ command: 'getYahooCheckerData', ssUrl: yahooSsUrl }) 
+        });
+        const json = await res.json();
+        
+        if (json.success && json.data) {
+          globalYahooAsins = json.data;
+          const currentAsinStr = globalYahooAsins.join(',');
+          const savedAsinStr = AppStorage.get("sh_yahoo_last_asins", "");
+
+          const dotYahoo = document.getElementById('dash-dot-yahoo');
+          const dotRes = document.getElementById('dash-dot-researcher');
+          const dotResInner = document.getElementById('dash-dot-researcher-inner');
+
+          // DL状態と違っていてデータが存在する場合のみ赤バッチを点灯
+          if (globalYahooAsins.length > 0 && currentAsinStr !== savedAsinStr) {
+            if(dotYahoo) dotYahoo.classList.add('active');
+            if(dotRes) dotRes.classList.add('active');
+            if(dotResInner) dotResInner.classList.add('active');
+          } else {
+            if(dotYahoo) dotYahoo.classList.remove('active');
+            // 注意：他の機能（Researcher連携等）で赤丸を操作している箇所と競合しないよう、ここでは消すだけ
+            if(dotRes) dotRes.classList.remove('active');
+            if(dotResInner) dotResInner.classList.remove('active');
+          }
+        }
+      } catch(e) {
+        console.log("Yahoo checker error", e);
+      }
+    };
+
+    // 💡 追加：ヤフオクチェッカー CSVダウンロードロジック
+    window.downloadYahooCsv = function() {
+      if (globalYahooAsins.length === 0) {
+        showToast("⚠️ ダウンロードできる新着ASINがありません！");
+        return;
+      }
+      
+      const csvContent = "ASIN\n" + globalYahooAsins.join("\n");
+      
+      // 記憶させて既読状態にする
+      const currentAsinStr = globalYahooAsins.join(',');
+      AppStorage.set("sh_yahoo_last_asins", currentAsinStr);
+      
+      // バッチを即座に消す
+      const dotYahoo = document.getElementById('dash-dot-yahoo');
+      const dotRes = document.getElementById('dash-dot-researcher');
+      const dotResInner = document.getElementById('dash-dot-researcher-inner');
+      if(dotYahoo) dotYahoo.classList.remove('active');
+      if(dotRes) dotRes.classList.remove('active');
+      if(dotResInner) dotResInner.classList.remove('active');
+
+      const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      
+      const today = new Date();
+      const dateStr = today.getFullYear() + String(today.getMonth() + 1).padStart(2, '0') + String(today.getDate()).padStart(2, '0');
+      a.download = 'ヤフオク厳選ASIN_' + dateStr + '.csv';
+      
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      showToast("✅ CSVをダウンロードし、既読状態にしました！");
+    };
+
     async function fetchDashboardData() {
       const ssUrl = AppStorage.get("sh_ssurl", "");
       // 💡 追加：スマホに保存されてるResearcherのURLも引っ張り出す
@@ -1387,6 +1506,10 @@
             }
           }
         }
+
+        // 💡 ダッシュボード同期成功後にヤフオクチェッカーの状態もチェックする
+        checkYahooStatus();
+
       } catch(err) {
         console.error("Dashboard fetch error", err);
       }
@@ -1400,29 +1523,38 @@
         monthArea.style.display = 'none';
         contentArea.innerHTML = `
           <div class="turnover-container">
-            <div class="metrics-list">
-              <div style="font-size: 12px; font-weight: bold; margin-bottom: 4px; color: #008296;">本日(${homeData.today.dateStr})の仕入れ</div>
-              <div class="metric-item"><span>仕入れ額</span><span class="metric-value">¥${homeData.today.buyAmount.toLocaleString()}</span></div>
-              <div class="metric-item"><span>想定販売額</span><span class="metric-value">¥${homeData.today.estSales.toLocaleString()}</span></div>
-              <div class="metric-item"><span>仕入れ個数</span><span class="metric-value">${homeData.today.buyCount} 個</span></div>
-              <div class="metric-item"><span>想定利益額</span><span class="metric-value profit">¥${homeData.today.estProfit.toLocaleString()}</span></div>
-              <div class="metric-item"><span>利益率</span><span class="metric-value">${homeData.today.profitRate} %</span></div>
-              <div class="metric-item"><span>ROI</span><span class="metric-value">${homeData.today.roi} %</span></div>
-            </div>
-            <div class="chart-box">
-              <svg viewBox="0 0 36 36" class="circular-chart">
-                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                <path class="circle-base" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                <path class="circle-over" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-              </svg>
-              <div class="percentage">
-                <span id="turnoverText" style="font-size: 28px; color: #0f1111; margin:0;">0%</span>
-                <span>回転率</span>
+            <div class="turnover-row-1">
+              <div class="keepa-token-panel" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:12px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                <div style="font-size:11px; font-weight:bold; color:#4a5568; margin-bottom:8px;">Keepaトークン</div>
+                <div id="keepa-token-val" style="font-size:28px; font-weight:900; color:#3182ce; margin-bottom:8px;">--</div>
+                <button id="keepa-token-refresh-btn" onclick="checkKeepaToken()" style="background:#e2e8f0; color:#4a5568; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-sync-alt"></i> 更新</button>
+              </div>
+              <div class="metrics-list">
+                <div style="font-size: 12px; font-weight: bold; margin-bottom: 4px; color: #008296;">本日(${homeData.today.dateStr})の仕入れ</div>
+                <div class="metric-item"><span>仕入れ額</span><span class="metric-value">¥${homeData.today.buyAmount.toLocaleString()}</span></div>
+                <div class="metric-item"><span>想定販売額</span><span class="metric-value">¥${homeData.today.estSales.toLocaleString()}</span></div>
+                <div class="metric-item"><span>仕入れ個数</span><span class="metric-value">${homeData.today.buyCount} 個</span></div>
+                <div class="metric-item"><span>想定利益額</span><span class="metric-value profit">¥${homeData.today.estProfit.toLocaleString()}</span></div>
+                <div class="metric-item"><span>利益率</span><span class="metric-value">${homeData.today.profitRate} %</span></div>
+                <div class="metric-item"><span>ROI</span><span class="metric-value">${homeData.today.roi} %</span></div>
+              </div>
+              <div class="chart-box">
+                <svg viewBox="0 0 36 36" class="circular-chart">
+                  <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path class="circle-base" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path class="circle-over" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                </svg>
+                <div class="percentage">
+                  <span id="turnoverText" style="font-size: 24px; color: #0f1111; margin:0;">0%</span>
+                  <span>回転率</span>
+                </div>
               </div>
             </div>
           </div>
         `;
         setTimeout(() => { drawTurnoverChart(homeData.turnover.value); }, 50);
+        // タブ切り替え時に自動でトークンも取得
+        checkKeepaToken();
       } else {
         monthArea.style.display = 'flex';
         const config = chartConfig[currentHomeMode];
@@ -1700,7 +1832,7 @@
       try { globalViewedLinks = JSON.parse(AppStorage.get("sh_viewed_links", "[]")); } catch(e) { globalViewedLinks = []; }
       updateDiscordBtnUI(AppStorage.get("sh_discord_toggle", "off"));
       setupSwipe();
-fetchConditionList();
+      fetchConditionList();
       
       // 🚀 ステップ①: 初期のタイトルを「SearchHub Mobile」に
       document.getElementById('headerTitle').innerText = 'SearchHub Pro';
@@ -1710,6 +1842,7 @@ fetchConditionList();
       if(urlSniper || url10) { fetchDashboardData(); }
 
       loadOwnInventoryBackground(); // 👈 💡 これを追加！起動時に裏で在庫を取得！
+      checkYahooStatus(); // ロード時にヤフオクの状態もチェック！
 
       setTimeout(() => { hideLoader(); }, 8000);
       if(!urlSniper && !url10) {
@@ -1726,6 +1859,7 @@ fetchConditionList();
         if (urlSniper || url10) {
           syncPatrolData();
           fetchDashboardData(); 
+          checkYahooStatus(); // 戻ってきたときにもヤフオク状態チェック！
         }
       }
     });
@@ -1796,6 +1930,9 @@ fetchConditionList();
       document.getElementById("cfgResearcherGasUrl").value = AppStorage.get("sh_researcher_gas_url", "");
       document.getElementById("cfgWatcherSheetUrl").value = AppStorage.get("sh_watcher_sheet_url", ""); 
       document.getElementById("cfgSniperSheetUrl").value = AppStorage.get("sh_sniper_sheet_url", ""); 
+      document.getElementById("cfgYahooUrl").value = AppStorage.get("sh_yahoo_sheet_url", ""); 
+      
+      document.getElementById("cfgSniperUrl").value = AppStorage.get("sh_sniper_url", "");
       
       document.getElementById("cfgSniperUrl").value = AppStorage.get("sh_sniper_url", ""); 
       document.getElementById("cfg10SiteUrl").value = AppStorage.get("sh_tensite_url", "");
@@ -1813,6 +1950,9 @@ fetchConditionList();
       AppStorage.set("sh_researcher_gas_url", document.getElementById("cfgResearcherGasUrl").value.trim());
       AppStorage.set("sh_watcher_sheet_url", document.getElementById("cfgWatcherSheetUrl").value.trim()); 
       AppStorage.set("sh_sniper_sheet_url", document.getElementById("cfgSniperSheetUrl").value.trim()); 
+      AppStorage.set("sh_yahoo_sheet_url", document.getElementById("cfgYahooUrl").value.trim()); 
+      
+      AppStorage.set("sh_sniper_url", document.getElementById("cfgSniperUrl").value.trim());
       
       AppStorage.set("sh_sniper_url", document.getElementById("cfgSniperUrl").value.trim()); 
       AppStorage.set("sh_tensite_url", document.getElementById("cfg10SiteUrl").value.trim());
@@ -2127,19 +2267,16 @@ fetchConditionList();
                 <span style="background:${sizeTier==='大型'?'#e53e3e':'#07A27B'}; color:white; padding:6px 14px; font-size:15px; font-weight:bold; border-radius:6px;">${sizeTier}</span>
                 <button onclick="openView('view-history'); document.getElementById('historyAsin').value='${asin}'; searchHistory();" style="background:#4285f4; color:white; border:none; padding:8px 16px; border-radius:6px; font-weight:bold; font-size:14px; cursor:pointer; display:flex; align-items:center; gap:6px; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fas fa-history"></i> 販売履歴リサーチ</button>
                 
-                <!-- 💡 PC版：規制確認ボタンを「販売履歴リサーチ」の右へ移動！ -->
                 <a href="https://sellercentral.amazon.co.jp/product-search/search?q=${asin}" target="_blank" style="background:#e53e3e; color:#fff; text-decoration:none; padding:8px 16px; border-radius:6px; font-size:14px; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.1); display:flex; align-items:center; gap:6px;"><i class="fas fa-exclamation-triangle"></i> 規制確認</a>
               </div>
             </div>
             
-            <!-- 💡 PC版：右パネル（中古出品と自在庫を縦並び） -->
             <div style="display:flex; flex-direction:column; align-items:stretch; gap:16px; flex-shrink:0; width:120px;">
               <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:#f0f4ff; border:2px solid #dbeafe; padding:16px 4px; border-radius:12px; box-shadow:inset 0 2px 4px rgba(0,0,0,0.05);">
                 <span style="font-size:13px; color:#4a72b2; font-weight:bold; margin-bottom:6px;">中古出品</span>
                 <span style="font-size:32px; font-weight:900; color:#2c4c8f; line-height:1;">${usedOffers}</span>
               </div>
               
-              <!-- 💡 自在庫パネル（PC用サイズ：1個以上で赤色に変身） -->
               <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:${ownInventoryCount > 0 ? '#fff5f5' : '#f0fff4'}; border:2px solid ${ownInventoryCount > 0 ? '#fed7d7' : '#c6f6d5'}; padding:16px 4px; border-radius:12px; box-shadow:${ownInventoryCount > 0 ? '0 2px 6px rgba(229,62,62,0.2)' : 'inset 0 2px 4px rgba(0,0,0,0.05)'};">
                 <span style="font-size:13px; color:${ownInventoryCount > 0 ? '#c53030' : '#2f855a'}; font-weight:bold; margin-bottom:6px;">自在庫</span>
                 <span style="font-size:32px; font-weight:900; color:${ownInventoryCount > 0 ? '#e53e3e' : '#22543d'}; line-height:1;">${ownInventoryCount}</span>
@@ -2917,6 +3054,7 @@ document.getElementById("regPurchaseUrl").value = "";
         ptrEl.innerText = "⌛ 更新中...";
         syncPatrolData(); 
         fetchDashboardData();
+        checkYahooStatus();
         setTimeout(() => { ptrEl.style.top = '-50px'; }, 2000); 
       } else {
         ptrEl.style.top = '-50px'; 
@@ -2975,996 +3113,932 @@ document.getElementById("regPurchaseUrl").value = "";
       if(table) table.classList.toggle('sales-mode');
     };
 
+
+   function renderLedgerList() {
+  const kw = document.getElementById('ledger-search-kw').value.toLowerCase().trim();
+  const statusFilter = document.getElementById('ledger-status-filter').value;
+  const resDiv = document.getElementById('ledgerResult');
+  const countEl = document.getElementById('ledgerCount');
+
+  let filtered = globalLedgerData.filter(item => {
+    const matchKw = !kw || 
+      (item.title && item.title.toLowerCase().includes(kw)) || 
+      (item.asin && item.asin.toLowerCase().includes(kw)) ||
+      (item.sku && item.sku.toLowerCase().includes(kw)) || 
+      (item.supplier && item.supplier.toLowerCase().includes(kw));
+    const matchStatus = (statusFilter === 'ALL') || (item.status && item.status.includes(statusFilter));
+    return matchKw && matchStatus;
+  });
+
+  countEl.innerText = `表示中: ${filtered.length}件`;
+
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1;
+  if (ledgerCurrentPage > totalPages) ledgerCurrentPage = totalPages;
+  if (ledgerCurrentPage < 1) ledgerCurrentPage = 1;
+  const start = (ledgerCurrentPage - 1) * ITEMS_PER_PAGE;
+  const pageItems = filtered.slice(start, start + ITEMS_PER_PAGE);
+
+  if (pageItems.length === 0) {
+    resDiv.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#4a5568; font-weight:bold; padding:20px;">条件に合う商品が見つかりません。</td></tr>';
+    document.getElementById('ledger-pagination').style.display = 'none';
+    return;
+  }
+
+  let html = '';
+
+  pageItems.forEach((item) => {
+    let statusTag = '<span style="background:#fefcbf; color:#b7791f; border:1px solid #f6e05e; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">🚚 納品待ち</span>';
+    if (item.status === '出品中') statusTag = '<span style="background:#ebf8ff; color:#2b6cb0; border:1px solid #bee3f8; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">📦 出品中</span>';
+    if (item.status === '販売済') statusTag = '<span style="background:#f0fff4; color:#2f855a; border:1px solid #c6f6d5; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">💰 販売済</span>';
+    if (item.status === '返金済み') statusTag = '<span style="background:#fff5f5; color:#c53030; border:1px solid #feb2b2; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">🔄 返金済み</span>';
+    if (item.status === '補填済み') statusTag = '<span style="background:#faf5ff; color:#6b46c1; border:1px solid #d6bcfa; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">🛡️ 補填済み</span>';
+
+    const b_price = Number(item.buyPrice || 0);
+    const b_exp = Number(item.expense || 0);
+    const est_price = Number(item.estPrice || 0);
+    const expectedFee = (item.estFbaFee > 0 || item.estAmazonFee > 0) ? (item.estFbaFee + item.estAmazonFee) : (Math.floor(est_price * 0.10) + 450);
+    const expectedProfit = est_price > 0 ? (est_price - b_price - b_exp - expectedFee) : 0;
+    const estProfitColor = (expectedProfit >= 0) ? "#07A27B" : "#e53e3e";
+    const actualProfitColor = (Number(item.profit || 0) >= 0) ? "#07A27B" : "#e53e3e";
+
+    let listToggleBtn = '';
+    if (item.status === '納品待ち' || item.status === '出品中') {
+       listToggleBtn = `<button onclick="toggleListing('${item.no}', '${item.status}', this)" style="background:${item.status === '納品待ち' ? '#f0fff4' : '#fff5f5'}; color:${item.status === '納品待ち' ? '#2f855a' : '#c53030'}; border:1px solid ${item.status === '納品待ち' ? '#c6f6d5' : '#feb2b2'}; padding:3px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer; width:100%;"><i class="fas ${item.status === '納品待ち' ? 'fa-arrow-up' : 'fa-arrow-down'}"></i> ${item.status === '納品待ち' ? '出品' : '取消'}</button>`;
+    } else if (item.status === '返金済み' || item.status === '補填済み') {
+       listToggleBtn = `<button onclick="relistLedgerItem('${item.no}', this)" style="background:#ebf8ff; color:#2b6cb0; border:1px solid #bee3f8; padding:3px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer; width:100%; margin-top:4px;"><i class="fas fa-redo"></i> 再出品</button>`;
+    }
+
+    let urlIcon = item.url ? `<a href="${item.url}" target="_blank" style="color:#3182ce; margin-left:4px;"><i class="fas fa-external-link-alt"></i></a>` : '';
     
+    let defHtml = `
+      <div style="font-weight:bold; color:#2d3748; margin-bottom:2px; font-size:11px;">${escapeHtml(item.supplier) || '-'}${urlIcon}</div>
+      <div style="font-size:10px; color:#4a5568; font-weight:bold; font-family:monospace;">ID: ${escapeHtml(item.itemId) || '-'}</div>
+    `;
 
-    function renderLedgerList() {
-      const kw = document.getElementById('ledger-search-kw').value.toLowerCase().trim();
-      const statusFilter = document.getElementById('ledger-status-filter').value;
-      const resDiv = document.getElementById('ledgerResult');
-      const countEl = document.getElementById('ledgerCount');
-
-      let filtered = globalLedgerData.filter(item => {
-        const matchKw = !kw || 
-          (item.title && item.title.toLowerCase().includes(kw)) || 
-          (item.asin && item.asin.toLowerCase().includes(kw)) ||
-          (item.sku && item.sku.toLowerCase().includes(kw)) || 
-          (item.supplier && item.supplier.toLowerCase().includes(kw));
-        const matchStatus = (statusFilter === 'ALL') || (item.status && item.status.includes(statusFilter));
-        return matchKw && matchStatus;
-      });
-
-      countEl.innerText = `表示中: ${filtered.length}件`;
-
-      const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1;
-      if (ledgerCurrentPage > totalPages) ledgerCurrentPage = totalPages;
-      if (ledgerCurrentPage < 1) ledgerCurrentPage = 1;
-      const start = (ledgerCurrentPage - 1) * ITEMS_PER_PAGE;
-      const pageItems = filtered.slice(start, start + ITEMS_PER_PAGE);
-
-      if (pageItems.length === 0) {
-        resDiv.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#4a5568; font-weight:bold; padding:20px;">条件に合う商品が見つかりません。</td></tr>';
-        document.getElementById('ledger-pagination').style.display = 'none';
-        return;
-      }
-
-      // 💡 余計な見出し（thead）を消して、中身だけを生成するように戻したで！
-      let html = '';
-
-      pageItems.forEach((item) => {
-        let statusTag = '<span style="background:#fefcbf; color:#b7791f; border:1px solid #f6e05e; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">🚚 納品待ち</span>';
-        if (item.status === '出品中') statusTag = '<span style="background:#ebf8ff; color:#2b6cb0; border:1px solid #bee3f8; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">📦 出品中</span>';
-        if (item.status === '販売済') statusTag = '<span style="background:#f0fff4; color:#2f855a; border:1px solid #c6f6d5; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">💰 販売済</span>';
-        if (item.status === '返金済み') statusTag = '<span style="background:#fff5f5; color:#c53030; border:1px solid #feb2b2; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">🔄 返金済み</span>';
-        if (item.status === '補填済み') statusTag = '<span style="background:#faf5ff; color:#6b46c1; border:1px solid #d6bcfa; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold; display:inline-block; margin-bottom:4px;">🛡️ 補填済み</span>';
-
-        const b_price = Number(item.buyPrice || 0);
-        const b_exp = Number(item.expense || 0);
-        const est_price = Number(item.estPrice || 0);
-        // 👇 GASから送られてきた正確な手数料を使う！昔のデータ用（0円の時）に今までの計算も保険で残しとく
-        const expectedFee = (item.estFbaFee > 0 || item.estAmazonFee > 0) ? (item.estFbaFee + item.estAmazonFee) : (Math.floor(est_price * 0.10) + 450);
-        const expectedProfit = est_price > 0 ? (est_price - b_price - b_exp - expectedFee) : 0;
-        const estProfitColor = (expectedProfit >= 0) ? "#07A27B" : "#e53e3e";
-        const actualProfitColor = (Number(item.profit || 0) >= 0) ? "#07A27B" : "#e53e3e";
-
-        let listToggleBtn = '';
-        if (item.status === '納品待ち' || item.status === '出品中') {
-           listToggleBtn = `<button onclick="toggleListing('${item.no}', '${item.status}', this)" style="background:${item.status === '納品待ち' ? '#f0fff4' : '#fff5f5'}; color:${item.status === '納品待ち' ? '#2f855a' : '#c53030'}; border:1px solid ${item.status === '納品待ち' ? '#c6f6d5' : '#feb2b2'}; padding:3px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer; width:100%;"><i class="fas ${item.status === '納品待ち' ? 'fa-arrow-up' : 'fa-arrow-down'}"></i> ${item.status === '納品待ち' ? '出品' : '取消'}</button>`;
-        }else if (item.status === '返金済み' || item.status === '補填済み') {
-           // 💡 修正：返金済みと「補填済み」の時に「再出品」ボタンを出す！
-           listToggleBtn = `<button onclick="relistLedgerItem('${item.no}', this)" style="background:#ebf8ff; color:#2b6cb0; border:1px solid #bee3f8; padding:3px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer; width:100%; margin-top:4px;"><i class="fas fa-redo"></i> 再出品</button>`;
-        }
-
-        let urlIcon = item.url ? `<a href="${item.url}" target="_blank" style="color:#3182ce; margin-left:4px;"><i class="fas fa-external-link-alt"></i></a>` : '';
-        
-        let defHtml = `
-          <div style="font-weight:bold; color:#2d3748; margin-bottom:2px; font-size:11px;">${escapeHtml(item.supplier) || '-'}${urlIcon}</div>
-          <div style="font-size:10px; color:#4a5568; font-weight:bold; font-family:monospace;">ID: ${escapeHtml(item.itemId) || '-'}</div>
-        `;
-
-        html += `
-        <tr style="border-bottom: 1px solid #f1f5f9;">
-          <td style="padding: 12px 8px; text-align: center; vertical-align: middle;">
-            ${statusTag}<br>
-            ${listToggleBtn}
-          </td>
-          
-          <td style="padding: 12px 8px; vertical-align: middle;">${defHtml}</td>
-          
-          <td style="padding: 12px 8px; vertical-align: middle;">
-            <div style="font-size:11px; color:#2d3748; font-weight:bold; margin-bottom:2px;">${item.buyDate || '-'}</div>
-            <div style="font-size:10px; color:#4a5568; font-weight:bold;">No.${item.no || '-'}</div>
-          </td>
-          
-          <td style="padding: 12px 8px; vertical-align: middle; max-width: 250px;">
-            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:bold; color:#1a365d; margin-bottom:4px; font-size:12px;" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</div>
-            <span style="font-family:monospace; background:#e0f2fe; color:#0369a1; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold;">${escapeHtml(item.asin)}</span>
-            <span style="font-size:10px; color:#4a5568; font-weight:bold; margin-left:4px;">SKU: ${escapeHtml(item.sku)}</span>
-          </td>
-
-          <td style="padding: 12px 8px; font-weight:bold; color:#2d3748; text-align: center; vertical-align: middle;">
-            <div class="default-data" style="font-size:12px;">${escapeHtml(item.condition) || '-'}</div>
-            <div class="sales-data" style="font-size:10px;">
-              <div style="margin-bottom:2px; color:#2b6cb0;"><i class="far fa-calendar-alt"></i> ${item.sellDate || '-'}</div>
-              <div style="font-family:monospace; color:#2d3748; font-weight:bold;">${escapeHtml(item.orderNum) || '-'}</div>
-            </div>
-          </td>
-
-          <td style="padding: 12px 8px; text-align: right; vertical-align: middle;">
-            <div class="default-data">
-              <div style="font-size:13px; font-weight:bold; color:#4a5568; margin-bottom:2px;">仕入: ¥${Number(b_price).toLocaleString()}</div>
-              <div style="font-size:13px; font-weight:bold; color:#3182ce;">予定: ¥${Number(est_price).toLocaleString()}</div>
-            </div>
-            <div class="sales-data" style="font-size:11px;">
-              <div style="font-size:13px; font-weight:bold; color:#1a365d; margin-bottom:2px;">売上: ¥${Number(item.sales || 0).toLocaleString()}</div>
-              <div style="color:#4a5568; font-weight:bold; margin-bottom:2px;">送料: ${item.shipping < 0 ? '' : '-'}¥${Math.abs(Number(item.shipping || 0)).toLocaleString()}</div>
-              <div style="color:#e53e3e; font-weight:bold;">手料: ${item.fee < 0 ? '' : '-'}¥${Math.abs(Number(item.fee || 0)).toLocaleString()}</div>
-            </div>
-          </td>
-
-          <td style="padding: 12px 8px; text-align: right; vertical-align: middle; font-weight: 900; font-size:14px;">
-            <div class="default-data" style="color: ${estProfitColor};">
-              ¥${expectedProfit.toLocaleString()}
-              <div style="font-size:9px; color:#718096; margin-top:2px; font-weight:bold;">(目安)</div>
-            </div>
-            <div class="sales-data" style="color: ${actualProfitColor};">
-              ¥${Number(item.profit || 0).toLocaleString()}
-            </div>
-          </td>
-
-          <td style="padding: 12px 8px; text-align: center; vertical-align: middle;">
-            <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
-              <button onclick="toggleLedgerView()" style="background:#4a5568; color:white; border:none; padding:4px; border-radius:4px; cursor:pointer; font-size:10px; width:100%; font-weight:bold;"><i class="fas fa-exchange-alt"></i> 切替</button>
-              <div style="display:flex; gap:4px; width:100%;">
-                <button onclick="openLedgerEdit('${item.no}')" style="background:#3182ce; color:white; border:none; padding:4px 0; border-radius:4px; cursor:pointer; flex:1; font-size:10px;"><i class="fas fa-edit"></i></button>
-                <a href="https://www.amazon.co.jp/dp/${item.asin}" target="_blank" style="background:#dd6b20; color:white; padding:4px 0; border-radius:4px; text-decoration:none; flex:1; display:flex; align-items:center; justify-content:center; font-size:10px;"><i class="fab fa-amazon"></i></a>
-              </div>
-            </div>
-          </td>
-        </tr>
-        `;
-      });
+    html += `
+    <tr style="border-bottom: 1px solid #f1f5f9;">
+      <td style="padding: 12px 8px; text-align: center; vertical-align: middle;">
+        ${statusTag}<br>
+        ${listToggleBtn}
+      </td>
       
-      resDiv.innerHTML = html;
-
-      document.getElementById('ledger-page-info').innerText = `${ledgerCurrentPage} / ${totalPages} ページ`;
-      document.getElementById('ledger-btn-prev').disabled = (ledgerCurrentPage === 1);
-      document.getElementById('ledger-btn-next').disabled = (ledgerCurrentPage === totalPages);
-      document.getElementById('ledger-pagination').style.display = (totalPages > 1) ? 'flex' : 'none';
-    }
-      // ==========================================
-    // 🚀 ドラッグ＆ドロップ ファイル取り込み機能
-    // ==========================================
-    function handleDragOver(e) {
-      e.preventDefault(); e.stopPropagation();
-      document.getElementById('drop-zone').classList.add('dragover');
-    }
-
-    function handleDragLeave(e) {
-      e.preventDefault(); e.stopPropagation();
-      document.getElementById('drop-zone').classList.remove('dragover');
-    }
-
-    function handleDrop(e) {
-      e.preventDefault(); e.stopPropagation();
-      document.getElementById('drop-zone').classList.remove('dragover');
+      <td style="padding: 12px 8px; vertical-align: middle;">${defHtml}</td>
       
-      const files = e.dataTransfer.files;
-      if (files && files.length > 0) processFile(files[0]);
-    }
-
-    function handleFileSelect(e) {
-      const files = e.target.files;
-      if (files && files.length > 0) processFile(files[0]);
-    }
-
-    // ==========================================
-    // 🚀 ドラッグ＆ドロップ ファイル取り込み機能（完全修正版）
-    // ==========================================
-    function processFile(file) {
-      const dropLabel = document.getElementById('mini-drop-zone');
-      const originalText = dropLabel.innerHTML;
-      dropLabel.innerHTML = '⌛ 処理中...'; 
-
-      const reader = new FileReader();
+      <td style="padding: 12px 8px; vertical-align: middle;">
+        <div style="font-size:11px; color:#2d3748; font-weight:bold; margin-bottom:2px;">${item.buyDate || '-'}</div>
+        <div style="font-size:10px; color:#4a5568; font-weight:bold;">No.${item.no || '-'}</div>
+      </td>
       
-      reader.onload = async function(e) {
-        let text = e.target.result;
-        
-        // 💡 欠陥②を解消：カンマをタブに変換しつつ、不要な「"」を完全に消し去る！
-        if (file.name.toLowerCase().endsWith('.csv')) {
-          let tsv = "";
-          let inQuote = false;
-          for (let i = 0; i < text.length; i++) {
-            let c = text[i];
-            if (c === '"') { 
-              inQuote = !inQuote; 
-              // 🚨 ダブルクォーテーション自体は残さず消去！
-            } 
-            else if (c === ',' && !inQuote) { 
-              tsv += '\t'; 
-            } 
-            else { 
-              tsv += c; 
-            }
-          }
-          text = tsv;
-        }
+      <td style="padding: 12px 8px; vertical-align: middle; max-width: 250px;">
+        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:bold; color:#1a365d; margin-bottom:4px; font-size:12px;" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</div>
+        <span style="font-family:monospace; background:#e0f2fe; color:#0369a1; padding:2px 4px; border-radius:4px; font-size:10px; font-weight:bold;">${escapeHtml(item.asin)}</span>
+        <span style="font-size:10px; color:#4a5568; font-weight:bold; margin-left:4px;">SKU: ${escapeHtml(item.sku)}</span>
+      </td>
 
-        const ssUrl = AppStorage.get("sh_ssurl", "");
-        let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-        
-        if (!ssUrl || !targetGasUrl) {
-           alert('❌ 設定からManagerのURLとGAS URLを登録してな！');
-           dropLabel.innerHTML = originalText;
-           return;
-        }
+      <td style="padding: 12px 8px; font-weight:bold; color:#2d3748; text-align: center; vertical-align: middle;">
+        <div class="default-data" style="font-size:12px;">${escapeHtml(item.condition) || '-'}</div>
+        <div class="sales-data" style="font-size:10px;">
+          <div style="margin-bottom:2px; color:#2b6cb0;"><i class="far fa-calendar-alt"></i> ${item.sellDate || '-'}</div>
+          <div style="font-family:monospace; color:#2d3748; font-weight:bold;">${escapeHtml(item.orderNum) || '-'}</div>
+        </div>
+      </td>
 
-        try {
-          const res = await fetch(targetGasUrl, {
-            method: 'POST',
-            body: JSON.stringify({ 
-              command: 'uploadReport', 
-              ssUrl: ssUrl, 
-              fileName: file.name,
-              content: text 
-            })
-          });
-          const json = await res.json();
-          
-          if (json.success) {
-            alert('✅ 取り込み完了！マネージャーシートに反映されました！');
-            // 💡 帳簿をリロード
-            loadLedgerData(); 
-            // 💡 【追加】経費一覧のデータも裏側で最新にリロードしておく！
-            if (typeof loadExpenseListData === 'function') loadExpenseListData();
-          } else {
-            alert('❌ GAS側でエラーが起きたで！\n\n' + json.message);
-          }
-        } catch(err) {
-          alert('❌ 通信エラーが発生したわ。\n' + err.message);
-        }
-        dropLabel.innerHTML = originalText;
-      };
-      
-      // 💡 欠陥①を解消：AmazonのレポートはCSVもTXTも「Shift_JIS」なので、強制的にShift_JISで読む！
-      reader.readAsText(file, 'Shift_JIS'); 
-    }
+      <td style="padding: 12px 8px; text-align: right; vertical-align: middle;">
+        <div class="default-data">
+          <div style="font-size:13px; font-weight:bold; color:#4a5568; margin-bottom:2px;">仕入: ¥${Number(b_price).toLocaleString()}</div>
+          <div style="font-size:13px; font-weight:bold; color:#3182ce;">予定: ¥${Number(est_price).toLocaleString()}</div>
+        </div>
+        <div class="sales-data" style="font-size:11px;">
+          <div style="font-size:13px; font-weight:bold; color:#1a365d; margin-bottom:2px;">売上: ¥${Number(item.sales || 0).toLocaleString()}</div>
+          <div style="color:#4a5568; font-weight:bold; margin-bottom:2px;">送料: ${item.shipping < 0 ? '' : '-'}¥${Math.abs(Number(item.shipping || 0)).toLocaleString()}</div>
+          <div style="color:#e53e3e; font-weight:bold;">手料: ${item.fee < 0 ? '' : '-'}¥${Math.abs(Number(item.fee || 0)).toLocaleString()}</div>
+        </div>
+      </td>
 
-    // --- 販売管理画面用の小型ドラッグ＆ドロップ処理 ---
-    function handleDragOverMini(e) {
-      e.preventDefault(); e.stopPropagation();
-      e.currentTarget.style.backgroundColor = '#ebf8ff';
-      e.currentTarget.style.borderColor = '#3182ce';
-    }
+      <td style="padding: 12px 8px; text-align: right; vertical-align: middle; font-weight: 900; font-size:14px;">
+        <div class="default-data" style="color: ${estProfitColor};">
+          ¥${expectedProfit.toLocaleString()}
+          <div style="font-size:9px; color:#718096; margin-top:2px; font-weight:bold;">(目安)</div>
+        </div>
+        <div class="sales-data" style="color: ${actualProfitColor};">
+          ¥${Number(item.profit || 0).toLocaleString()}
+        </div>
+      </td>
 
-    function handleDragLeaveMini(e) {
-      e.preventDefault(); e.stopPropagation();
-      e.currentTarget.style.backgroundColor = '#f8fafc';
-      e.currentTarget.style.borderColor = '#cbd5e0';
-    }
+      <td style="padding: 12px 8px; text-align: center; vertical-align: middle;">
+        <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
+          <button onclick="toggleLedgerView()" style="background:#4a5568; color:white; border:none; padding:4px; border-radius:4px; cursor:pointer; font-size:10px; width:100%; font-weight:bold;"><i class="fas fa-exchange-alt"></i> 切替</button>
+          <div style="display:flex; gap:4px; width:100%;">
+            <button onclick="openLedgerEdit('${item.no}')" style="background:#3182ce; color:white; border:none; padding:4px 0; border-radius:4px; cursor:pointer; flex:1; font-size:10px;"><i class="fas fa-edit"></i></button>
+            <a href="https://www.amazon.co.jp/dp/${item.asin}" target="_blank" style="background:#dd6b20; color:white; padding:4px 0; border-radius:4px; text-decoration:none; flex:1; display:flex; align-items:center; justify-content:center; font-size:10px;"><i class="fab fa-amazon"></i></a>
+          </div>
+        </div>
+      </td>
+    </tr>
+    `;
+  });
+  
+  resDiv.innerHTML = html;
 
-    function handleDropMini(e) {
-      e.preventDefault(); e.stopPropagation();
-      e.currentTarget.style.backgroundColor = '#f8fafc';
-      e.currentTarget.style.borderColor = '#cbd5e0';
-      
-      const files = e.dataTransfer.files;
-      if (files && files.length > 0) {
-        processFile(files[0]); // 既存のファイル処理関数へ渡す
-      }
-    }
-   function openAmazonReports() {
-      // 2つのURLを開く
-      const win1 = window.open('https://sellercentral.amazon.co.jp/order-reports-and-feeds/reports/allOrders#', '_blank');
-      const win2 = window.open('https://sellercentral.amazon.co.jp/payments/reports-repository/ref=xx_rrepo_dnav_xx', '_blank');
-      
-      // もしブラウザにブロックされて開けなかった場合の警告
-      if (!win1 || !win2) {
-        alert("⚠️ ブラウザのポップアップブロックが作動しました！\n\n画面上部の「URLバー（アドレスバー）」の右端に出ている【✖️マーク】をクリックして、「ポップアップを常に許可する」に設定してからもう一度押してな！");
-      }
-    }
-
-    // 📦 出品ボタンのトグル通信処理
-    async function toggleListing(no, currentStatus, btnElement) {
-      const nextState = (currentStatus === '納品待ち') ? true : false; // 納品待ちなTRUE、出品中ならFALSEにする
-      const originalText = btnElement.innerHTML;
-      btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-      btnElement.disabled = true;
-      
-      const ssUrl = AppStorage.get("sh_ssurl", "");
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-      
-      try {
-        const res = await fetch(targetGasUrl, {
-          method: 'POST',
-          body: JSON.stringify({ command: 'toggleListing', ssUrl: ssUrl, no: no, isListed: nextState })
-        });
-        const json = await res.json();
-        if (json.success) {
-          loadLedgerData(); // 成功したら帳簿をリロードして画面更新
-        } else {
-          alert("❌ 変更失敗: " + json.message);
-          btnElement.innerHTML = originalText; btnElement.disabled = false;
-        }
-      } catch(e) {
-        alert("❌ 通信エラーが発生しました");
-        btnElement.innerHTML = originalText; btnElement.disabled = false;
-      }
-    }
-
-    // 🔄 返金済み商品を「納品待ち」として複製する通信処理
-    async function relistLedgerItem(no, btnElement) {
-      if(!confirm(`No.${no} の商品を「納品待ち」として再出品リストに追加しますか？\n（コンディションと商品説明は引き継がれます）`)) return;
-      
-      const originalText = btnElement.innerHTML;
-      btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-      btnElement.disabled = true;
-      
-      const ssUrl = AppStorage.get("sh_ssurl", "");
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-      
-      try {
-        const res = await fetch(targetGasUrl, {
-          method: 'POST',
-          body: JSON.stringify({ command: 'relistLedgerItem', ssUrl: ssUrl, no: no })
-        });
-        const json = await res.json();
-        if (json.success) {
-          alert("✅ 再出品データ（納品待ち）を帳簿の末尾に追加したで！");
-          loadLedgerData(); // 成功したら帳簿をリロードして画面更新
-        } else {
-          alert("❌ 再出品失敗: " + json.message);
-          btnElement.innerHTML = originalText; btnElement.disabled = false;
-        }
-      } catch(e) {
-        alert("❌ 通信エラーが発生しました");
-        btnElement.innerHTML = originalText; btnElement.disabled = false;
-      }
-    }
-
-
-    // ✏️ 編集画面を開く処理（プルダウン対応版）
-    async function openLedgerEdit(no) {
-      const item = globalLedgerData.find(i => String(i.no).trim() === String(no).trim());
-      if (!item) {
-        alert("⚠️ 編集するデータが見つかりません (No: " + no + ")\n一度「最新を取得」ボタンを押してみてな！");
-        return;
-      }
-      
-      document.getElementById('ledgerEditModal').style.display = 'flex';
-      document.getElementById('edit_asin').value = item.asin || '';
-      document.getElementById('original_no').value = item.no || '';
-
-      // 💡 もし仕入先リストがまだ空っぽなら、このタイミングでGASから取得する
-      if (typeof window.globalSupplierData === 'undefined' || window.globalSupplierData.length === 0) {
-        const ssUrl = AppStorage.get("sh_ssurl", "");
-        let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-        if (ssUrl && targetGasUrl) {
-          try {
-            const res = await fetch(targetGasUrl, { method: 'POST', body: JSON.stringify({ command: 'getSuppliers', ssUrl: ssUrl }) });
-            const json = await res.json();
-            if (json.success && json.data) window.globalSupplierData = json.data;
-          } catch(e) {}
-        }
-      }
-
-      // 💡 プルダウンの中身を作る
-      const supSelect = document.getElementById('edit_supplier');
-      if (supSelect && window.globalSupplierData) {
-        supSelect.innerHTML = '<option value="">ーー 未設定 ーー</option>';
-        let isExist = false;
-        window.globalSupplierData.forEach(s => {
-          supSelect.innerHTML += `<option value="${s}">${s}</option>`;
-          if (item.supplier === s) isExist = true;
-        });
-        // もし「情報sheet」にない昔の手入力データがあれば、特別に選択肢に追加しておく
-        if (item.supplier && !isExist) {
-          supSelect.innerHTML += `<option value="${item.supplier}">${item.supplier} (手入力)</option>`;
-        }
-      }
-
-      document.getElementById('edit_no').value = item.no || '';
-      document.getElementById('edit_buyDate').value = item.buyDate || '';
-      document.getElementById('edit_supplier').value = item.supplier || '';
-      document.getElementById('edit_title').value = item.title || '';
-      document.getElementById('edit_model').value = item.model || '';
-      document.getElementById('edit_sku').value = item.sku || '';
-      document.getElementById('edit_condition').value = item.condition || '';
-      document.getElementById('edit_itemId').value = item.itemId || '';
-      document.getElementById('edit_description').value = item.description || '';
-      document.getElementById('edit_buyPrice').value = item.buyPrice || 0;
-      document.getElementById('edit_expense').value = item.expense || 0;
-      document.getElementById('edit_estPrice').value = item.estPrice || 0;
-    }
-
-    // 🗑️ 【新規追加】帳簿データを削除する処理
-    async function deleteLedgerItem() {
-      if(!confirm("本当にこの商品を削除してもよろしいですか？\n※一括商品登録シートにデータがある場合はそれも連動して削除されます。")) return;
-      
-      const no = document.getElementById('edit_no').value;
-      const btn = document.getElementById('deleteLedgerBtn');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = "⌛ 削除中...";
-      btn.disabled = true;
-
-      const ssUrl = AppStorage.get("sh_ssurl", "");
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-
-      try {
-        const res = await fetch(targetGasUrl, {
-          method: 'POST',
-          body: JSON.stringify({ command: 'deleteLedgerItem', ssUrl: ssUrl, no: no })
-        });
-        const json = await res.json();
-        
-        if (json.success) {
-          document.getElementById('ledgerEditModal').style.display = 'none';
-          loadLedgerData(); // リストを最新に更新
-        } else {
-          alert("❌ 削除失敗: " + json.message);
-        }
-      } catch(e) {
-        alert("❌ 通信エラーが発生しました");
-      }
-      
-      btn.innerHTML = originalText;
-      btn.disabled = false;
-    }
-
-    // 💾 編集データをGASに保存する処理
-    async function saveLedgerEdit() {
-      const btn = document.getElementById('saveLedgerBtn');
-      const originalText = btn.innerText;
-      btn.innerText = "⌛ 保存中...";
-      btn.disabled = true;
-      
-      const ssUrl = AppStorage.get("sh_ssurl", "");
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-      
-      const payload = {
-        originalNo: document.getElementById('original_no').value,
-        no: document.getElementById('edit_no').value,
-        buyDate: document.getElementById('edit_buyDate').value,
-        supplier: document.getElementById('edit_supplier').value,
-        title: document.getElementById('edit_title').value,
-        model: document.getElementById('edit_model').value,
-        sku: document.getElementById('edit_sku').value,
-        condition: document.getElementById('edit_condition').value,
-        itemId: document.getElementById('edit_itemId').value,
-        description: document.getElementById('edit_description').value,
-        buyPrice: Number(document.getElementById('edit_buyPrice').value),
-        expense: Number(document.getElementById('edit_expense').value),
-        estPrice: Number(document.getElementById('edit_estPrice').value)
-      };
-      
-      try {
-        const res = await fetch(targetGasUrl, {
-          method: 'POST',
-          body: JSON.stringify({ command: 'updateLedgerItem', ssUrl: ssUrl, data: payload })
-        });
-        const json = await res.json();
-        if (json.success) {
-          document.getElementById('ledgerEditModal').style.display = 'none';
-          loadLedgerData(); // 更新できたらリロード
-        } else {
-          alert("❌ 保存失敗: " + json.message);
-        }
-      } catch (e) {
-        alert("❌ 通信エラーが発生しました");
-      }
-      btn.innerText = originalText;
-      btn.disabled = false;
-    }
-
-// 📦 情報sheetからコンディションと説明を取得してセットする
-    let globalConditionData = [];
-
-    async function fetchConditionList() {
-      const ssUrl = AppStorage.get("sh_ssurl", "");
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-      if (!ssUrl || !targetGasUrl) return;
-
-      try {
-        const res = await fetch(targetGasUrl, { method: 'POST', body: JSON.stringify({ command: 'getConditions', ssUrl: ssUrl }) });
-        const json = await res.json();
-        if (json.success && json.data) {
-          globalConditionData = json.data;
-          const select = document.getElementById("edit_condition");
-          
-          // 💡 ここを変更！ただの「選択してください」やなくて「空欄に戻す」役割を持たせる
-          select.innerHTML = '<option value="">ーー 空欄に戻す ーー</option>';
-          
-          globalConditionData.forEach(c => {
-            select.innerHTML += `<option value="${c.name}">${c.name}</option>`;
-          });
-        }
-      } catch(err) { console.log("コンディション取得エラー"); }
-    }
-
-    // ✏️ コンディションを選んだ時に商品説明を自動入力する
-    function applyConditionDescription() {
-      const selectedName = document.getElementById("edit_condition").value;
-      const descInput = document.getElementById("edit_description");
-      
-      // 🚀 【追加】もし「空欄に戻す」を選んだら、下の説明文も強制的に消し去る！
-      if (selectedName === "") {
-        descInput.value = "";
-        return;
-      }
-      
-      const found = globalConditionData.find(c => c.name === selectedName);
-      if (found && found.desc) {
-        descInput.value = found.desc;
-      }
-    }
+  document.getElementById('ledger-page-info').innerText = `${ledgerCurrentPage} / ${totalPages} ページ`;
+  document.getElementById('ledger-btn-prev').disabled = (ledgerCurrentPage === 1);
+  document.getElementById('ledger-btn-next').disabled = (ledgerCurrentPage === totalPages);
+  document.getElementById('ledger-pagination').style.display = (totalPages > 1) ? 'flex' : 'none';
+}
 
 // ==========================================
-    // 🚀 一括商品登録 機能のJSコード
-    // ==========================================
-    let globalBulkData = [];
+// 🚀 ドラッグ＆ドロップ ファイル取り込み機能
+// ==========================================
+function handleDragOver(e) {
+  e.preventDefault(); e.stopPropagation();
+  document.getElementById('drop-zone').classList.add('dragover');
+}
 
-    // ① GASから「一括登録用（出品待ち）」のデータを取得
-    async function loadBulkRegisterData() {
-      const tbody = document.getElementById('bulkRegisterBody');
-      const loading = document.getElementById('bulkLoading');
-      
-      const ssUrl = AppStorage.get("sh_ssurl", "");
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-      
-      if (!ssUrl || !targetGasUrl) {
-        return alert("⚙️設定からManagerのURLとGAS URLを登録してな！");
+function handleDragLeave(e) {
+  e.preventDefault(); e.stopPropagation();
+  document.getElementById('drop-zone').classList.remove('dragover');
+}
+
+function handleDrop(e) {
+  e.preventDefault(); e.stopPropagation();
+  document.getElementById('drop-zone').classList.remove('dragover');
+  
+  const files = e.dataTransfer.files;
+  if (files && files.length > 0) processFile(files[0]);
+}
+
+function handleFileSelect(e) {
+  const files = e.target.files;
+  if (files && files.length > 0) processFile(files[0]);
+}
+
+function processFile(file) {
+  const dropLabel = document.getElementById('mini-drop-zone');
+  const originalText = dropLabel.innerHTML;
+  dropLabel.innerHTML = '⌛ 処理中...'; 
+
+  const reader = new FileReader();
+  
+  reader.onload = async function(e) {
+    let text = e.target.result;
+    
+    if (file.name.toLowerCase().endsWith('.csv')) {
+      let tsv = "";
+      let inQuote = false;
+      for (let i = 0; i < text.length; i++) {
+        let c = text[i];
+        if (c === '"') { 
+          inQuote = !inQuote; 
+        } 
+        else if (c === ',' && !inQuote) { 
+          tsv += '\t'; 
+        } 
+        else { 
+          tsv += c; 
+        }
       }
+      text = tsv;
+    }
 
-      tbody.innerHTML = '';
-      loading.style.display = 'block';
+    const ssUrl = AppStorage.get("sh_ssurl", "");
+    let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+    
+    if (!ssUrl || !targetGasUrl) {
+       alert('❌ 設定からManagerのURLとGAS URLを登録してな！');
+       dropLabel.innerHTML = originalText;
+       return;
+    }
 
+    try {
+      const res = await fetch(targetGasUrl, {
+        method: 'POST',
+        body: JSON.stringify({ 
+          command: 'uploadReport', 
+          ssUrl: ssUrl, 
+          fileName: file.name,
+          content: text 
+        })
+      });
+      const json = await res.json();
+      
+      if (json.success) {
+        alert('✅ 取り込み完了！マネージャーシートに反映されました！');
+        loadLedgerData(); 
+        if (typeof loadExpenseListData === 'function') loadExpenseListData();
+      } else {
+        alert('❌ GAS側でエラーが起きたで！\n\n' + json.message);
+      }
+    } catch(err) {
+      alert('❌ 通信エラーが発生したわ。\n' + err.message);
+    }
+    dropLabel.innerHTML = originalText;
+  };
+  
+  reader.readAsText(file, 'Shift_JIS'); 
+}
+
+function handleDragOverMini(e) {
+  e.preventDefault(); e.stopPropagation();
+  e.currentTarget.style.backgroundColor = '#ebf8ff';
+  e.currentTarget.style.borderColor = '#3182ce';
+}
+
+function handleDragLeaveMini(e) {
+  e.preventDefault(); e.stopPropagation();
+  e.currentTarget.style.backgroundColor = '#f8fafc';
+  e.currentTarget.style.borderColor = '#cbd5e0';
+}
+
+function handleDropMini(e) {
+  e.preventDefault(); e.stopPropagation();
+  e.currentTarget.style.backgroundColor = '#f8fafc';
+  e.currentTarget.style.borderColor = '#cbd5e0';
+  
+  const files = e.dataTransfer.files;
+  if (files && files.length > 0) {
+    processFile(files[0]);
+  }
+}
+
+function openAmazonReports() {
+  const win1 = window.open('https://sellercentral.amazon.co.jp/order-reports-and-feeds/reports/allOrders#', '_blank');
+  const win2 = window.open('https://sellercentral.amazon.co.jp/payments/reports-repository/ref=xx_rrepo_dnav_xx', '_blank');
+  
+  if (!win1 || !win2) {
+    alert("⚠️ ブラウザのポップアップブロックが作動しました！\n\n画面上部の「URLバー（アドレスバー）」の右端に出ている【✖️マーク】をクリックして、「ポップアップを常に許可する」に設定してからもう一度押してな！");
+  }
+}
+
+async function toggleListing(no, currentStatus, btnElement) {
+  const nextState = (currentStatus === '納品待ち') ? true : false;
+  const originalText = btnElement.innerHTML;
+  btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btnElement.disabled = true;
+  
+  const ssUrl = AppStorage.get("sh_ssurl", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+  
+  try {
+    const res = await fetch(targetGasUrl, {
+      method: 'POST',
+      body: JSON.stringify({ command: 'toggleListing', ssUrl: ssUrl, no: no, isListed: nextState })
+    });
+    const json = await res.json();
+    if (json.success) {
+      loadLedgerData();
+    } else {
+      alert("❌ 変更失敗: " + json.message);
+      btnElement.innerHTML = originalText; btnElement.disabled = false;
+    }
+  } catch(e) {
+    alert("❌ 通信エラーが発生しました");
+    btnElement.innerHTML = originalText; btnElement.disabled = false;
+  }
+}
+
+async function relistLedgerItem(no, btnElement) {
+  if(!confirm(`No.${no} の商品を「納品待ち」として再出品リストに追加しますか？\n（コンディションと商品説明は引き継がれます）`)) return;
+  
+  const originalText = btnElement.innerHTML;
+  btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btnElement.disabled = true;
+  
+  const ssUrl = AppStorage.get("sh_ssurl", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+  
+  try {
+    const res = await fetch(targetGasUrl, {
+      method: 'POST',
+      body: JSON.stringify({ command: 'relistLedgerItem', ssUrl: ssUrl, no: no })
+    });
+    const json = await res.json();
+    if (json.success) {
+      alert("✅ 再出品データ（納品待ち）を帳簿の末尾に追加したで！");
+      loadLedgerData();
+    } else {
+      alert("❌ 再出品失敗: " + json.message);
+      btnElement.innerHTML = originalText; btnElement.disabled = false;
+    }
+  } catch(e) {
+    alert("❌ 通信エラーが発生しました");
+    btnElement.innerHTML = originalText; btnElement.disabled = false;
+  }
+}
+
+async function openLedgerEdit(no) {
+  const item = globalLedgerData.find(i => String(i.no).trim() === String(no).trim());
+  if (!item) {
+    alert("⚠️ 編集するデータが見つかりません (No: " + no + ")\n一度「最新を取得」ボタンを押してみてな！");
+    return;
+  }
+  
+  document.getElementById('ledgerEditModal').style.display = 'flex';
+  document.getElementById('edit_asin').value = item.asin || '';
+  document.getElementById('original_no').value = item.no || '';
+
+  if (typeof window.globalSupplierData === 'undefined' || window.globalSupplierData.length === 0) {
+    const ssUrl = AppStorage.get("sh_ssurl", "");
+    let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+    if (ssUrl && targetGasUrl) {
       try {
-        const res = await fetch(targetGasUrl, {
-          method: 'POST',
-          body: JSON.stringify({ command: 'getBulkRegisterData', ssUrl: ssUrl })
-        });
+        const res = await fetch(targetGasUrl, { method: 'POST', body: JSON.stringify({ command: 'getSuppliers', ssUrl: ssUrl }) });
         const json = await res.json();
-        
-        loading.style.display = 'none';
-
-        if (json.success && json.data.length > 0) {
-          globalBulkData = json.data;
-          renderBulkRegisterTable();
-        } else {
-          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:#a0aec0;">現在、一括登録対象（納品待ち）の商品はありません。</td></tr>';
-          globalBulkData = [];
-        }
-      } catch (err) {
-        loading.style.display = 'none';
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:#e53e3e; font-weight:bold;">❌ 通信エラーが発生しました</td></tr>';
-      }
+        if (json.success && json.data) window.globalSupplierData = json.data;
+      } catch(e) {}
     }
+  }
 
-    // ② テーブルを描画（シートのA列〜G列をそのまま表示！）
-    function renderBulkRegisterTable() {
-      const tbody = document.getElementById('bulkRegisterBody');
-      let html = '';
+  const supSelect = document.getElementById('edit_supplier');
+  if (supSelect && window.globalSupplierData) {
+    supSelect.innerHTML = '<option value="">ーー 未設定 ーー</option>';
+    let isExist = false;
+    window.globalSupplierData.forEach(s => {
+      supSelect.innerHTML += `<option value="${s}">${s}</option>`;
+      if (item.supplier === s) isExist = true;
+    });
+    if (item.supplier && !isExist) {
+      supSelect.innerHTML += `<option value="${item.supplier}">${item.supplier} (手入力)</option>`;
+    }
+  }
+
+  document.getElementById('edit_no').value = item.no || '';
+  document.getElementById('edit_buyDate').value = item.buyDate || '';
+  document.getElementById('edit_supplier').value = item.supplier || '';
+  document.getElementById('edit_title').value = item.title || '';
+  document.getElementById('edit_model').value = item.model || '';
+  document.getElementById('edit_sku').value = item.sku || '';
+  document.getElementById('edit_condition').value = item.condition || '';
+  document.getElementById('edit_itemId').value = item.itemId || '';
+  document.getElementById('edit_description').value = item.description || '';
+  document.getElementById('edit_buyPrice').value = item.buyPrice || 0;
+  document.getElementById('edit_expense').value = item.expense || 0;
+  document.getElementById('edit_estPrice').value = item.estPrice || 0;
+}
+
+async function deleteLedgerItem() {
+  if(!confirm("本当にこの商品を削除してもよろしいですか？\n※一括商品登録シートにデータがある場合はそれも連動して削除されます。")) return;
+  
+  const no = document.getElementById('edit_no').value;
+  const btn = document.getElementById('deleteLedgerBtn');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = "⌛ 削除中...";
+  btn.disabled = true;
+
+  const ssUrl = AppStorage.get("sh_ssurl", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+
+  try {
+    const res = await fetch(targetGasUrl, {
+      method: 'POST',
+      body: JSON.stringify({ command: 'deleteLedgerItem', ssUrl: ssUrl, no: no })
+    });
+    const json = await res.json();
+    
+    if (json.success) {
+      document.getElementById('ledgerEditModal').style.display = 'none';
+      loadLedgerData();
+    } else {
+      alert("❌ 削除失敗: " + json.message);
+    }
+  } catch(e) {
+    alert("❌ 通信エラーが発生しました");
+  }
+  
+  btn.innerHTML = originalText;
+  btn.disabled = false;
+}
+
+async function saveLedgerEdit() {
+  const btn = document.getElementById('saveLedgerBtn');
+  const originalText = btn.innerText;
+  btn.innerText = "⌛ 保存中...";
+  btn.disabled = true;
+  
+  const ssUrl = AppStorage.get("sh_ssurl", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+  
+  const payload = {
+    originalNo: document.getElementById('original_no').value,
+    no: document.getElementById('edit_no').value,
+    buyDate: document.getElementById('edit_buyDate').value,
+    supplier: document.getElementById('edit_supplier').value,
+    title: document.getElementById('edit_title').value,
+    model: document.getElementById('edit_model').value,
+    sku: document.getElementById('edit_sku').value,
+    condition: document.getElementById('edit_condition').value,
+    itemId: document.getElementById('edit_itemId').value,
+    description: document.getElementById('edit_description').value,
+    buyPrice: Number(document.getElementById('edit_buyPrice').value),
+    expense: Number(document.getElementById('edit_expense').value),
+    estPrice: Number(document.getElementById('edit_estPrice').value)
+  };
+  
+  try {
+    const res = await fetch(targetGasUrl, {
+      method: 'POST',
+      body: JSON.stringify({ command: 'updateLedgerItem', ssUrl: ssUrl, data: payload })
+    });
+    const json = await res.json();
+    if (json.success) {
+      document.getElementById('ledgerEditModal').style.display = 'none';
+      loadLedgerData();
+    } else {
+      alert("❌ 保存失敗: " + json.message);
+    }
+  } catch (e) {
+    alert("❌ 通信エラーが発生しました");
+  }
+  btn.innerText = originalText;
+  btn.disabled = false;
+}
+
+let globalConditionData = [];
+
+async function fetchConditionList() {
+  const ssUrl = AppStorage.get("sh_ssurl", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+  if (!ssUrl || !targetGasUrl) return;
+
+  try {
+    const res = await fetch(targetGasUrl, { method: 'POST', body: JSON.stringify({ command: 'getConditions', ssUrl: ssUrl }) });
+    const json = await res.json();
+    if (json.success && json.data) {
+      globalConditionData = json.data;
+      const select = document.getElementById("edit_condition");
       
-      globalBulkData.forEach(item => {
-        html += `
-        <tr id="bulk_row_${item.sku}" style="border-bottom: 1px solid #e2e8f0; background: #fff;">
-          
-          <td style="padding: 12px 10px; max-width: 200px; white-space: normal; overflow: hidden; text-overflow: ellipsis; line-height: 1.4;">${escapeHtml(item.title)}</td>
-          
-          <td style="padding: 12px 10px; font-weight: bold; text-align: center; color: #1a365d;">${escapeHtml(item.asin)}</td>
-          
-          <td style="padding: 12px 10px; font-family: monospace; text-align: center; color: #4a5568;">${escapeHtml(item.sku)}</td>
-          
-          <td style="padding: 12px 10px; text-align: center; font-weight: bold; color: #2d3748;">${escapeHtml(item.condition)}</td>
-          
-          <td style="padding: 10px; cursor: pointer; background: #ebf8ff; border: 1px dashed #90cdf4; max-width: 250px; white-space: normal;" onclick="openBulkDescModal('${item.sku}')">
-            <div id="bulk_desc_${item.sku}" style="font-size:11px; line-height: 1.4; color: #4a5568;">${escapeHtml(item.desc)}</div>
-          </td>
-          
-          <td style="padding: 12px 10px; text-align: center; font-weight: bold; color: #4a5568;">${escapeHtml(item.price)}</td>
-          
-          <td style="padding: 12px 10px; text-align: center; font-weight: 900; font-size: 15px; color: #1a365d;">${escapeHtml(item.ao)}</td>
-          
-          <td style="padding: 12px 10px; text-align: center;">
-            <button onclick="excludeBulkItem('${item.sku}')" style="background: #e53e3e; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
-              除外
-            </button>
-          </td>
-        </tr>
-        `;
-      });
-      tbody.innerHTML = html;
-    }
-
-    // 🔔 新機能：画面下にフワッと出て、自動で消えるスマートな通知（トースト）
-    window.showToast = function(msg) {
-      let toast = document.getElementById('sh-toast');
-      if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'sh-toast';
-        toast.style.cssText = "position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:rgba(26,54,93,0.95); color:white; padding:12px 24px; border-radius:8px; font-weight:bold; font-size:14px; box-shadow:0 4px 10px rgba(0,0,0,0.3); z-index:10000; transition:opacity 0.3s; opacity:0; pointer-events:none; white-space:nowrap; text-align:center;";
-        document.body.appendChild(toast);
-      }
-      toast.innerText = msg;
-      toast.style.opacity = '1';
-      setTimeout(() => { toast.style.opacity = '0'; }, 2000); // 2秒で勝手に消える！
-    };
-
-    // ③ 指定列のデータをエクセル用に縦にコピー（\n区切り）アラート撤廃版！
-    window.copyBulkColumn = function(colKey) {
-      if(globalBulkData.length === 0) return showToast('❌ データがありません！');
-
-      const rows = document.querySelectorAll('#bulkRegisterBody tr');
-      let copyTextArr = [];
+      select.innerHTML = '<option value="">ーー 空欄に戻す ーー</option>';
       
-      rows.forEach(row => {
-        // 除外されていない行だけを対象にする
-        if (row.style.display !== 'none') {
-          const sku = row.id.replace('bulk_row_', '');
-          const item = globalBulkData.find(i => i.sku === sku);
-          if(item) {
-            if(colKey === 'desc') {
-              // 説明だけは、画面上で編集されている可能性があるため画面のテキストを取得
-              copyTextArr.push(document.getElementById(`bulk_desc_${sku}`).innerText);
-            } else {
-              copyTextArr.push(item[colKey]);
-            }
-          }
-        }
-      });
-      
-      if(copyTextArr.length === 0) return showToast('❌ コピーする行がありません！');
-
-      const copyString = copyTextArr.join('\n'); // エクセルの縦列に貼れるように改行区切り
-      navigator.clipboard.writeText(copyString).then(() => {
-        // 💡 うっとうしい alert() を廃止して、スマート通知を呼び出す！
-        showToast(`✅ ${copyTextArr.length} 件のデータをコピーしました！`);
+      globalConditionData.forEach(c => {
+        select.innerHTML += `<option value="${c.name}">${c.name}</option>`;
       });
     }
+  } catch(err) { console.log("コンディション取得エラー"); }
+}
 
-    // ④ 行の除外処理
-    function excludeBulkItem(sku) {
-      const row = document.getElementById('bulk_row_' + sku);
-      if (row) {
-        row.style.opacity = '0';
-        setTimeout(() => { row.style.display = 'none'; }, 300);
-      }
+function applyConditionDescription() {
+  const selectedName = document.getElementById("edit_condition").value;
+  const descInput = document.getElementById("edit_description");
+  
+  if (selectedName === "") {
+    descInput.value = "";
+    return;
+  }
+  
+  const found = globalConditionData.find(c => c.name === selectedName);
+  if (found && found.desc) {
+    descInput.value = found.desc;
+  }
+}
+
+let globalBulkData = [];
+
+async function loadBulkRegisterData() {
+  const tbody = document.getElementById('bulkRegisterBody');
+  const loading = document.getElementById('bulkLoading');
+  
+  const ssUrl = AppStorage.get("sh_ssurl", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+  
+  if (!ssUrl || !targetGasUrl) {
+    return alert("⚙️設定からManagerのURLとGAS URLを登録してな！");
+  }
+
+  tbody.innerHTML = '';
+  loading.style.display = 'block';
+
+  try {
+    const res = await fetch(targetGasUrl, {
+      method: 'POST',
+      body: JSON.stringify({ command: 'getBulkRegisterData', ssUrl: ssUrl })
+    });
+    const json = await res.json();
+    
+    loading.style.display = 'none';
+
+    if (json.success && json.data.length > 0) {
+      globalBulkData = json.data;
+      renderBulkRegisterTable();
+    } else {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:#a0aec0;">現在、一括登録対象（納品待ち）の商品はありません。</td></tr>';
+      globalBulkData = [];
     }
+  } catch (err) {
+    loading.style.display = 'none';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:#e53e3e; font-weight:bold;">❌ 通信エラーが発生しました</td></tr>';
+  }
+}
 
-    // ⑤ 商品説明の編集モーダルを開く
-    function openBulkDescModal(sku) {
+function renderBulkRegisterTable() {
+  const tbody = document.getElementById('bulkRegisterBody');
+  let html = '';
+  
+  globalBulkData.forEach(item => {
+    html += `
+    <tr id="bulk_row_${item.sku}" style="border-bottom: 1px solid #e2e8f0; background: #fff;">
+      <td style="padding: 12px 10px; max-width: 200px; white-space: normal; overflow: hidden; text-overflow: ellipsis; line-height: 1.4;">${escapeHtml(item.title)}</td>
+      <td style="padding: 12px 10px; font-weight: bold; text-align: center; color: #1a365d;">${escapeHtml(item.asin)}</td>
+      <td style="padding: 12px 10px; font-family: monospace; text-align: center; color: #4a5568;">${escapeHtml(item.sku)}</td>
+      <td style="padding: 12px 10px; text-align: center; font-weight: bold; color: #2d3748;">${escapeHtml(item.condition)}</td>
+      <td style="padding: 10px; cursor: pointer; background: #ebf8ff; border: 1px dashed #90cdf4; max-width: 250px; white-space: normal;" onclick="openBulkDescModal('${item.sku}')">
+        <div id="bulk_desc_${item.sku}" style="font-size:11px; line-height: 1.4; color: #4a5568;">${escapeHtml(item.desc)}</div>
+      </td>
+      <td style="padding: 12px 10px; text-align: center; font-weight: bold; color: #4a5568;">${escapeHtml(item.price)}</td>
+      <td style="padding: 12px 10px; text-align: center; font-weight: 900; font-size: 15px; color: #1a365d;">${escapeHtml(item.ao)}</td>
+      <td style="padding: 12px 10px; text-align: center;">
+        <button onclick="excludeBulkItem('${item.sku}')" style="background: #e53e3e; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
+          除外
+        </button>
+      </td>
+    </tr>
+    `;
+  });
+  tbody.innerHTML = html;
+}
+
+window.showToast = function(msg) {
+  let toast = document.getElementById('sh-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'sh-toast';
+    toast.style.cssText = "position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:rgba(26,54,93,0.95); color:white; padding:12px 24px; border-radius:8px; font-weight:bold; font-size:14px; box-shadow:0 4px 10px rgba(0,0,0,0.3); z-index:10000; transition:opacity 0.3s; opacity:0; pointer-events:none; white-space:nowrap; text-align:center;";
+    document.body.appendChild(toast);
+  }
+  toast.innerText = msg;
+  toast.style.opacity = '1';
+  setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+};
+
+window.copyBulkColumn = function(colKey) {
+  if(globalBulkData.length === 0) return showToast('❌ データがありません！');
+
+  const rows = document.querySelectorAll('#bulkRegisterBody tr');
+  let copyTextArr = [];
+  
+  rows.forEach(row => {
+    if (row.style.display !== 'none') {
+      const sku = row.id.replace('bulk_row_', '');
       const item = globalBulkData.find(i => i.sku === sku);
-      if(!item) return;
-      
-      document.getElementById('bulkEditSku').value = sku;
-      document.getElementById('bulkEditTitle').innerText = item.title;
-      // 画面上の最新の説明をテキストエリアに入れる
-      document.getElementById('bulkEditDescText').value = document.getElementById(`bulk_desc_${sku}`).innerText;
-      
-      document.getElementById('bulkDescModal').style.display = 'flex';
-    }
-
-   // ⑥ 編集した商品説明を保存して表とシートに反映
-    function saveBulkDesc() {
-      const sku = document.getElementById('bulkEditSku').value;
-      const newDesc = document.getElementById('bulkEditDescText').value;
-      
-      const descCell = document.getElementById(`bulk_desc_${sku}`);
-      if(descCell) {
-        descCell.innerText = newDesc; // 画面上の表示を更新
-      }
-      document.getElementById('bulkDescModal').style.display = 'none';
-
-      // 🚀 GASに通信して逆反映させる
-      const ssUrl = AppStorage.get("sh_ssurl", "");
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-      
-      if (ssUrl && targetGasUrl) {
-        // アラートは出さず、裏側で完全にサイレント実行する
-        fetch(targetGasUrl, {
-          method: 'POST',
-          body: JSON.stringify({ 
-            command: 'updateBulkDesc', 
-            ssUrl: ssUrl, 
-            sku: sku, 
-            desc: newDesc 
-          })
-        }).catch(e => console.log("通信エラー:", e));
-      }
-    }
-
-    // ⑦ 登録完了ボタン（表示中のSKUだけをGASへ投げる）
-    async function completeBulkRegistration() {
-      const rows = document.querySelectorAll('#bulkRegisterBody tr');
-      let targetSkus = [];
-      
-      rows.forEach(row => {
-        if (row.style.display !== 'none' && row.id.startsWith('bulk_row_')) {
-          const sku = row.id.replace('bulk_row_', '');
-          targetSkus.push(sku);
-        }
-      });
-      
-      if(targetSkus.length === 0) {
-        return alert("登録対象の商品がありません！");
-      }
-      
-      if(!confirm(`画面に残っている ${targetSkus.length} 件を「出品中」に変更するで！ええか？\n（除外した商品は納品待ちのまま残ります）`)) return;
-      
-      const btn = document.getElementById('bulkCompleteBtn');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '⌛ 処理中...';
-      btn.disabled = true;
-      
-      const ssUrl = AppStorage.get("sh_ssurl", "");
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-      
-      try {
-        const res = await fetch(targetGasUrl, {
-          method: 'POST',
-          body: JSON.stringify({ command: 'completeBulkRegister', ssUrl: ssUrl, skus: targetSkus })
-        });
-        const json = await res.json();
-        if(json.success) {
-          alert("✅ 選択した商品を「出品中」に変更したで！");
-          loadBulkRegisterData(); // 完了したら表をリロードして最新状態にする
+      if(item) {
+        if(colKey === 'desc') {
+          copyTextArr.push(document.getElementById(`bulk_desc_${sku}`).innerText);
         } else {
-          alert("❌ エラー: " + json.message);
+          copyTextArr.push(item[colKey]);
         }
-      } catch(err) {
-        alert("❌ 通信エラーが発生しました");
       }
-      btn.innerHTML = originalText;
-      btn.disabled = false;
     }
+  });
+  
+  if(copyTextArr.length === 0) return showToast('❌ コピーする行がありません！');
+
+  const copyString = copyTextArr.join('\n');
+  navigator.clipboard.writeText(copyString).then(() => {
+    showToast(`✅ ${copyTextArr.length} 件のデータをコピーしました！`);
+  });
+}
+
+function excludeBulkItem(sku) {
+  const row = document.getElementById('bulk_row_' + sku);
+  if (row) {
+    row.style.opacity = '0';
+    setTimeout(() => { row.style.display = 'none'; }, 300);
+  }
+}
+
+function openBulkDescModal(sku) {
+  const item = globalBulkData.find(i => i.sku === sku);
+  if(!item) return;
+  
+  document.getElementById('bulkEditSku').value = sku;
+  document.getElementById('bulkEditTitle').innerText = item.title;
+  document.getElementById('bulkEditDescText').value = document.getElementById(`bulk_desc_${sku}`).innerText;
+  
+  document.getElementById('bulkDescModal').style.display = 'flex';
+}
+
+function saveBulkDesc() {
+  const sku = document.getElementById('bulkEditSku').value;
+  const newDesc = document.getElementById('bulkEditDescText').value;
+  
+  const descCell = document.getElementById(`bulk_desc_${sku}`);
+  if(descCell) {
+    descCell.innerText = newDesc;
+  }
+  document.getElementById('bulkDescModal').style.display = 'none';
+
+  const ssUrl = AppStorage.get("sh_ssurl", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+  
+  if (ssUrl && targetGasUrl) {
+    fetch(targetGasUrl, {
+      method: 'POST',
+      body: JSON.stringify({ 
+        command: 'updateBulkDesc', 
+        ssUrl: ssUrl, 
+        sku: sku, 
+        desc: newDesc 
+      })
+    }).catch(e => console.log("通信エラー:", e));
+  }
+}
+
+async function completeBulkRegistration() {
+  const rows = document.querySelectorAll('#bulkRegisterBody tr');
+  let targetSkus = [];
+  
+  rows.forEach(row => {
+    if (row.style.display !== 'none' && row.id.startsWith('bulk_row_')) {
+      const sku = row.id.replace('bulk_row_', '');
+      targetSkus.push(sku);
+    }
+  });
+  
+  if(targetSkus.length === 0) {
+    return alert("登録対象の商品がありません！");
+  }
+  
+  if(!confirm(`画面に残っている ${targetSkus.length} 件を「出品中」に変更するで！ええか？\n（除外した商品は納品待ちのまま残ります）`)) return;
+  
+  const btn = document.getElementById('bulkCompleteBtn');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '⌛ 処理中...';
+  btn.disabled = true;
+  
+  const ssUrl = AppStorage.get("sh_ssurl", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+  
+  try {
+    const res = await fetch(targetGasUrl, {
+      method: 'POST',
+      body: JSON.stringify({ command: 'completeBulkRegister', ssUrl: ssUrl, skus: targetSkus })
+    });
+    const json = await res.json();
+    if(json.success) {
+      alert("✅ 選択した商品を「出品中」に変更したで！");
+      loadBulkRegisterData();
+    } else {
+      alert("❌ エラー: " + json.message);
+    }
+  } catch(err) {
+    alert("❌ 通信エラーが発生しました");
+  }
+  btn.innerHTML = originalText;
+  btn.disabled = false;
+}
 
 function goBackScreen() {
-      if (viewHistoryStack.length > 0) {
-        const prevView = viewHistoryStack.pop(); // 1つ前の画面を取り出す
-        openView(prevView, true); // isBack=trueで開く（履歴を無限ループさせないため）
-      } else {
-        openView('view-home'); // 履歴がなければホームへ
-      }
-    }
+  if (viewHistoryStack.length > 0) {
+    const prevView = viewHistoryStack.pop();
+    openView(prevView, true);
+  } else {
+    openView('view-home');
+  }
+}
 
-// 💡 追加：危険物ガイドのポップアップを開閉する関数
-    function openHazmatGuide() {
-      document.getElementById('hazmatGuideModal').style.display = 'flex';
-    }
-    function closeHazmatGuide() {
-      document.getElementById('hazmatGuideModal').style.display = 'none';
-    }
+function openHazmatGuide() {
+  document.getElementById('hazmatGuideModal').style.display = 'flex';
+}
+function closeHazmatGuide() {
+  document.getElementById('hazmatGuideModal').style.display = 'none';
+}
 
-// ==========================================
-    // 🚀 Researcher「仕入れリスト」機能のJSコード
-    // ==========================================
-    let globalPurchaseListData = [];
+let globalPurchaseListData = [];
 
-    async function loadPurchaseListData() {
-      const resDiv = document.getElementById('purchaseListResult');
-      const countEl = document.getElementById('purchaseListCount');
-      const researcherUrl = AppStorage.get("sh_researcher_url", "");
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+async function loadPurchaseListData() {
+  const resDiv = document.getElementById('purchaseListResult');
+  const countEl = document.getElementById('purchaseListCount');
+  const researcherUrl = AppStorage.get("sh_researcher_url", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
 
-      if (!researcherUrl || !targetGasUrl) {
-        return alert("⚙️設定から『SearchHub : ResearcherのURL』と『GAS URL』を登録してな！");
-      }
+  if (!researcherUrl || !targetGasUrl) {
+    return alert("⚙️設定から『SearchHub : ResearcherのURL』と『GAS URL』を登録してな！");
+  }
 
-      resDiv.innerHTML = '<tr><td colspan="6" class="loading-spinner" style="padding:20px; text-align:center;">⌛ 仕入れsheetからデータを同期中...</td></tr>';
-      countEl.innerText = "同期中...";
+  resDiv.innerHTML = '<tr><td colspan="6" class="loading-spinner" style="padding:20px; text-align:center;">⌛ 仕入れsheetからデータを同期中...</td></tr>';
+  countEl.innerText = "同期中...";
 
-      try {
-        const res = await fetch(targetGasUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ command: 'getPurchaseList', ssUrl: researcherUrl })
-        });
-        
-        const json = await res.json();
-        
-        if (json.success && json.data && json.data.length > 0) {
-          globalPurchaseListData = json.data;
-          renderPurchaseList();
-        } else {
-          resDiv.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#a0aec0; padding:30px;">現在、仕入れリストにデータはありません。</td></tr>';
-          countEl.innerText = "リスト: 0件";
-          globalPurchaseListData = [];
-        }
-      } catch (err) {
-        resDiv.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#e53e3e; font-weight:bold; padding:30px;">❌ 通信エラーが発生しました</td></tr>`;
-        countEl.innerText = "通信失敗";
-      }
-    }
-
-   function renderPurchaseList() {
-      const resDiv = document.getElementById('purchaseListResult');
-      const countEl = document.getElementById('purchaseListCount');
-      const kw = document.getElementById('purchase-list-search-kw').value.toLowerCase().trim();
-
-      let filtered = globalPurchaseListData;
-      if (kw) {
-        filtered = globalPurchaseListData.filter(item => 
-          (item.title && item.title.toLowerCase().includes(kw)) || 
-          (item.asin && item.asin.toLowerCase().includes(kw)) ||
-          (item.id && String(item.id).toLowerCase().includes(kw))
-        );
-      }
-
-      countEl.innerText = `リスト: ${filtered.length}件`;
-
-      if (filtered.length === 0) {
-        resDiv.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#a0aec0; padding:30px;">条件に合う商品が見つかりません。</td></tr>';
-        return;
-      }
-
-      let html = "";
-      filtered.forEach((item) => {
-        const id = escapeHtml(item.id || '---'); 
-        const title = escapeHtml(item.title || '商品名なし'); 
-        const asin = escapeHtml(item.asin || '---'); 
-        const model = escapeHtml(item.model || '---'); 
-        
-        let rankRaw = escapeHtml(item.rank || '-');
-        let rankText = rankRaw.includes('ランク') ? rankRaw : `${rankRaw} ランク`;
-        let rankColor = '#4a5568';
-        if (rankRaw.includes('SR')) rankColor = '#805ad5';
-        else if (rankRaw.includes('S')) rankColor = '#e53e3e';
-        else if (rankRaw.includes('A')) rankColor = '#dd6b20';
-        else if (rankRaw.includes('B')) rankColor = '#38a169';
-
-        const sellPrice = Number(item.sellPrice || 0);
-        const fbaFee = Number(item.fbaFee || 0);
-        const minUsed = Number(item.minUsed || 0);
-        const size = escapeHtml(item.size || '-');
-
-        // 💡 GASから送られてきた画像をそのまま使用
-        let imgUrl = item.img ? item.img.toString().trim() : '';
-
-        // ★追加：URLが空っぽ、または異常な場合はASINから画像を自動生成する
-        const fallbackAsinImg = `https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${item.asin}&Format=_SL250_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1`;
-        if (!imgUrl || imgUrl === '-' || imgUrl === 'CellImage' || imgUrl.includes('404')) {
-          imgUrl = fallbackAsinImg;
-        }
-
-        // 💡 日付を「〇月〇日」フォーマットに変換する魔法！
-        const formatDate = (dateStr) => {
-          if (!dateStr || dateStr === '-' || dateStr === '') return '-';
-          const d = new Date(dateStr);
-          return isNaN(d.getTime()) ? dateStr : (d.getMonth() + 1) + '月' + d.getDate() + '日';
-        };
-        const pDateStr = formatDate(item.purchaseDate);
-        const cDateStr = formatDate(item.checkDate);
-
-        // 💡 標準サイズの背景色を緑（大型と同じバッジスタイル）に変更し、文字も少し大きく！
-        const sizeBadge = size.includes('大型') 
-          ? `<span style="background:#e53e3e; color:white; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">${size}</span>` 
-          : `<span style="background:#07A27B; color:white; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">${size}</span>`;
-
-        html += `
-        <tr>
-          <td style="text-align:center;">
-            <div style="width:50px; height:50px; background:#fff; border:1px solid #eee; border-radius:4px; margin: 0 auto 4px auto; padding:2px; display:flex; align-items:center; justify-content:center;">
-              <img src="${imgUrl}" style="width:100%; height:100%; object-fit:contain;" onerror="this.onerror=null;this.src='${fallbackAsinImg}';">
-            </div>
-            <div style="font-size:11px; font-weight:bold; color:${rankColor};">${rankText}</div>
-          </td>
-
-          <td style="max-width: 250px;">
-            <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:bold; color:#1a365d; margin-bottom:6px; font-size:13px;" title="${title}">${title}</div>
-            <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
-              <span style="font-family:monospace; background:#fffaf0; color:#dd6b20; border:1px solid #fbd38d; padding:2px 6px; border-radius:4px; font-size:12px; font-weight:bold;">${asin}</span>
-              <span style="font-size:12px; color:#4a5568; font-weight:bold;">型番: ${model}</span>
-            </div>
-            <div style="font-size:13px; color:#2d3748; font-weight:900; margin-top:8px; font-family:monospace;">ID: ${id}</div>
-          </td>
-
-          <td style="text-align: center; vertical-align: middle;">
-            <div style="font-size:14px; color:#2d3748; font-weight:900; margin-bottom:6px;">${pDateStr}</div>
-            <div style="font-size:14px; color:#e53e3e; font-weight:900;">${cDateStr}</div>
-          </td>
-
-          <td style="text-align: right; vertical-align: middle;">
-            <div style="font-size:13px; color:#4a5568; font-weight:bold; margin-bottom:6px;">
-              平均: <span style="font-size:16px; color:#2d3748; font-weight:900;">¥${sellPrice.toLocaleString()}</span>
-            </div>
-            <div style="font-size:13px; font-weight:bold; color:#e53e3e;">
-              最安: <span style="font-size:16px; font-weight:900;">¥${minUsed.toLocaleString()}</span>
-            </div>
-          </td>
-
-          <td style="text-align: right; vertical-align: middle;">
-            <div style="font-size:12px; color:#4a5568; font-weight:bold; margin-bottom:8px;">
-              FBA: <span style="font-size:15px; color:#2d3748; font-weight:900;">¥${fbaFee.toLocaleString()}</span>
-            </div>
-            <div>${sizeBadge}</div>
-          </td>
-
-          <td style="text-align: center; vertical-align: middle;">
-            <div style="display:flex; flex-direction:column; gap:6px; align-items:center;">
-              <a href="https://www.amazon.co.jp/dp/${asin}" target="_blank" style="background:#f6ad55; color:white; border:none; padding:6px 0; border-radius:4px; cursor:pointer; width:100%; font-size:11px; font-weight:bold; text-decoration:none; display:flex; justify-content:center; align-items:center; gap:4px; box-shadow:0 1px 2px rgba(0,0,0,0.1);"><i class="fab fa-amazon"></i> Amazon</a>
-              <button onclick="openPurchaseEditModal('${id}')" style="background:#4a5568; color:white; border:none; padding:6px 0; border-radius:4px; cursor:pointer; width:100%; font-size:11px; font-weight:bold; box-shadow:0 1px 2px rgba(0,0,0,0.1);"><i class="fas fa-edit"></i> 編集</button>
-            </div>
-          </td>
-        </tr>`;
-      });
-      resDiv.innerHTML = html;
-    }
-
-    // ▼ モーダル操作用の関数 ▼
-    function openPurchaseEditModal(id) {
-      document.getElementById('edit-purchase-id').value = id;
-      
-      // 💡 開いた時に元々の仕入日が入るようにする親切設計！
-      const item = globalPurchaseListData.find(i => String(i.id) === String(id));
-      if (item && item.purchaseDate && item.purchaseDate !== '-') {
-         const d = new Date(item.purchaseDate);
-         if (!isNaN(d.getTime())) {
-           const yyyy = d.getFullYear();
-           const mm = String(d.getMonth() + 1).padStart(2, '0');
-           const dd = String(d.getDate()).padStart(2, '0');
-           document.getElementById('edit-purchase-date').value = `${yyyy}-${mm}-${dd}`;
-         }
-      } else {
-         document.getElementById('edit-purchase-date').value = '';
-      }
-      
-      document.getElementById('purchase-edit-modal').style.display = 'flex';
-    }
-
-    function closePurchaseEditModal() {
-      document.getElementById('purchase-edit-modal').style.display = 'none';
-      document.getElementById('edit-purchase-date').value = '';
-    }
-
-    async function savePurchaseEdit() {
-      const id = document.getElementById('edit-purchase-id').value;
-      const newDate = document.getElementById('edit-purchase-date').value;
-      
-      const researcherUrl = AppStorage.get("sh_researcher_url", "");
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-      
-      if (!researcherUrl || !targetGasUrl) return alert("⚙️URL設定が足りんで！");
-
-      const btn = document.querySelector('button[onclick="savePurchaseEdit()"]');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = "⌛ 保存中...";
-      btn.disabled = true;
-
-      try {
-        // 💡 GASに『updatePurchaseItem』という命令で日付の変更を送る！
-        const res = await fetch(targetGasUrl, {
-          method: 'POST',
-          body: JSON.stringify({ command: 'updatePurchaseItem', ssUrl: researcherUrl, id: id, purchaseDate: newDate })
-        });
-        const json = await res.json();
-        if (json.success) {
-          closePurchaseEditModal();
-          loadPurchaseListData(); // 保存できたらリストを自動で最新に更新！
-        } else {
-          alert("❌ 保存失敗: " + json.message);
-        }
-      } catch(e) {
-        alert("❌ 通信エラーが発生しました");
-      }
-      btn.innerHTML = originalText;
-      btn.disabled = false;
-    }
+  try {
+    const res = await fetch(targetGasUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ command: 'getPurchaseList', ssUrl: researcherUrl })
+    });
     
-    async function deletePurchaseItem() {
-      if(!confirm("ほんまにこの商品を削除してもええか？")) return;
-      
-      const id = document.getElementById('edit-purchase-id').value;
-      const researcherUrl = AppStorage.get("sh_researcher_url", "");
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+    const json = await res.json();
+    
+    if (json.success && json.data && json.data.length > 0) {
+      globalPurchaseListData = json.data;
+      renderPurchaseList();
+    } else {
+      resDiv.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#a0aec0; padding:30px;">現在、仕入れリストにデータはありません。</td></tr>';
+      countEl.innerText = "リスト: 0件";
+      globalPurchaseListData = [];
+    }
+  } catch (err) {
+    resDiv.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#e53e3e; font-weight:bold; padding:30px;">❌ 通信エラーが発生しました</td></tr>`;
+    countEl.innerText = "通信失敗";
+  }
+}
 
-      if (!researcherUrl || !targetGasUrl) return alert("⚙️URL設定が足りんで！");
+function renderPurchaseList() {
+  const resDiv = document.getElementById('purchaseListResult');
+  const countEl = document.getElementById('purchaseListCount');
+  const kw = document.getElementById('purchase-list-search-kw').value.toLowerCase().trim();
 
-      const btn = document.querySelector('button[onclick="deletePurchaseItem()"]');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = "⌛ 削除中...";
-      btn.disabled = true;
+  let filtered = globalPurchaseListData;
+  if (kw) {
+    filtered = globalPurchaseListData.filter(item => 
+      (item.title && item.title.toLowerCase().includes(kw)) || 
+      (item.asin && item.asin.toLowerCase().includes(kw)) ||
+      (item.id && String(item.id).toLowerCase().includes(kw))
+    );
+  }
 
-      try {
-        // 💡 GASに『deletePurchaseItem』という命令で削除リクエストを送る！
-        const res = await fetch(targetGasUrl, {
-          method: 'POST',
-          body: JSON.stringify({ command: 'deletePurchaseItem', ssUrl: researcherUrl, id: id })
-        });
-        const json = await res.json();
-        if (json.success) {
-          closePurchaseEditModal();
-          loadPurchaseListData(); // 削除できたらリストを自動で最新に更新！
-        } else {
-          alert("❌ 削除失敗: " + json.message);
-        }
-      } catch(e) {
-        alert("❌ 通信エラーが発生しました");
-      }
-      btn.innerHTML = originalText;
-      btn.disabled = false;
+  countEl.innerText = `リスト: ${filtered.length}件`;
+
+  if (filtered.length === 0) {
+    resDiv.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#a0aec0; padding:30px;">条件に合う商品が見つかりません。</td></tr>';
+    return;
+  }
+
+  let html = "";
+  filtered.forEach((item) => {
+    const id = escapeHtml(item.id || '---'); 
+    const title = escapeHtml(item.title || '商品名なし'); 
+    const asin = escapeHtml(item.asin || '---'); 
+    const model = escapeHtml(item.model || '---'); 
+    
+    let rankRaw = escapeHtml(item.rank || '-');
+    let rankText = rankRaw.includes('ランク') ? rankRaw : `${rankRaw} ランク`;
+    let rankColor = '#4a5568';
+    if (rankRaw.includes('SR')) rankColor = '#805ad5';
+    else if (rankRaw.includes('S')) rankColor = '#e53e3e';
+    else if (rankRaw.includes('A')) rankColor = '#dd6b20';
+    else if (rankRaw.includes('B')) rankColor = '#38a169';
+
+    const sellPrice = Number(item.sellPrice || 0);
+    const fbaFee = Number(item.fbaFee || 0);
+    const minUsed = Number(item.minUsed || 0);
+    const size = escapeHtml(item.size || '-');
+
+    let imgUrl = item.img ? item.img.toString().trim() : '';
+
+    const fallbackAsinImg = `https://ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=${item.asin}&Format=_SL250_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1`;
+    if (!imgUrl || imgUrl === '-' || imgUrl === 'CellImage' || imgUrl.includes('404')) {
+      imgUrl = fallbackAsinImg;
     }
 
-// 💡 情報sheet設定モーダルを開く
+    const formatDate = (dateStr) => {
+      if (!dateStr || dateStr === '-' || dateStr === '') return '-';
+      const d = new Date(dateStr);
+      return isNaN(d.getTime()) ? dateStr : (d.getMonth() + 1) + '月' + d.getDate() + '日';
+    };
+    const pDateStr = formatDate(item.purchaseDate);
+    const cDateStr = formatDate(item.checkDate);
+
+    const sizeBadge = size.includes('大型') 
+      ? `<span style="background:#e53e3e; color:white; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">${size}</span>` 
+      : `<span style="background:#07A27B; color:white; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:bold;">${size}</span>`;
+
+    html += `
+    <tr>
+      <td style="text-align:center;">
+        <div style="width:50px; height:50px; background:#fff; border:1px solid #eee; border-radius:4px; margin: 0 auto 4px auto; padding:2px; display:flex; align-items:center; justify-content:center;">
+          <img src="${imgUrl}" style="width:100%; height:100%; object-fit:contain;" onerror="this.onerror=null;this.src='${fallbackAsinImg}';">
+        </div>
+        <div style="font-size:11px; font-weight:bold; color:${rankColor};">${rankText}</div>
+      </td>
+
+      <td style="max-width: 250px;">
+        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:bold; color:#1a365d; margin-bottom:6px; font-size:13px;" title="${title}">${title}</div>
+        <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
+          <span style="font-family:monospace; background:#fffaf0; color:#dd6b20; border:1px solid #fbd38d; padding:2px 6px; border-radius:4px; font-size:12px; font-weight:bold;">${asin}</span>
+          <span style="font-size:12px; color:#4a5568; font-weight:bold;">型番: ${model}</span>
+        </div>
+        <div style="font-size:13px; color:#2d3748; font-weight:900; margin-top:8px; font-family:monospace;">ID: ${id}</div>
+      </td>
+
+      <td style="text-align: center; vertical-align: middle;">
+        <div style="font-size:14px; color:#2d3748; font-weight:900; margin-bottom:6px;">${pDateStr}</div>
+        <div style="font-size:14px; color:#e53e3e; font-weight:900;">${cDateStr}</div>
+      </td>
+
+      <td style="text-align: right; vertical-align: middle;">
+        <div style="font-size:13px; color:#4a5568; font-weight:bold; margin-bottom:6px;">
+          平均: <span style="font-size:16px; color:#2d3748; font-weight:900;">¥${sellPrice.toLocaleString()}</span>
+        </div>
+        <div style="font-size:13px; font-weight:bold; color:#e53e3e;">
+          最安: <span style="font-size:16px; font-weight:900;">¥${minUsed.toLocaleString()}</span>
+        </div>
+      </td>
+
+      <td style="text-align: right; vertical-align: middle;">
+        <div style="font-size:12px; color:#4a5568; font-weight:bold; margin-bottom:8px;">
+          FBA: <span style="font-size:15px; color:#2d3748; font-weight:900;">¥${fbaFee.toLocaleString()}</span>
+        </div>
+        <div>${sizeBadge}</div>
+      </td>
+
+      <td style="text-align: center; vertical-align: middle;">
+        <div style="display:flex; flex-direction:column; gap:6px; align-items:center;">
+          <a href="https://www.amazon.co.jp/dp/${asin}" target="_blank" style="background:#f6ad55; color:white; border:none; padding:6px 0; border-radius:4px; cursor:pointer; width:100%; font-size:11px; font-weight:bold; text-decoration:none; display:flex; justify-content:center; align-items:center; gap:4px; box-shadow:0 1px 2px rgba(0,0,0,0.1);"><i class="fab fa-amazon"></i> Amazon</a>
+          <button onclick="openPurchaseEditModal('${id}')" style="background:#4a5568; color:white; border:none; padding:6px 0; border-radius:4px; cursor:pointer; width:100%; font-size:11px; font-weight:bold; box-shadow:0 1px 2px rgba(0,0,0,0.1);"><i class="fas fa-edit"></i> 編集</button>
+        </div>
+      </td>
+    </tr>`;
+  });
+  resDiv.innerHTML = html;
+}
+
+function openPurchaseEditModal(id) {
+  document.getElementById('edit-purchase-id').value = id;
+  
+  const item = globalPurchaseListData.find(i => String(i.id) === String(id));
+  if (item && item.purchaseDate && item.purchaseDate !== '-') {
+     const d = new Date(item.purchaseDate);
+     if (!isNaN(d.getTime())) {
+       const yyyy = d.getFullYear();
+       const mm = String(d.getMonth() + 1).padStart(2, '0');
+       const dd = String(d.getDate()).padStart(2, '0');
+       document.getElementById('edit-purchase-date').value = `${yyyy}-${mm}-${dd}`;
+     }
+  } else {
+     document.getElementById('edit-purchase-date').value = '';
+  }
+  
+  document.getElementById('purchase-edit-modal').style.display = 'flex';
+}
+
+function closePurchaseEditModal() {
+  document.getElementById('purchase-edit-modal').style.display = 'none';
+  document.getElementById('edit-purchase-date').value = '';
+}
+
+async function savePurchaseEdit() {
+  const id = document.getElementById('edit-purchase-id').value;
+  const newDate = document.getElementById('edit-purchase-date').value;
+  
+  const researcherUrl = AppStorage.get("sh_researcher_url", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+  
+  if (!researcherUrl || !targetGasUrl) return alert("⚙️URL設定が足りんで！");
+
+  const btn = document.querySelector('button[onclick="savePurchaseEdit()"]');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = "⌛ 保存中...";
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(targetGasUrl, {
+      method: 'POST',
+      body: JSON.stringify({ command: 'updatePurchaseItem', ssUrl: researcherUrl, id: id, purchaseDate: newDate })
+    });
+    const json = await res.json();
+    if (json.success) {
+      closePurchaseEditModal();
+      loadPurchaseListData();
+    } else {
+      alert("❌ 保存失敗: " + json.message);
+    }
+  } catch(e) {
+    alert("❌ 通信エラーが発生しました");
+  }
+  btn.innerHTML = originalText;
+  btn.disabled = false;
+}
+
+async function deletePurchaseItem() {
+  if(!confirm("ほんまにこの商品を削除してもええか？")) return;
+  
+  const id = document.getElementById('edit-purchase-id').value;
+  const researcherUrl = AppStorage.get("sh_researcher_url", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+
+  if (!researcherUrl || !targetGasUrl) return alert("⚙️URL設定が足りんで！");
+
+  const btn = document.querySelector('button[onclick="deletePurchaseItem()"]');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = "⌛ 削除中...";
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(targetGasUrl, {
+      method: 'POST',
+      body: JSON.stringify({ command: 'deletePurchaseItem', ssUrl: researcherUrl, id: id })
+    });
+    const json = await res.json();
+    if (json.success) {
+      closePurchaseEditModal();
+      loadPurchaseListData();
+    } else {
+      alert("❌ 削除失敗: " + json.message);
+    }
+  } catch(e) {
+    alert("❌ 通信エラーが発生しました");
+  }
+  btn.innerHTML = originalText;
+  btn.disabled = false;
+}
+
 function openInfoModal() {
   const ssUrl = AppStorage.get("sh_ssurl", "");
   let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
@@ -3975,14 +4049,11 @@ function openInfoModal() {
   }
 
   document.getElementById('infoModal').style.display = 'flex';
-  
-  // 読み込み中を表示
   document.getElementById('info-suppliers').value = "読み込み中...";
   
-  // 💡 SCRIPT_URL の代わりに targetGasUrl を使う！
   fetch(targetGasUrl, {
     method: 'POST',
-    body: JSON.stringify({ command: 'getInfoSettings', ssUrl: ssUrl }) // 💡 ssUrlも渡す必要がある
+    body: JSON.stringify({ command: 'getInfoSettings', ssUrl: ssUrl })
   })
   .then(res => res.json())
   .then(data => {
@@ -3998,7 +4069,6 @@ function openInfoModal() {
   }).catch(err => { alert("通信エラー: " + err); });
 }
 
-// 💡 情報sheetの設定を保存する
 function saveInfoSettings() {
   const ssUrl = AppStorage.get("sh_ssurl", "");
   let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
@@ -4014,12 +4084,11 @@ function saveInfoSettings() {
   btn.innerHTML = "保存中...";
   btn.disabled = true;
 
-  // 💡 SCRIPT_URL の代わりに targetGasUrl を使う！
   fetch(targetGasUrl, {
     method: 'POST',
     body: JSON.stringify({ 
       command: 'saveInfoSettings',
-      ssUrl: ssUrl, // 💡 ssUrlも忘れずに！
+      ssUrl: ssUrl,
       suppliers: suppliers,
       condC: condC,
       condD: condD,
@@ -4043,308 +4112,290 @@ function saveInfoSettings() {
   });
 }
 
-// 💡 新規追加：No・日付・ASINを組み合わせてSKUを自動生成する関数
-    function updateSkuAutomatically() {
-      const no = document.getElementById('edit_no').value.trim();
-      const rawDate = document.getElementById('edit_buyDate').value.trim();
-      const asin = document.getElementById('edit_asin').value.trim();
+function updateSkuAutomatically() {
+  const no = document.getElementById('edit_no').value.trim();
+  const rawDate = document.getElementById('edit_buyDate').value.trim();
+  const asin = document.getElementById('edit_asin').value.trim();
 
-      // 日付からスラッシュやハイフンを消して数字8桁にする（例：2026/06/04 → 20260604）
-      const formattedDate = rawDate.replace(/[^0-9]/g, '');
+  const formattedDate = rawDate.replace(/[^0-9]/g, '');
+  document.getElementById('edit_sku').value = `${no}-${formattedDate}-${asin}`;
+} 
 
-      // SKUの入力欄を自動上書き
-      document.getElementById('edit_sku').value = `${no}-${formattedDate}-${asin}`;
-    } 
-   
-    async function updateKeepaInventory() {
-      const btn = document.getElementById('keepaBtn');
-      if(btn) { btn.disabled = true; btn.innerText = "更新中..."; }
+async function updateKeepaInventory() {
+  const btn = document.getElementById('keepaBtn');
+  if(btn) { btn.disabled = true; btn.innerText = "更新中..."; }
 
-      const ssUrl = AppStorage.get("sh_ssurl", "");
-      const keepaKey = AppStorage.get("sh_keepa", ""); 
-      const sellerId = AppStorage.get("sh_seller_id", "");
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+  const ssUrl = AppStorage.get("sh_ssurl", "");
+  const keepaKey = AppStorage.get("sh_keepa", ""); 
+  const sellerId = AppStorage.get("sh_seller_id", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
 
-      if (!ssUrl || !targetGasUrl || !keepaKey || !sellerId) {
-        alert("⚙️設定画面からURL、Keepaキー、セラーIDを登録してな！");
-        if(btn) { btn.disabled = false; btn.innerText = "在庫更新"; }
-        return;
-      }
+  if (!ssUrl || !targetGasUrl || !keepaKey || !sellerId) {
+    alert("⚙️設定画面からURL、Keepaキー、セラーIDを登録してな！");
+    if(btn) { btn.disabled = false; btn.innerText = "在庫更新"; }
+    return;
+  }
 
-      try {
-        const res = await fetch(targetGasUrl, {
-          method: 'POST',
-          body: JSON.stringify({ command: 'startKeepaDirect', ssUrl: ssUrl, keepaKey: keepaKey, sellerId: sellerId })
-        });
-        const json = await res.json();
+  try {
+    const res = await fetch(targetGasUrl, {
+      method: 'POST',
+      body: JSON.stringify({ command: 'startKeepaDirect', ssUrl: ssUrl, keepaKey: keepaKey, sellerId: sellerId })
+    });
+    const json = await res.json();
 
-        if (json.success) {
-          if(btn) { btn.innerText = "✅完了! 再読込中..."; }
-          await loadInventoryPrice(); // 成功したら画面を自動更新
-        } else {
-          alert("❌ エラー: " + json.message);
-        }
-      } catch(err) {
-        alert("❌ 通信エラーが発生しました");
-      } finally {
-        if(btn) { btn.disabled = false; btn.innerText = "在庫更新"; }
-      }
+    if (json.success) {
+      if(btn) { btn.innerText = "✅完了! 再読込中..."; }
+      await loadInventoryPrice();
+    } else {
+      alert("❌ エラー: " + json.message);
     }
+  } catch(err) {
+    alert("❌ 通信エラーが発生しました");
+  } finally {
+    if(btn) { btn.disabled = false; btn.innerText = "在庫更新"; }
+  }
+}
 
-    let globalExpenseData = [];
+let globalExpenseData = [];
 
-    // 🚀 GASから経費一覧の生データを取得する
-    async function loadExpenseListData() {
-      const tbody = document.getElementById('expenseResultBody');
-      const countEl = document.getElementById('expenseTotalCount');
-      const ssUrl = AppStorage.get("sh_ssurl", "");
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+async function loadExpenseListData() {
+  const tbody = document.getElementById('expenseResultBody');
+  const countEl = document.getElementById('expenseTotalCount');
+  const ssUrl = AppStorage.get("sh_ssurl", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
 
-      if (!ssUrl || !targetGasUrl) return;
+  if (!ssUrl || !targetGasUrl) return;
 
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px; color:#2b6cb0;">⌛ 鏡写しデータを生成中...</td></tr>';
-      
-      try {
-        const res = await fetch(targetGasUrl, {
-          method: 'POST',
-          body: JSON.stringify({ command: 'getExpenseListData', ssUrl: ssUrl })
-        });
-        const json = await res.json();
-        
-        if (json.success && json.data) {
-          // 💡 【超重要】GASのデータに「シートの行番号(index + 2)」をこっそり持たせる！
-          globalExpenseData = json.data.map((row, index) => {
-            row.push(index + 2); // 1行目が見出しなのでデータは2行目から
-            return row;
-          });
-
-          const monthSet = new Set();
-          globalExpenseData.forEach(row => {
-            if(row[0]) monthSet.add(row[0]); 
-          });
-          const monthArr = Array.from(monthSet).sort().reverse(); 
-          
-          const monthSelect = document.getElementById('expense-month-selector');
-          const currentVal = monthSelect.value; 
-          
-          monthSelect.innerHTML = '<option value="ALL">すべて表示</option>';
-          monthArr.forEach(m => {
-            const opt = document.createElement('option');
-            opt.value = m;
-            opt.innerText = m;
-            monthSelect.appendChild(opt);
-          });
-          
-          if (Array.from(monthSelect.options).some(o => o.value === currentVal)) {
-            monthSelect.value = currentVal;
-          }
-
-          renderExpenseTable();
-        } else {
-          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px; color:#a0aec0;">データが見つかりませんでした。</td></tr>';
-        }
-      } catch (err) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px; color:#e53e3e;">❌ 通信エラーが発生しました。</td></tr>';
-      }
-    }
-
-    // 🚀 取得したデータを表に描画する
-    function renderExpenseTable() {
-      const tbody = document.getElementById('expenseResultBody');
-      const countEl = document.getElementById('expenseTotalCount');
-      const kw = document.getElementById('expense-search-kw').value.toLowerCase().trim();
-      const selMonth = document.getElementById('expense-month-selector').value; 
-
-      let filtered = globalExpenseData;
-      
-      if (selMonth !== "ALL") {
-        filtered = filtered.filter(item => item[0] === selMonth);
-      }
-
-      if (kw) {
-        filtered = filtered.filter(item => item.join(" ").toLowerCase().includes(kw));
-      }
-
-      countEl.innerText = `全 ${filtered.length} 件を表示中`;
-
-      if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px; color:#a0aec0;">該当するデータはありません。</td></tr>';
-        return;
-      }
-
-      let html = "";
-      filtered.slice().reverse().forEach(row => {
-        const amount = Number(row[3]) || 0;
-        const color = amount >= 5000 ? "#e53e3e" : "#333"; 
-        const source = String(row[5] || "");
-        const sheetRow = row[row.length - 1]; // さっき追加したシートの行番号
-
-        // 💡 登録元が「Amazon自動」じゃない時だけ、削除ボタン(ゴミ箱)を表示！
-        let deleteBtn = "";
-        if (!source.includes("Amazon自動")) {
-          deleteBtn = `<button onclick="deleteExpenseItem(${sheetRow})" style="background:#e53e3e; color:white; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; cursor:pointer; box-shadow:0 1px 2px rgba(0,0,0,0.1);"><i class="fas fa-trash-alt"></i></button>`;
-        }
-        
-        html += `<tr style="border-bottom: 1px solid #f1f5f9; background:#fff;">
-          <td style="padding: 12px 8px; text-align:center;">${deleteBtn}</td>
-          <td style="padding: 12px 16px; font-weight:bold; color:#4a5568;">${row[0] || '-'}</td>
-          <td style="padding: 12px 16px;">${row[1] || '-'}</td>
-          <td style="padding: 12px 16px;"><span style="background:#edf2f7; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:bold;">${row[2] || '-'}</span></td>
-          <td style="padding: 12px 16px; text-align:right; font-weight:900; color:${color}; font-size:15px;">¥${amount.toLocaleString()}</td>
-          <td style="padding: 12px 16px; white-space:normal; font-size:12px; color:#666;">${row[4] || '-'}</td>
-          <td style="padding: 12px 16px; font-size:11px; color:#a0aec0;">${row[5] || '-'}</td>
-        </tr>`;
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px; color:#2b6cb0;">⌛ 鏡写しデータを生成中...</td></tr>';
+  
+  try {
+    const res = await fetch(targetGasUrl, {
+      method: 'POST',
+      body: JSON.stringify({ command: 'getExpenseListData', ssUrl: ssUrl })
+    });
+    const json = await res.json();
+    
+    if (json.success && json.data) {
+      globalExpenseData = json.data.map((row, index) => {
+        row.push(index + 2);
+        return row;
       });
-      tbody.innerHTML = html;
-    }
 
-   // ==========================================
-    // 💸 経費入力窓の操作用JS
-    // ==========================================
-    function openExpenseModal() {
-      const today = new Date();
-      const yyyy = today.getFullYear();
-      const mm = ("0" + (today.getMonth() + 1)).slice(-2);
-      const dd = ("0" + today.getDate()).slice(-2);
+      const monthSet = new Set();
+      globalExpenseData.forEach(row => {
+        if(row[0]) monthSet.add(row[0]); 
+      });
+      const monthArr = Array.from(monthSet).sort().reverse(); 
       
-      document.getElementById('expMonth').value = `${yyyy}/${mm}`;
-      document.getElementById('expDate').value = `${yyyy}/${mm}/${dd}`;
-      document.getElementById('expAmount').value = "";
-      document.getElementById('expMemo').value = "";
+      const monthSelect = document.getElementById('expense-month-selector');
+      const currentVal = monthSelect.value; 
       
-      document.getElementById('expTypeSelect').value = "梱包資材";
-      toggleExpTypeInput(); 
+      monthSelect.innerHTML = '<option value="ALL">すべて表示</option>';
+      monthArr.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.innerText = m;
+        monthSelect.appendChild(opt);
+      });
       
-      document.getElementById('expenseModal').style.display = "flex";
-    }
-
-    function closeExpenseModal() {
-      document.getElementById('expenseModal').style.display = "none";
-    }
-
-    function toggleExpTypeInput() {
-      const select = document.getElementById('expTypeSelect');
-      const customInput = document.getElementById('expTypeCustom');
-      if (select.value === "その他") {
-        customInput.style.display = "block";
-        customInput.focus();
-      } else {
-        customInput.style.display = "none";
-        customInput.value = "";
-      }
-    }
-
-    async function submitExpense() {
-      const month = document.getElementById('expMonth').value.trim();
-      const amount = document.getElementById('expAmount').value.trim();
-      if (!month || !amount) return alert("発生月と金額は絶対入れてな！");
-
-      const selectVal = document.getElementById('expTypeSelect').value;
-      let type = selectVal;
-      if (selectVal === "その他") {
-        type = document.getElementById('expTypeCustom').value.trim();
-        if (!type) return alert("経費の種類を入力してな！");
+      if (Array.from(monthSelect.options).some(o => o.value === currentVal)) {
+        monthSelect.value = currentVal;
       }
 
-      const date = document.getElementById('expDate').value.trim();
-      const memo = document.getElementById('expMemo').value.trim();
+      renderExpenseTable();
+    } else {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px; color:#a0aec0;">データが見つかりませんでした。</td></tr>';
+    }
+  } catch (err) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px; color:#e53e3e;">❌ 通信エラーが発生しました。</td></tr>';
+  }
+}
 
-      const btn = document.getElementById('expSubmitBtn');
-      btn.innerText = "⌛ 登録中...";
-      btn.disabled = true;
+function renderExpenseTable() {
+  const tbody = document.getElementById('expenseResultBody');
+  const countEl = document.getElementById('expenseTotalCount');
+  const kw = document.getElementById('expense-search-kw').value.toLowerCase().trim();
+  const selMonth = document.getElementById('expense-month-selector').value; 
 
-      const ssUrl = AppStorage.get("sh_ssurl", "");
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+  let filtered = globalExpenseData;
+  
+  if (selMonth !== "ALL") {
+    filtered = filtered.filter(item => item[0] === selMonth);
+  }
 
-      try {
-        const res = await fetch(targetGasUrl, {
-          method: 'POST',
-          body: JSON.stringify({
-            command: 'registerExpense',
-            ssUrl: ssUrl,
-            data: { month: month, date: date, type: type, amount: amount, memo: memo }
-          })
-        });
-        const json = await res.json();
-        
-        if (json.success) {
-          btn.style.background = "#38a169";
-          btn.innerText = "✅ 登録完了！";
-          setTimeout(() => {
-            closeExpenseModal();
-            btn.style.background = "#e53e3e";
-            btn.innerText = "🚀 経費を登録";
-            btn.disabled = false;
-            
-            // 💡 PC版：登録が終わったら、今の画面の表を自動で最新に更新する！
-            if (currentActiveView === 'view-expense') {
-              loadExpenseListData();
-            } else if (currentActiveView === 'view-monthly-purchase' || currentActiveView === 'view-monthly-sales') {
-              loadMonthlyData();
-            } else if (currentActiveView === 'view-home') {
-              fetchDashboardData();
-            }
-          }, 1500);
-        } else {
-          alert("エラー: " + json.message);
-          btn.innerText = "🚀 経費を登録";
-          btn.disabled = false;
-        }
-      } catch(e) {
-        alert("通信エラーが発生しました");
+  if (kw) {
+    filtered = filtered.filter(item => item.join(" ").toLowerCase().includes(kw));
+  }
+
+  countEl.innerText = `全 ${filtered.length} 件を表示中`;
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px; color:#a0aec0;">該当する data はありません。</td></tr>';
+    return;
+  }
+
+  let html = "";
+  filtered.slice().reverse().forEach(row => {
+    const amount = Number(row[3]) || 0;
+    const color = amount >= 5000 ? "#e53e3e" : "#333"; 
+    const source = String(row[5] || "");
+    const sheetRow = row[row.length - 1];
+
+    let deleteBtn = "";
+    if (!source.includes("Amazon自動")) {
+      deleteBtn = `<button onclick="deleteExpenseItem(${sheetRow})" style="background:#e53e3e; color:white; border:none; padding:6px 10px; border-radius:6px; font-weight:bold; cursor:pointer; box-shadow:0 1px 2px rgba(0,0,0,0.1);"><i class="fas fa-trash-alt"></i></button>`;
+    }
+    
+    html += `<tr style="border-bottom: 1px solid #f1f5f9; background:#fff;">
+      <td style="padding: 12px 8px; text-align:center;">${deleteBtn}</td>
+      <td style="padding: 12px 16px; font-weight:bold; color:#4a5568;">${row[0] || '-'}</td>
+      <td style="padding: 12px 16px;">${row[1] || '-'}</td>
+      <td style="padding: 12px 16px;"><span style="background:#edf2f7; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:bold;">${row[2] || '-'}</span></td>
+      <td style="padding: 12px 16px; text-align:right; font-weight:900; color:${color}; font-size:15px;">¥${amount.toLocaleString()}</td>
+      <td style="padding: 12px 16px; white-space:normal; font-size:12px; color:#666;">${row[4] || '-'}</td>
+      <td style="padding: 12px 16px; font-size:11px; color:#a0aec0;">${row[5] || '-'}</td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+}
+
+function openExpenseModal() {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = ("0" + (today.getMonth() + 1)).slice(-2);
+  const dd = ("0" + today.getDate()).slice(-2);
+  
+  document.getElementById('expMonth').value = `${yyyy}/${mm}`;
+  document.getElementById('expDate').value = `${yyyy}/${mm}/${dd}`;
+  document.getElementById('expAmount').value = "";
+  document.getElementById('expMemo').value = "";
+  
+  document.getElementById('expTypeSelect').value = "梱包資材";
+  toggleExpTypeInput(); 
+  
+  document.getElementById('expenseModal').style.display = "flex";
+}
+
+function closeExpenseModal() {
+  document.getElementById('expenseModal').style.display = "none";
+}
+
+function toggleExpTypeInput() {
+  const select = document.getElementById('expTypeSelect');
+  const customInput = document.getElementById('expTypeCustom');
+  if (select.value === "その他") {
+    customInput.style.display = "block";
+    customInput.focus();
+  } else {
+    customInput.style.display = "none";
+    customInput.value = "";
+  }
+}
+
+async function submitExpense() {
+  const month = document.getElementById('expMonth').value.trim();
+  const amount = document.getElementById('expAmount').value.trim();
+  if (!month || !amount) return alert("発生月と金額は絶対入れてな！");
+
+  const selectVal = document.getElementById('expTypeSelect').value;
+  let type = selectVal;
+  if (selectVal === "その他") {
+    type = document.getElementById('expTypeCustom').value.trim();
+    if (!type) return alert("経費の種類を入力してな！");
+  }
+
+  const date = document.getElementById('expDate').value.trim();
+  const memo = document.getElementById('expMemo').value.trim();
+
+  const btn = document.getElementById('expSubmitBtn');
+  btn.innerText = "⌛ 登録中...";
+  btn.disabled = true;
+
+  const ssUrl = AppStorage.get("sh_ssurl", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+
+  try {
+    const res = await fetch(targetGasUrl, {
+      method: 'POST',
+      body: JSON.stringify({
+        command: 'registerExpense',
+        ssUrl: ssUrl,
+        data: { month: month, date: date, type: type, amount: amount, memo: memo }
+      })
+    });
+    const json = await res.json();
+    
+    if (json.success) {
+      btn.style.background = "#38a169";
+      btn.innerText = "✅ 登録完了！";
+      setTimeout(() => {
+        closeExpenseModal();
+        btn.style.background = "#e53e3e";
         btn.innerText = "🚀 経費を登録";
         btn.disabled = false;
-      }
-    }
-
-    // 🗑️ 経費を削除する通信処理
-    async function deleteExpenseItem(sheetRow) {
-      if(!confirm("この経費データを削除してもよろしいですか？\n（※この操作は取り消せません）")) return;
-
-      const ssUrl = AppStorage.get("sh_ssurl", "");
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-
-      if (!ssUrl || !targetGasUrl) return alert("⚙️設定からManagerのURLとGAS URLを登録してな！");
-
-      // 画面のどこかをローディング表示にする（今回は雑にアラートの代わりに）
-      try {
-        const res = await fetch(targetGasUrl, {
-          method: 'POST',
-          body: JSON.stringify({ command: 'deleteExpense', ssUrl: ssUrl, row: sheetRow })
-        });
-        const json = await res.json();
-
-        if (json.success) {
-          alert("✅ 経費を削除しました！");
-          loadExpenseListData(); // 削除成功したらリストを自動で再読込！
-        } else {
-          alert("❌ 削除失敗: " + json.message);
+        
+        if (currentActiveView === 'view-expense') {
+          loadExpenseListData();
+        } else if (currentActiveView === 'view-monthly-purchase' || currentActiveView === 'view-monthly-sales') {
+          loadMonthlyData();
+        } else if (currentActiveView === 'view-home') {
+          fetchDashboardData();
         }
-      } catch(e) {
-        alert("❌ 通信エラーが発生しました");
-      }
+      }, 1500);
+    } else {
+      alert("エラー: " + json.message);
+      btn.innerText = "🚀 経費を登録";
+      btn.disabled = false;
     }
+  } catch(e) {
+    alert("通信エラーが発生しました");
+    btn.innerText = "🚀 経費を登録";
+    btn.disabled = false;
+  }
+}
 
-   // 💡 月別在庫のプルダウンが変更された時に数字と「個数」を切り替える関数
-    window.renderMonthlyInventory = function() {
-      const m = document.getElementById('monthly-inv-selector').value;
-      if (!m || !homeData.monthly[m] || !homeData.monthly[m].inventory) {
-        document.getElementById('val-kishu').innerHTML = '¥--';
-        document.getElementById('val-kimatsu').innerHTML = '¥--';
-        return;
-      }
-      
-      const inv = homeData.monthly[m].inventory;
-      const kishuCount = inv.kishuCount !== undefined ? inv.kishuCount : 0;
-      const kimatsuCount = inv.kimatsuCount !== undefined ? inv.kimatsuCount : 0;
-      
-      // 🌟 innerText から innerHTML に変更し、金額の下に小さくグレーで個数を表示するプロ仕様デザイン！
-      document.getElementById('val-kishu').innerHTML = `¥${inv.kishu.toLocaleString()}<br><span style="font-size:13px; color:#718096; font-weight:bold;">(${kishuCount}個)</span>`;
-      document.getElementById('val-kimatsu').innerHTML = `¥${inv.kimatsu.toLocaleString()}<br><span style="font-size:13px; color:#718096; font-weight:bold;">(${kimatsuCount}個)</span>`;
-    };
+async function deleteExpenseItem(sheetRow) {
+  if(!confirm("この経費データを削除してもよろしいですか？\n（※この操作は取り消せません）")) return;
 
+  const ssUrl = AppStorage.get("sh_ssurl", "");
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
 
-    // 💳 情報sheet設定画面：クレジットカード5枚分の入力フォームを「いい感じ」に自動生成する
+  if (!ssUrl || !targetGasUrl) return alert("⚙️設定からManagerのURLとGAS URLを登録してな！");
+
+  try {
+    const res = await fetch(targetGasUrl, {
+      method: 'POST',
+      body: JSON.stringify({ command: 'deleteExpense', ssUrl: ssUrl, row: sheetRow })
+    });
+    const json = await res.json();
+
+    if (json.success) {
+      alert("✅ 経費を削除しました！");
+      loadExpenseListData();
+    } else {
+      alert("❌ 削除失敗: " + json.message);
+    }
+  } catch(e) {
+    alert("❌ 通信エラーが発生しました");
+  }
+}
+
+window.renderMonthlyInventory = function() {
+  const m = document.getElementById('monthly-inv-selector').value;
+  if (!m || !homeData.monthly[m] || !homeData.monthly[m].inventory) {
+    document.getElementById('val-kishu').innerHTML = '¥--';
+    document.getElementById('val-kimatsu').innerHTML = '¥--';
+    return;
+  }
+  
+  const inv = homeData.monthly[m].inventory;
+  const kishuCount = inv.kishuCount !== undefined ? inv.kishuCount : 0;
+  const kimatsuCount = inv.kimatsuCount !== undefined ? inv.kimatsuCount : 0;
+  
+  document.getElementById('val-kishu').innerHTML = `¥${inv.kishu.toLocaleString()}<br><span style="font-size:13px; color:#718096; font-weight:bold;">(${kishuCount}個)</span>`;
+  document.getElementById('val-kimatsu').innerHTML = `¥${inv.kimatsu.toLocaleString()}<br><span style="font-size:13px; color:#718096; font-weight:bold;">(${kimatsuCount}個)</span>`;
+};
+
 function renderInfoCardInputs() {
   const container = document.getElementById('info-cards-container');
   if (!container) return;
@@ -4395,9 +4446,8 @@ function renderInfoCardInputs() {
   }
 }
 
-// 🚀 新設定画面を開いた時にGASからデータを取ってくる関数
 async function loadInfoSettingsView() {
-  renderInfoCardInputs(); // まずフォームの枠を自動生成
+  renderInfoCardInputs();
   
   const ssUrl = AppStorage.get("sh_ssurl", "");
   let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
@@ -4418,7 +4468,6 @@ async function loadInfoSettingsView() {
       document.getElementById('info-cond-e').value = data.conditions.e || "";
       document.getElementById('info-cond-f').value = data.conditions.f || "";
 
-      // 💳 クレジットカード情報の流し込み
       if (data.cards && data.cards.length > 0) {
         data.cards.forEach((card, i) => {
           if (i < 5) {
@@ -4427,7 +4476,6 @@ async function loadInfoSettingsView() {
             if(document.getElementById(`info-card-end-${i}`)) document.getElementById(`info-card-end-${i}`).value = card[2] || '';
             if(document.getElementById(`info-card-closing-${i}`)) document.getElementById(`info-card-closing-${i}`).value = card[3] || '';
             
-            // プルダウン（支払月）の値を安全にセット
             if(document.getElementById(`info-card-offset-${i}`)) {
               let offsetVal = card[4] !== undefined && card[4] !== "" ? parseInt(card[4], 10) : 1;
               document.getElementById(`info-card-offset-${i}`).value = offsetVal;
@@ -4446,7 +4494,6 @@ async function loadInfoSettingsView() {
   }
 }
 
-// 💾 新設定画面からシートへ保存する関数
 async function saveInfoSettingsView() {
   const ssUrl = AppStorage.get("sh_ssurl", "");
   let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
@@ -4456,12 +4503,10 @@ async function saveInfoSettingsView() {
   btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> 保存中...";
   btn.disabled = true;
 
-  // クレジットカードの入力値データを集める
   const cardDataArr = [];
   for (let i = 0; i < 5; i++) {
     const name = document.getElementById(`info-card-name-${i}`).value.trim();
     if (name) {
-      // 「当月（0）」が無視されないように parseInt の挙動を安全に処理！
       let offsetVal = parseInt(document.getElementById(`info-card-offset-${i}`).value, 10);
       if (isNaN(offsetVal)) offsetVal = 1;
 
@@ -4470,7 +4515,7 @@ async function saveInfoSettingsView() {
         parseInt(document.getElementById(`info-card-start-${i}`).value) || 1,
         parseInt(document.getElementById(`info-card-end-${i}`).value) || 31,
         parseInt(document.getElementById(`info-card-closing-${i}`).value) || 31,
-        offsetVal, // 🌟 完璧なプルダウンの数値
+        offsetVal,
         parseInt(document.getElementById(`info-card-day-${i}`).value) || 27
       ]);
     }
@@ -4504,332 +4549,268 @@ async function saveInfoSettingsView() {
     btn.disabled = false;
   }
 }
-// 📑 3つのタブ切り替えと自動読込ロジック
-    window.switchSettingTab = function(tabKey) {
-      document.querySelectorAll('.setting-panel').forEach(p => p.style.display = 'none');
-      const tabs = { info: document.getElementById('tab-btn-info'), system: document.getElementById('tab-btn-system'), trigger: document.getElementById('tab-btn-trigger') };
-      Object.keys(tabs).forEach(k => { if(tabs[k]) { tabs[k].style.background = '#edf2f7'; tabs[k].style.color = '#4a5568'; } });
-      const activePanel = document.getElementById(`panel-setting-${tabKey}`);
-      if(activePanel) activePanel.style.display = 'block';
-      if(tabs[tabKey]) { tabs[tabKey].style.background = '#1a365d'; tabs[tabKey].style.color = 'white'; }
 
-      if(tabKey === 'info') loadInfoSettingsView();
-      if(tabKey === 'system') loadGasSettings();
-      if(tabKey === 'trigger') loadGasTriggers();
-    };
+window.switchSettingTab = function(tabKey) {
+  document.querySelectorAll('.setting-panel').forEach(p => p.style.display = 'none');
+  const tabs = { info: document.getElementById('tab-btn-info'), system: document.getElementById('tab-btn-system'), trigger: document.getElementById('tab-btn-trigger') };
+  Object.keys(tabs).forEach(k => { if(tabs[k]) { tabs[k].style.background = '#edf2f7'; tabs[k].style.color = '#4a5568'; } });
+  const activePanel = document.getElementById(`panel-setting-${tabKey}`);
+  if(activePanel) activePanel.style.display = 'block';
+  if(tabs[tabKey]) { tabs[tabKey].style.background = '#1a365d'; tabs[tabKey].style.color = 'white'; }
 
-    window.toggleTriggerTextUI = function(key) {
-      const isChecked = document.getElementById(`gas-trigger-a-${key}`).checked;
-      const textSpan = document.getElementById(`text-trigger-${key}`);
-      if (isChecked) { textSpan.innerText = "稼働中"; textSpan.style.color = "#38a169"; } 
-      else { textSpan.innerText = "停止中"; textSpan.style.color = "#a0aec0"; }
-    };
+  if(tabKey === 'info') loadInfoSettingsView();
+  if(tabKey === 'system') loadGasSettings();
+  if(tabKey === 'trigger') loadGasTriggers();
+};
 
-    window.loadGasSettings = async function() {
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-      if (!targetGasUrl) return;
-      try {
-        const res = await fetch(targetGasUrl, { method: 'POST', body: JSON.stringify({ command: 'getSettings' }) });
-        const data = await res.json();
-        if (data.success && data.settings) {
-          document.getElementById('gas-setting-apikey').value = data.settings.apiKey || "";
-          document.getElementById('gas-setting-sellerid').value = data.settings.sellerId || "";
-          document.getElementById('gas-setting-sheeturl').value = data.settings.linkedSheetId || "";
-          document.getElementById('gas-setting-serial').value = data.settings.serialCode || "";
-        }
-      } catch (err) {}
-    };
+window.toggleTriggerTextUI = function(key) {
+  const isChecked = document.getElementById(`gas-trigger-a-${key}`).checked;
+  const textSpan = document.getElementById(`text-trigger-${key}`);
+  if (isChecked) { textSpan.innerText = "稼働中"; textSpan.style.color = "#38a169"; } 
+  else { textSpan.innerText = "停止中"; textSpan.style.color = "#a0aec0"; }
+};
 
-    window.saveGasSettings = async function() {
-      const btn = document.getElementById('btn-save-gas-settings');
-      const originalText = btn.innerHTML;
-      const key = document.getElementById('gas-setting-apikey').value.trim();
-      const sellerId = document.getElementById('gas-setting-sellerid').value.trim();
-      const linkedSheetId = document.getElementById('gas-setting-sheeturl').value.trim();
-      const serialCode = document.getElementById('gas-setting-serial').value.trim();
-      if(!key || !serialCode) return alert("⚠️ Keepa APIキーとシリアルコードは必須やで！");
-
-      btn.innerHTML = "保存・認証中..."; btn.disabled = true;
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-      try {
-        const res = await fetch(targetGasUrl, {
-          method: 'POST',
-          body: JSON.stringify({ command: 'saveSettings', settings: { apiKey: key, sellerId: sellerId, linkedSheetId: linkedSheetId, serialCode: serialCode } })
-        });
-        const data = await res.json();
-        if (data.success) alert("✅ 設定とシリアルコードをGASへ保存したで！");
-        else alert("❌ 認証エラー:\n" + data.message);
-      } catch (err) { alert("通信エラーや"); } 
-      finally { btn.innerHTML = originalText; btn.disabled = false; }
-    };
-
-    window.loadGasTriggers = async function() {
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-      if (!targetGasUrl) return;
-      try {
-        const res = await fetch(targetGasUrl, { method: 'POST', body: JSON.stringify({ command: 'getSavedTriggers' }) });
-        const data = await res.json();
-        if (data.success && data.triggers) {
-          ['research', 'sync'].forEach(key => {
-            if (data.triggers[key]) {
-              document.getElementById(`gas-trigger-a-${key}`).checked = data.triggers[key].a;
-              document.getElementById(`gas-trigger-h-${key}`).value = data.triggers[key].h;
-              toggleTriggerTextUI(key);
-            }
-          });
-        }
-      } catch (err) {}
-    };
-
-    window.saveGasTriggers = async function() {
-      const btn = document.getElementById('btn-save-gas-triggers');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = "予約登録中..."; btn.disabled = true;
-      let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
-      const triggerData = {
-        research: { a: document.getElementById('gas-trigger-a-research').checked, h: document.getElementById('gas-trigger-h-research').value || "0" },
-        sync: { a: document.getElementById('gas-trigger-a-sync').checked, h: document.getElementById('gas-trigger-h-sync').value || "0" }
-      };
-      try {
-        const res = await fetch(targetGasUrl, { method: 'POST', body: JSON.stringify({ command: 'saveAllTriggers', triggers: triggerData }) });
-        const data = await res.json();
-        if (data.success) alert("✅ 自動実行の予約設定を保存したで！");
-        else alert("❌ 保存エラー: " + data.message);
-      } catch (err) { alert("通信エラーや"); } 
-      finally { btn.innerHTML = originalText; btn.disabled = false; }
-    };
-
-    // ==========================================
-    // 🚀 Keepa ミニドロップ枠の見た目制御（販売管理と完全一致）
-    // ==========================================
-    function handleDragOverKeepaMini(e) {
-      e.preventDefault(); e.stopPropagation();
-      e.currentTarget.style.backgroundColor = '#ebf8ff';
-      e.currentTarget.style.borderColor = '#3182ce';
+window.loadGasSettings = async function() {
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+  if (!targetGasUrl) return;
+  try {
+    const res = await fetch(targetGasUrl, { method: 'POST', body: JSON.stringify({ command: 'getSettings' }) });
+    const data = await res.json();
+    if (data.success && data.settings) {
+      document.getElementById('gas-setting-apikey').value = data.settings.apiKey || "";
+      document.getElementById('gas-setting-sellerid').value = data.settings.sellerId || "";
+      document.getElementById('gas-setting-sheeturl').value = data.settings.linkedSheetId || "";
+      document.getElementById('gas-setting-serial').value = data.settings.serialCode || "";
     }
+  } catch (err) {}
+};
 
-    function handleDragLeaveKeepaMini(e) {
-      e.preventDefault(); e.stopPropagation();
-      e.currentTarget.style.backgroundColor = '#f8fafc';
-      e.currentTarget.style.borderColor = '#cbd5e0';
+window.saveGasSettings = async function() {
+  const btn = document.getElementById('btn-save-gas-settings');
+  const originalText = btn.innerHTML;
+  const key = document.getElementById('gas-setting-apikey').value.trim();
+  const sellerId = document.getElementById('gas-setting-sellerid').value.trim();
+  const linkedSheetId = document.getElementById('gas-setting-sheeturl').value.trim();
+  const serialCode = document.getElementById('gas-setting-serial').value.trim();
+  if(!key || !serialCode) return alert("⚠️ Keepa APIキーとシリアルコードは必須やで！");
+
+  btn.innerHTML = "保存・認証中..."; btn.disabled = true;
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+  try {
+    const res = await fetch(targetGasUrl, {
+      method: 'POST',
+      body: JSON.stringify({ command: 'saveSettings', settings: { apiKey: key, sellerId: sellerId, linkedSheetId: linkedSheetId, serialCode: serialCode } })
+    });
+    const data = await res.json();
+    if (data.success) alert("✅ 設定とシリアルコードをGASへ保存したで！");
+    else alert("❌ 認証エラー:\n" + data.message);
+  } catch (err) { alert("通信エラーや"); } 
+  finally { btn.innerHTML = originalText; btn.disabled = false; }
+};
+
+window.loadGasTriggers = async function() {
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+  if (!targetGasUrl) return;
+  try {
+    const res = await fetch(targetGasUrl, { method: 'POST', body: JSON.stringify({ command: 'getSavedTriggers' }) });
+    const data = await res.json();
+    if (data.success && data.triggers) {
+      ['research', 'sync'].forEach(key => {
+        if (data.triggers[key]) {
+          document.getElementById(`gas-trigger-a-${key}`).checked = data.triggers[key].a;
+          document.getElementById(`gas-trigger-h-${key}`).value = data.triggers[key].h;
+          toggleTriggerTextUI(key);
+        }
+      });
     }
+  } catch (err) {}
+};
 
-    function handleDropKeepaMini(e) {
-      e.preventDefault(); e.stopPropagation();
-      e.currentTarget.style.backgroundColor = '#f8fafc';
-      e.currentTarget.style.borderColor = '#cbd5e0';
-      
-      const files = e.dataTransfer.files;
-      if (files && files.length > 0) {
-        processKeepaCSV(files[0]);
+window.saveGasTriggers = async function() {
+  const btn = document.getElementById('btn-save-gas-triggers');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = "予約登録中..."; btn.disabled = true;
+  let targetGasUrl = AppStorage.get("sh_tensite_url", "") || AppStorage.get("sh_sniper_url", "");
+  const triggerData = {
+    research: { a: document.getElementById('gas-trigger-a-research').checked, h: document.getElementById('gas-trigger-h-research').value || "0" },
+    sync: { a: document.getElementById('gas-trigger-a-sync').checked, h: document.getElementById('gas-trigger-h-sync').value || "0" }
+  };
+  try {
+    const res = await fetch(targetGasUrl, { method: 'POST', body: JSON.stringify({ command: 'saveAllTriggers', triggers: triggerData }) });
+    const data = await res.json();
+    if (data.success) alert("✅ 自動実行の予約設定を保存したで！");
+    else alert("❌ 保存エラー: " + data.message);
+  } catch (err) { alert("通信エラーや"); } 
+  finally { btn.innerHTML = originalText; btn.disabled = false; }
+};
+
+function handleDragOverKeepaMini(e) {
+  e.preventDefault(); e.stopPropagation();
+  e.currentTarget.style.backgroundColor = '#ebf8ff';
+  e.currentTarget.style.borderColor = '#3182ce';
+}
+
+function handleDragLeaveKeepaMini(e) {
+  e.preventDefault(); e.stopPropagation();
+  e.currentTarget.style.backgroundColor = '#f8fafc';
+  e.currentTarget.style.borderColor = '#cbd5e0';
+}
+
+function handleDropKeepaMini(e) {
+  e.preventDefault(); e.stopPropagation();
+  e.currentTarget.style.backgroundColor = '#f8fafc';
+  e.currentTarget.style.borderColor = '#cbd5e0';
+  
+  const files = e.dataTransfer.files;
+  if (files && files.length > 0) {
+    processKeepaCSV(files[0]);
+  }
+}
+
+function processKeepaCSV(file) {
+  if (!file.name.toLowerCase().endsWith('.csv')) {
+    alert("⚠️ CSVファイルを入れてや！");
+    return;
+  }
+
+  const dropLabel = document.getElementById('mini-drop-zone-keepa');
+  const originalText = dropLabel.innerHTML;
+  dropLabel.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 6px; color:#a855f7;"></i> 解析中...';
+
+  const reader = new FileReader();
+
+  reader.onload = async function(e) {
+    let text = e.target.result;
+    const lines = text.split(/\r?\n/);
+    const asins = [];
+
+    lines.forEach(line => {
+      const cleanLine = line.replace(/["']/g, '').trim();
+      if (cleanLine && cleanLine !== 'ASIN' && cleanLine.length === 10) {
+        asins.push(cleanLine);
       }
+    });
+
+    if (asins.length === 0) {
+      alert("⚠️ 有効なASINが見つからんかったで！");
+      dropLabel.innerHTML = originalText;
+      return;
     }
 
-    // ==========================================
-    // 🚀 Keepa CSV解析 ＆ GASへ自動リサーチ命令 (完全最終版)
-    // ==========================================
-    function processKeepaCSV(file) {
-      if (!file.name.toLowerCase().endsWith('.csv')) {
-        alert("⚠️ CSVファイルを入れてや！");
-        return;
+    if(!confirm(`📦 ${asins.length}件のASINを抽出したで！\nASIN検索sheetにセットして、自動リサーチを開始してもええか？`)) {
+      dropLabel.innerHTML = originalText;
+      return;
+    }
+
+    dropLabel.innerHTML = '<i class="fas fa-paper-plane" style="margin-right: 6px; color:#a855f7;"></i> 送信中...';
+
+    const researcherUrl = AppStorage.get("sh_researcher_url", "");
+    const researcherGasUrl = AppStorage.get("sh_researcher_gas_url", "");
+
+    if (!researcherUrl || !researcherGasUrl) {
+      alert("⚙️ 設定画面を開いて『ResearcherのシートURL』と『ResearcherのGAS URL』を両方入れて保存してな！");
+      dropLabel.innerHTML = originalText;
+      return;
+    }
+
+    try {
+      const res = await fetch(researcherGasUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          command: 'startKeepaAutoResearch',
+          ssUrl: researcherUrl,
+          asins: asins
+        })
+      });
+
+      const responseText = await res.text();
+      let json;
+      try {
+        json = JSON.parse(responseText);
+      } catch(e) {
+        throw new Error(responseText.substring(0, 50)); 
       }
 
-      const dropLabel = document.getElementById('mini-drop-zone-keepa');
-      const originalText = dropLabel.innerHTML;
-      dropLabel.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 6px; color:#a855f7;"></i> 解析中...';
-
-      const reader = new FileReader();
-
-      reader.onload = async function(e) {
-        let text = e.target.result;
-        const lines = text.split(/\r?\n/);
-        const asins = [];
-
-        lines.forEach(line => {
-          const cleanLine = line.replace(/["']/g, '').trim();
-          if (cleanLine && cleanLine !== 'ASIN' && cleanLine.length === 10) {
-            asins.push(cleanLine);
-          }
-        });
-
-        if (asins.length === 0) {
-          alert("⚠️ 有効なASINが見つからんかったで！");
-          dropLabel.innerHTML = originalText;
-          return;
-        }
-
-        if(!confirm(`📦 ${asins.length}件のASINを抽出したで！\nASIN検索sheetにセットして、自動リサーチを開始してもええか？`)) {
-          dropLabel.innerHTML = originalText;
-          return;
-        }
-
-        dropLabel.innerHTML = '<i class="fas fa-paper-plane" style="margin-right: 6px; color:#a855f7;"></i> 送信中...';
-
-        const researcherUrl = AppStorage.get("sh_researcher_url", "");
-        // 💡 宛先を完全にResearcher専用のGAS URLに固定！
-        const researcherGasUrl = AppStorage.get("sh_researcher_gas_url", "");
-
-        if (!researcherUrl || !researcherGasUrl) {
-          alert("⚙️ 設定画面を開いて『ResearcherのシートURL』と『ResearcherのGAS URL』を両方入れて保存してな！");
-          dropLabel.innerHTML = originalText;
-          return;
-        }
-
-        try {
-          const res = await fetch(researcherGasUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // 🛡️ 通信を確実に通すための呪文
-            body: JSON.stringify({
-              command: 'startKeepaAutoResearch',
-              ssUrl: researcherUrl,
-              asins: asins
-            })
-          });
-
-          // エラーの正体を正確に掴むために、まずは文字として受け取る
-          const responseText = await res.text();
-          let json;
-          try {
-            json = JSON.parse(responseText);
-          } catch(e) {
-            // JSONじゃなかった場合（No Target Keyword等）は、ここでエラーを投げる
-            throw new Error(responseText.substring(0, 50)); 
-          }
-
-          if (json.success) {
-            alert(`✅ ${asins.length}件のASINをセットして、自動リサーチをスタートしたで！！\n（裏側で現場監督が走り出しました！）`);
-            if (typeof loadResearcherData === 'function') loadResearcherData();
-          } else {
-            alert(`❌ 自動リサーチ開始エラー:\n${json.message}`);
-          }
-        } catch (error) {
-          alert("❌ 通信エラーの正体:\nGASエラー発生中: " + error.message);
-        } finally {
-          dropLabel.innerHTML = originalText;
-        }
-      };
-
-      reader.readAsText(file);
+      if (json.success) {
+        alert(`✅ ${asins.length}件のASINをセットして、自動リサーチをスタートしたで！！\n（裏側で現場監督が走り出しました！）`);
+        if (typeof loadResearcherData === 'function') loadResearcherData();
+      } else {
+        alert(`❌ 自動リサーチ開始エラー:\n${json.message}`);
+      }
+    } catch (error) {
+      alert("❌ 通信エラーの正体:\nGASエラー発生中: " + error.message);
+    } finally {
+      dropLabel.innerHTML = originalText;
     }
-    
-  </script>
+  };
 
-<div id="view-manager-settings" class="view" style="padding: 20px; max-width: 1200px; margin: 0 auto;">
-    
-    <div style="background: #fff; border-radius: 8px; border: 1px solid #e2e8f0; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-      
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:#fff; padding:16px; border-radius:12px; border:1px solid #e2e8f0; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
-        <h2 style="margin:0; font-size:18px; color:#1a365d; display:flex; align-items:center; gap:8px;">
-          <i class="fas fa-table" style="color:#805ad5;"></i> 情報シート設定
-        </h2>
-        <button onclick="saveInfoSettingsView()" style="background:#3182ce; color:white; border:none; padding:10px 24px; border-radius:8px; font-weight:bold; font-size:14px; cursor:pointer; box-shadow:0 4px 6px rgba(49,130,206,0.2); display:flex; align-items:center; gap:6px;">
-          <i class="fas fa-save"></i> 設定をシートに保存する
-        </button>
-      </div>
+  reader.readAsText(file);
+}
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
-        <div style="display:flex; flex-direction:column; gap:20px;">
-          <div class="card" style="margin:0; padding:20px; border-top:4px solid #805ad5;">
-            <h3 style="margin-top:0; font-size:14px; color:#4a5568; display:flex; align-items:center; gap:6px; margin-bottom:12px;">
-              <i class="fas fa-building" style="color:#805ad5;"></i> 🏢 仕入先マスター管理（改行区切り）
-            </h3>
-            <textarea id="info-suppliers" rows="5" style="width:100%; padding:10px; border:1px solid #cbd5e0; border-radius:6px; font-size:13px; box-sizing:border-box; outline:none; font-weight:bold; line-height:1.5;" placeholder="メルカリ&#10;ヤフオク&#10;オフモール"></textarea>
-          </div>
-          <div class="card" style="margin:0; padding:20px; border-top:4px solid #07A27B;">
-            <h3 style="margin-top:0; font-size:14px; color:#4a5568; display:flex; align-items:center; gap:6px; margin-bottom:12px;">
-              <i class="fas fa-file-alt" style="color:#07A27B;"></i> 📝 商品説明テンプレート設定
-            </h3>
-            <div style="display:flex; flex-direction:column; gap:10px;">
-              <div><label style="font-size:11px; font-weight:bold; color:#2d3748; display:block; margin-bottom:4px;">✨ ほぼ新品</label><textarea id="info-cond-c" rows="2" style="width:100%; padding:8px; border:1px solid #cbd5e0; border-radius:6px; font-size:12px; box-sizing:border-box; outline:none;"></textarea></div>
-              <div><label style="font-size:11px; font-weight:bold; color:#2d3748; display:block; margin-bottom:4px;">👍 非常に良い</label><textarea id="info-cond-d" rows="2" style="width:100%; padding:8px; border:1px solid #cbd5e0; border-radius:6px; font-size:12px; box-sizing:border-box; outline:none;"></textarea></div>
-              <div><label style="font-size:11px; font-weight:bold; color:#2d3748; display:block; margin-bottom:4px;">🙂 良い</label><textarea id="info-cond-e" rows="2" style="width:100%; padding:8px; border:1px solid #cbd5e0; border-radius:6px; font-size:12px; box-sizing:border-box; outline:none;"></textarea></div>
-              <div><label style="font-size:11px; font-weight:bold; color:#2d3748; display:block; margin-bottom:4px;">⚠️ 可</label><textarea id="info-cond-f" rows="2" style="width:100%; padding:8px; border:1px solid #cbd5e0; border-radius:6px; font-size:12px; box-sizing:border-box; outline:none;"></textarea></div>
-            </div>
-          </div>
-        </div>
-        <div class="card" style="margin:0; padding:20px; border-top:4px solid #e53e3e; display:flex; flex-direction:column; gap:14px;">
-          <h3 style="margin-top:0; font-size:14px; color:#4a5568; display:flex; align-items:center; gap:6px; margin-bottom:2px;">
-            <i class="fas fa-credit-card" style="color:#e53e3e;"></i> 💳 クレジットカード決済・資金繰りルール設定
-          </h3>
-          <p style="font-size:11px; color:#718096; margin:0 0 10px 0; font-weight:bold;">※情報sheetの H列〜M列 に自動連動します（最大5枠）</p>
-          <div id="info-cards-container" style="display:flex; flex-direction:column; gap:16px;"></div>
-        </div>
-      </div>
+function openSheetLinksModal() {
+  document.getElementById('sheetLinksModal').style.display = 'flex';
+}
+function closeSheetLinksModal() {
+  document.getElementById('sheetLinksModal').style.display = 'none';
+}
+function openSheet(storageKey) {
+  const url = AppStorage.get(storageKey, "");
+  if (!url) {
+    alert("⚙️ まだ設定画面でこのシートのURLが登録されてへんで！");
+    closeSheetLinksModal();
+    openConfig();
+    return;
+  }
+  window.open(url, '_blank');
+}
+</script>
+
+<div id="hazmatGuideModal" class="modal" onclick="closeHazmatGuide()">
+  <div class="modal-content" style="max-width: 95%; width: 480px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 12px; border-radius: 12px;" onclick="event.stopPropagation()">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #edf2f7; padding-bottom: 8px; margin-bottom: 12px;">
+      <h3 style="margin: 0; font-size: 14px; color: #c53030;"><i class="fas fa-exclamation-triangle"></i> 危険物入力フローガイド</h3>
+      <button onclick="closeHazmatGuide()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: #a0aec0; padding: 4px;"><i class="fas fa-times"></i></button>
+    </div>
+    <div style="width: 100%; text-align: center; overflow: hidden;">
+      <img src="https://i.ibb.co/7J7vnX4n/2026-06-05-141548.png" style="width: 100%; max-height: 75vh; object-fit: contain; border-radius: 6px;">
     </div>
   </div>
+</div>
 
- <div id="hazmatGuideModal" class="modal" onclick="closeHazmatGuide()">
-    <div class="modal-content" style="max-width: 95%; width: 480px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 12px; border-radius: 12px;" onclick="event.stopPropagation()">
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #edf2f7; padding-bottom: 8px; margin-bottom: 12px;">
-        <h3 style="margin: 0; font-size: 14px; color: #c53030;"><i class="fas fa-exclamation-triangle"></i> 危険物入力フローガイド</h3>
-        <button onclick="closeHazmatGuide()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: #a0aec0; padding: 4px;"><i class="fas fa-times"></i></button>
-      </div>
-      <div style="width: 100%; text-align: center; overflow: hidden;">
-        <img src="https://i.ibb.co/7J7vnX4n/2026-06-05-141548.png" style="width: 100%; max-height: 75vh; object-fit: contain; border-radius: 6px;">
-      </div>
-    </div>
-  </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
+  const firebaseConfig = { apiKey: "AIzaSyApLErkBMaLTKLAVDeA_-aZYMnPilaDGU8", authDomain: "searchhub-mobile.firebaseapp.com", projectId: "searchhub-mobile", storageBucket: "searchhub-mobile.firebasestorage.app", messagingSenderId: "18757861506", appId: "1:18757861506:web:4826ba1337e48431f0f49b" };
+  const app = initializeApp(firebaseConfig); const messaging = getMessaging(app);
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
-    const firebaseConfig = { apiKey: "AIzaSyApLErkBMaLTKLAVDeA_-aZYMnPilaDGU8", authDomain: "searchhub-mobile.firebaseapp.com", projectId: "searchhub-mobile", storageBucket: "searchhub-mobile.firebasestorage.app", messagingSenderId: "18757861506", appId: "1:18757861506:web:4826ba1337e48431f0f49b" };
-    const app = initializeApp(firebaseConfig); const messaging = getMessaging(app);
+  window.enablePushNotifications = async function(btn) {
+    try {
+      btn.innerText = "⌛ 通知設定を生成中や…"; btn.disabled = true;
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js'); await navigator.serviceWorker.ready;
+        const currentToken = await getToken(messaging, { vapidKey: "BJMWJMJx2CGiDNuLq7xixOKeBlN8Hd3vNvbx4QmK7mf1R3ccUCXuP0o-ZlsRurw7MhpiwWLZuvu57twS5jypqlU", serviceWorkerRegistration: registration });
+        if (currentToken) {
+          AppStorage.set("sh_fcm_token", currentToken); const sniperUrl = AppStorage.get("sh_sniper_url", "");
+          if (sniperUrl) { fetch(sniperUrl, { method: 'POST', body: JSON.stringify({ command: 'saveToken', token: currentToken }) }); alert("✅ 通知設定完了！"); btn.innerText = "✅ 通知設定完了"; } 
+          else { alert("⚠️ S側 GAS URL を設定してな！"); btn.innerText = "🔔 通知許可する"; btn.disabled = false; }
+        } else { alert("❌ トークン取得失敗"); btn.innerText = "🔔 通知許可する"; btn.disabled = false; }
+      } else { alert("通知ブロック中。"); btn.innerText = "🔔 通知許可する"; btn.disabled = false; }
+    } catch (err) { alert("エラー\n" + err.message); btn.innerText = "🔔 通知許可する"; btn.disabled = false; }
+  }
+</script>
 
-    window.enablePushNotifications = async function(btn) {
-      try {
-        btn.innerText = "⌛ 通知設定を生成中や…"; btn.disabled = true;
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-          const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js'); await navigator.serviceWorker.ready;
-          const currentToken = await getToken(messaging, { vapidKey: "BJMWJMJx2CGiDNuLq7xixOKeBlN8Hd3vNvbx4QmK7mf1R3ccUCXuP0o-ZlsRurw7MhpiwWLZuvu57twS5jypqlU", serviceWorkerRegistration: registration });
-          if (currentToken) {
-            AppStorage.set("sh_fcm_token", currentToken); const sniperUrl = AppStorage.get("sh_sniper_url", "");
-            if (sniperUrl) { fetch(sniperUrl, { method: 'POST', body: JSON.stringify({ command: 'saveToken', token: currentToken }) }); alert("✅ 通知設定完了！"); btn.innerText = "✅ 通知設定完了"; } 
-            else { alert("⚠️ S側 GAS URL を設定してな！"); btn.innerText = "🔔 通知許可する"; btn.disabled = false; }
-          } else { alert("❌ トークン取得失敗"); btn.innerText = "🔔 通知許可する"; btn.disabled = false; }
-        } else { alert("通知ブロック中。"); btn.innerText = "🔔 通知許可する"; btn.disabled = false; }
-      } catch (err) { alert("エラー\n" + err.message); btn.innerText = "🔔 通知許可する"; btn.disabled = false; }
-    }
-  </script>
-
-  <style>
-    .sh-toggle { position: relative; display: inline-block; width: 44px; height: 24px; margin: 0; flex-shrink: 0; }
-    .sh-toggle input { opacity: 0; width: 0; height: 0; }
-    .sh-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e0; transition: .3s; border-radius: 24px; }
-    .sh-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
-    .sh-toggle input:checked + .sh-slider { background-color: #38a169; }
-    .sh-toggle input:checked + .sh-slider:before { transform: translateX(20px); }
-  </style>
-
-  <script>
-    // ==========================================
-    // 💡 各種シートへ飛ぶメニューの操作用JS
-    // ==========================================
-    function openSheetLinksModal() {
-      document.getElementById('sheetLinksModal').style.display = 'flex';
-    }
-    function closeSheetLinksModal() {
-      document.getElementById('sheetLinksModal').style.display = 'none';
-    }
-    function openSheet(storageKey) {
-      const url = AppStorage.get(storageKey, "");
-      if (!url) {
-        alert("⚙️ まだ設定画面でこのシートのURLが登録されてへんで！");
-        closeSheetLinksModal();
-        openConfig(); // 親切に設定画面を開いてあげる
-        return;
-      }
-      window.open(url, '_blank');
-    }
-
-    // 💡 追加：危険物ガイドのポップアップを開閉する関数
-    function openHazmatGuide() {
-      document.getElementById('hazmatGuideModal').style.display = 'flex';
-    }
-    function closeHazmatGuide() {
-      document.getElementById('hazmatGuideModal').style.display = 'none';
-    }
-  </script>
+<style>
+  .sh-toggle { position: relative; display: inline-block; width: 44px; height: 24px; margin: 0; flex-shrink: 0; }
+  .sh-toggle input { opacity: 0; width: 0; height: 0; }
+  .sh-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e0; transition: .3s; border-radius: 24px; }
+  .sh-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+  .sh-toggle input:checked + .sh-slider { background-color: #38a169; }
+  .sh-toggle input:checked + .sh-slider:before { transform: translateX(20px); }
+</style>
 </body>
 </html>
+    
+
+   
